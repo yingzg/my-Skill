@@ -1,0 +1,47 @@
+# =============================================================
+# api-flow flow.yaml 模板
+# 
+# 此文件定义 flow 的元数据、鉴权、用例引用列表。
+# 用例内容（scenario / branch / request / extract）在独立的
+# tc-*.json 文件中，SQL 在 tc-*-{prepare,cleanup}.sql 中。
+# =============================================================
+
+name: ""                  # （必填）流程名称，用于报告标题
+# description: ""         # （可选）流程描述
+base_url: ""              # （必填）目标服务 base URL，如 http://localhost:8080
+# service: ""             # （可选）服务名
+
+# ── 鉴权配置 ──
+auth:
+  type: bearer            # bearer | oauth2 | apikey | none
+  # token_url: ""         # oauth2 时需要
+  # client_id: ""         # oauth2 参数
+  # client_secret: ""     # oauth2 参数
+
+# ── 用例引用（必填：至少一条）──
+cases:
+  - id: tc-001
+    file: tc-001.json
+    prepare: tc-001-prepare.sql       # 可选，可空
+    cleanup: tc-001-cleanup.sql       # 可选，可空
+
+# ── 依赖分析（AI 生成，供审阅，可选）──
+# dependencies:
+#   - table: users
+#     reason: "需要不同等级的用户"
+#     fields: [id, name, level]
+
+# ── 忽略响应字段（可选）──
+# ignore_response_fields:
+#   - "*.createTime"
+#   - "*.updateTime"
+
+# ── 疑似隐藏分支（AI 生成，供审阅，可选）──
+# suspected_branches:
+#   - source: "com.example.aop.XxxAspect"
+#     type: "AOP 拦截器"
+#     hint: "可能产生额外副作用"
+
+# ── 全局兜底清理（手动执行用，可选）──
+# global_cleanup:
+#   - "DELETE FROM orders WHERE id LIKE 'TEST-%'"

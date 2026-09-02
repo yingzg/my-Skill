@@ -1,0 +1,22 @@
+{
+  "id": "tc-001",
+  "scenario": "场景描述（一句话，中文）",
+  "branch": "触发该用例的代码分支条件",
+  "priority": "medium",
+  "expect_error": false,
+  "request": {
+    "method": "POST",
+    "url": "/api/xxx",
+    "headers": {
+      "Authorization": "{{AUTH_TOKEN}}",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "field1": "{{@var_from_prepare}}",
+      "field2": "static_value"
+    }
+  },
+  "extract": {
+    "var_name": "$.data.fieldName"
+  }
+}

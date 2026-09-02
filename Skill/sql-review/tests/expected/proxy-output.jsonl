@@ -1,0 +1,34 @@
+{"sql_id": "mappers.xml:findById:0", "original_sql": "SELECT id, order_no, status, created_at FROM orders WHERE id = ?", "proxy_sql": null}
+{"sql_id": "mappers.xml:findByOrderNo:1", "original_sql": "SELECT id, order_no, amount FROM orders WHERE order_no = ?", "proxy_sql": null}
+{"sql_id": "mappers.xml:findAll:2", "original_sql": "SELECT * FROM orders", "proxy_sql": null}
+{"sql_id": "mappers.xml:countByStatus:3", "original_sql": "SELECT COUNT(*) FROM orders WHERE status = ?", "proxy_sql": null}
+{"sql_id": "mappers.xml:updateStatus:4", "original_sql": "UPDATE orders SET status = ?, updated_at = NOW() WHERE id = ?", "proxy_sql": "SELECT status, updated_at FROM orders WHERE id = ?"}
+{"sql_id": "mappers.xml:updateStatusNoWhere:5", "original_sql": "UPDATE orders SET status = ?", "proxy_sql": "SELECT status FROM orders"}
+{"sql_id": "mappers.xml:deleteById:6", "original_sql": "DELETE FROM orders WHERE id = ?", "proxy_sql": "SELECT * FROM orders WHERE id = ?"}
+{"sql_id": "mappers.xml:deleteAll:7", "original_sql": "DELETE FROM orders", "proxy_sql": "SELECT * FROM orders"}
+{"sql_id": "mappers.xml:insertOrder:8", "original_sql": "INSERT INTO orders (order_no, status, amount, created_at) VALUES (?, ?, ?, NOW())", "proxy_sql": null}
+{"sql_id": "mappers.xml:findWithDetail:9", "original_sql": "SELECT o.id, o.order_no, d.product_name, d.quantity FROM orders o JOIN order_detail d ON o.id = d.order_id WHERE o.id = ?", "proxy_sql": null}
+{"sql_id": "mappers.xml:findWithMultipleJoins:10", "original_sql": "SELECT o.id, o.order_no, d.product_name, u.name AS user_name FROM orders o LEFT JOIN order_detail d ON o.id = d.order_id LEFT JOIN users u ON o.user_id = u.id WHERE o.status = ?", "proxy_sql": null}
+{"sql_id": "mappers.xml:findBySubQuery:11", "original_sql": "SELECT id, order_no, status FROM orders WHERE user_id IN ( SELECT id FROM users WHERE status = 'ACTIVE' )", "proxy_sql": null}
+{"sql_id": "mappers.xml:findByCondition:12", "original_sql": "SELECT id, order_no, status FROM orders WHERE 1=1 AND status = ? AND order_no = ?", "proxy_sql": null}
+{"sql_id": "mappers.xml:findBySingleIf:13", "original_sql": "SELECT id, order_no, status FROM orders WHERE amount > ?", "proxy_sql": null}
+{"sql_id": "mappers.xml:updateByIf:14", "original_sql": "UPDATE orders SET updated_at = NOW() , status = ? , amount = ? WHERE id = ?", "proxy_sql": "SELECT updated_at, status, amount FROM orders WHERE id = ?"}
+{"sql_id": "mappers.xml:findByChoose:15", "original_sql": "SELECT id, order_no, status FROM orders WHERE status = ?", "proxy_sql": null}
+{"sql_id": "mappers.xml:findByIds:16", "original_sql": "SELECT id, order_no, status FROM orders WHERE id IN (?)", "proxy_sql": null}
+{"sql_id": "mappers.xml:batchInsert:17", "original_sql": "INSERT INTO orders (order_no, status, amount) VALUES (?, ?, ?)", "proxy_sql": null}
+{"sql_id": "mappers.xml:deleteByIds:18", "original_sql": "DELETE FROM orders WHERE id IN (?)", "proxy_sql": "SELECT * FROM orders WHERE id IN (?)"}
+{"sql_id": "mappers.xml:findByWhere:19", "original_sql": "SELECT id, order_no, status FROM orders WHERE status = ? AND order_no = ? AND amount >= ?", "proxy_sql": null}
+{"sql_id": "mappers.xml:updateBySet:20", "original_sql": "UPDATE orders SET status = ?, amount = ?, updated_at = NOW() WHERE id = ?", "proxy_sql": "SELECT status, amount, updated_at FROM orders WHERE id = ?"}
+{"sql_id": "mappers.xml:findByTrim:21", "original_sql": "SELECT id, order_no, status FROM orders WHERE status = ? AND order_no = ?", "proxy_sql": null}
+{"sql_id": "mappers.xml:updateByTrimSet:22", "original_sql": "UPDATE orders SET status = ?, amount = ? WHERE id = ?", "proxy_sql": "SELECT status, amount FROM orders WHERE id = ?"}
+{"sql_id": "mappers.xml:findByBind:23", "original_sql": "SELECT id, order_no, status FROM orders WHERE order_no LIKE ?", "proxy_sql": null}
+{"sql_id": "mappers.xml:findByBindWithIf:24", "original_sql": "SELECT id, order_no, status FROM orders WHERE order_no LIKE ?", "proxy_sql": null}
+{"sql_id": "mappers.xml:findWithInclude:25", "original_sql": "SELECT FROM orders", "proxy_sql": null}
+{"sql_id": "mappers.xml:findByMixed:26", "original_sql": "SELECT id, order_no, status, amount FROM orders WHERE status IN (?) AND amount >= ? AND amount <= ? ORDER BY 'orderBy'", "proxy_sql": null}
+{"sql_id": "mappers.xml:findUserById:27", "original_sql": "SELECT id, name, email FROM users WHERE id = ?", "proxy_sql": null}
+{"sql_id": "mappers.xml:findUserWithOrders:28", "original_sql": "SELECT u.id, u.name, COUNT(o.id) AS order_count FROM users u LEFT JOIN orders o ON u.id = o.user_id WHERE u.status = ? GROUP BY u.id, u.name ORDER BY order_count DESC LIMIT ?", "proxy_sql": null}
+{"sql_id": "mappers.xml:findUsersByKeyword:29", "original_sql": "SELECT id, name, email FROM users WHERE name LIKE ?", "proxy_sql": null}
+{"sql_id": "mappers.xml:gh001_emptyForeach:30", "original_sql": "SELECT id, status FROM orders WHERE id IN (?)", "proxy_sql": null}
+{"sql_id": "mappers.xml:gh002_foreachNestedIf:31", "original_sql": "UPDATE orders SET status = ? amount = ? WHERE id = ?", "proxy_sql": "SELECT status, amount FROM orders WHERE id = ?"}
+{"sql_id": "mappers.xml:gh003_leftLike:32", "original_sql": "SELECT id, order_no FROM orders WHERE order_no LIKE CONCAT('%', ?)", "proxy_sql": null}
+{"sql_id": "mappers.xml:gh004_limitNoOrder:33", "original_sql": "SELECT id, order_no FROM orders WHERE status = ? LIMIT ?, ?", "proxy_sql": null}

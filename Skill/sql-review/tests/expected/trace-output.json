@@ -1,0 +1,62 @@
+{
+  "chains": [
+    {
+      "method": "com.example.mapper.OrderMapper.findById",
+      "call_chain": [
+        {
+          "class": "com.example.controller.OrderController",
+          "method": "getById",
+          "line": 23
+        },
+        {
+          "class": "com.example.service.OrderService",
+          "method": "findById",
+          "line": 17
+        }
+      ],
+      "complete": true
+    },
+    {
+      "method": "com.example.mapper.OrderMapper.findByOrderNo",
+      "call_chain": [
+        {
+          "class": "com.example.controller.BillingController",
+          "method": "getBillingOrder",
+          "line": 16
+        },
+        {
+          "class": "com.example.service.BillingService",
+          "method": "loadOrder",
+          "line": 14
+        },
+        {
+          "class": "com.example.repository.OrderRepositoryImpl",
+          "method": "findByOrderNo",
+          "line": 14
+        }
+      ],
+      "complete": true
+    },
+    {
+      "method": "com.example.mapper.OrderMapper.updateStatus",
+      "call_chain": [],
+      "complete": false
+    },
+    {
+      "method": "com.example.mapper.OrderMapper.findByCondition",
+      "call_chain": [
+        {
+          "class": "com.example.controller.OrderController",
+          "method": "search",
+          "line": 40
+        },
+        {
+          "class": "com.example.service.OrderService",
+          "method": "findByCondition",
+          "line": 29
+        }
+      ],
+      "complete": true
+    }
+  ]
+}

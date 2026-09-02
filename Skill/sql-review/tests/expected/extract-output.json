@@ -1,0 +1,13 @@
+{
+  "files": [
+    {
+      "path": "src/main/java/com/example/mapper/OrderMapper.xml",
+      "status": "A"
+    },
+    {
+      "path": "src/main/java/com/example/mapper/UserMapper.xml",
+      "status": "A"
+    }
+  ],
+  "total_count": 2
+}

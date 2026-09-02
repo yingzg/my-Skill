@@ -1,0 +1,60 @@
+{
+  "results": [
+    {
+      "sql_id": "mappers.xml:findAll:2",
+      "level": "HIGH",
+      "summary": "SELECT * 无WHERE → 全表扫描 15823 行",
+      "short_term_fix": "添加 LIMIT 分页条件",
+      "long_term_fix": "引入分页查询",
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:updateStatusNoWhere:5",
+      "level": "CRITICAL",
+      "summary": "UPDATE 无 WHERE → 全表更新",
+      "short_term_fix": "添加 WHERE 条件",
+      "long_term_fix": "为所有 DML 语句增加 WHERE 保护",
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:deleteAll:7",
+      "level": "CRITICAL",
+      "summary": "DELETE 无 WHERE → 全表删除",
+      "short_term_fix": "添加 WHERE 条件",
+      "long_term_fix": "为所有 DML 语句增加 WHERE 保护",
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:findByBind:23",
+      "level": "MEDIUM",
+      "summary": "LIKE '%x%' 左模糊 → 全表扫描 + 文件排序",
+      "short_term_fix": "引入 Elasticsearch 全文索引",
+      "long_term_fix": "迁移至搜索中间件",
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:findUsersByKeyword:29",
+      "level": "MEDIUM",
+      "summary": "LEFT LIKE 全表扫描 + filesort",
+      "short_term_fix": "在 keyword 上创建前缀索引",
+      "long_term_fix": "引入全文搜索引擎",
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:gh003_leftLike:32",
+      "level": "MEDIUM",
+      "summary": "左模糊查询 → 全表扫描",
+      "short_term_fix": "使用前缀索引 + 反向存储",
+      "long_term_fix": "引入全文搜索引擎",
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:gh004_limitNoOrder:33",
+      "level": "LOW",
+      "summary": "LIMIT 无 ORDER BY → 结果不稳定",
+      "short_term_fix": "添加 ORDER BY 子句",
+      "long_term_fix": "分页规范必须包含排序",
+      "uncertain": false
+    }
+  ]
+}

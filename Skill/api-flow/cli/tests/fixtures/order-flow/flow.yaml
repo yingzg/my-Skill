@@ -1,0 +1,28 @@
+name: "订单创建流程"
+base_url: "http://localhost:8080"
+service: "order-service"
+
+auth:
+  type: oauth2
+  token_url: "http://localhost:8080/oauth/token"
+  client_id: "test-client"
+  client_secret: "secret123"
+  username: "admin"
+  password: "admin123"
+
+cases:
+  - id: tc-001
+    file: tc-001.json
+    prepare: tc-001-prepare.sql
+    cleanup: tc-001-cleanup.sql
+  - id: tc-002
+    file: tc-002.json
+    # 无 prepare/cleanup: expect_error 用例
+  - id: tc-003
+    file: tc-003.json
+    prepare: tc-003-prepare.sql
+    cleanup: tc-003-cleanup.sql
+
+suspected_branches:
+  - "@Transactional — 可能回滚创建"
+  - "@EventListener(OrderCreatedEvent) — 订单创建后可能触发通知"

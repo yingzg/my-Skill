@@ -1,0 +1,6 @@
+Code-intelligence/
+**/node_modules/
+Mcp/build/
+**/build/
+*.log
+.DS_Store

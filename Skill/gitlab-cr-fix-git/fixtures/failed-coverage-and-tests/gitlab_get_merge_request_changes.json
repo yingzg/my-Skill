@@ -1,0 +1,35 @@
+{
+  "changes": [
+    {
+      "old_path": "src/main/java/com/demo/order/OrderService.java",
+      "new_path": "src/main/java/com/demo/order/OrderService.java",
+      "a_mode": "100644",
+      "b_mode": "100644",
+      "new_file": false,
+      "renamed_file": false,
+      "deleted_file": false,
+      "diff": "@@ -16,8 +16,16 @@ public class OrderService {\n     public Order createOrder(String sku, int quantity) {\n+        int stock = inventoryRepository.getStock(sku);\n+        inventoryRepository.decreaseStock(sku, quantity);\n+        Order order = new Order(sku, quantity);\n+        orderRepository.save(order);\n+        return order;\n-        return orderRepository.create(sku, quantity);\n     }\n }\n"
+    },
+    {
+      "old_path": "src/test/java/com/demo/order/OrderServiceTest.java",
+      "new_path": "src/test/java/com/demo/order/OrderServiceTest.java",
+      "a_mode": "100644",
+      "b_mode": "100644",
+      "new_file": false,
+      "renamed_file": false,
+      "deleted_file": false,
+      "diff": "@@ -24,6 +24,16 @@ class OrderServiceTest {\n     }\n+\n+    @Test\n+    void createOrder_shouldRejectWhenStockInsufficient() {\n+        when(inventoryRepository.getStock(\"sku-1\")).thenReturn(1);\n+\n+        assertThrows(IllegalArgumentException.class, () -> {\n+            orderService.createOrder(\"sku-1\", 2);\n+        });\n+    }\n }\n"
+    },
+    {
+      "old_path": "README.md",
+      "new_path": "README.md",
+      "a_mode": "100644",
+      "b_mode": "100644",
+      "new_file": false,
+      "renamed_file": false,
+      "deleted_file": false,
+      "diff": "@@ -1,2 +1,3 @@\n # order-service\n+\n+Adds order creation flow.\n"
+    }
+  ]
+}
+

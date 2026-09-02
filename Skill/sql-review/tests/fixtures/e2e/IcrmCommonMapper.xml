@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaomi.intl.scheme.infra.database.mapper.icrmmscrm.IcrmCommonMapper">
+
+    <!-- Fixture based on mi-intl-scheme IcrmCommonMapper.xml: simple indexed lookup shape. -->
+    <select id="selectByCnId" resultType="com.xiaomi.intl.scheme.infra.database.dataobject.icrmmscrm.IcrmCommonDO">
+        SELECT
+            id,
+            created_by_id,
+            owner_id,
+            cn_id,
+            biz_principal_id,
+            available_amount,
+            thaw_amount
+        FROM icrm_common
+        WHERE cn_id = #{cnId}
+    </select>
+
+    <!-- Fixture based on mi-intl-scheme IcrmCommonMapper.xml: foreach + CTE + aggregation shape. -->
+    <select id="getRebatePoolSum" resultType="com.xiaomi.intl.scheme.domain.withholding.valobj.RebatePoolValObj">
+        WITH account AS (
+            SELECT DISTINCT
+                new_account_id,
+                new_brand_id,
+                new_productclass_id,
+                new_rebatepooltype
+            FROM new_rebate
+            WHERE statecode = 0
+            AND new_name IN
+            <foreach collection="rebateNoList" item="rebateNo" open="(" separator="," close=")">
+                #{rebateNo}
+            </foreach>
+        )
+        SELECT
+            r.new_account_idName AS accountIdName,
+            r.new_rebatepooltype AS rebatePoolType,
+            SUM(ISNULL([dbo].[fn_RebateAvailableAmountScalar](r.new_name),0)) AS amount
+        FROM new_rebate r with(nolock)
+        INNER JOIN account a
+            ON r.new_account_id = a.new_account_id
+            AND r.new_brand_id = a.new_brand_id
+            AND r.new_productclass_id = a.new_productclass_id
+            AND r.new_rebatepooltype = a.new_rebatepooltype
+        WHERE r.new_status = 2
+        AND r.new_amount != 0
+        AND r.statecode = 0
+        GROUP BY r.new_account_idName, r.new_rebatepooltype
+    </select>
+
+    <!-- Fixture based on mi-intl-scheme join-heavy mapper style. -->
+    <select id="getRebateMultiAttrs" resultType="com.xiaomi.intl.scheme.domain.withholding.valobj.RebateMultiAttrsValObj">
+        SELECT
+            r.new_rebateId AS rebateId,
+            r.new_account_id AS accountId,
+            r.new_bizprincipal_id AS bizPrincipalId,
+            r.new_productclass_id AS productClassId,
+            r.new_name AS rebateNo,
+            a.new_sapid AS sapId
+        FROM new_rebate r with(nolock)
+        LEFT JOIN new_ord_saleorder so with(nolock) ON r.new_ord_saleorder_id = so.new_ord_saleorderId
+        LEFT JOIN new_ord_saleorderlineBase sol with(nolock) ON sol.new_ord_saleorder_id = so.new_ord_saleorderId AND r.new_no = sol.new_no
+        INNER JOIN account a with(nolock) ON r.new_account_id = a.accountid
+        WHERE r.new_name IN
+        <foreach collection="rebateNoList" item="rebateNo" open="(" separator="," close=")">
+            #{rebateNo}
+        </foreach>
+        AND r.statecode = 0
+    </select>
+
+</mapper>

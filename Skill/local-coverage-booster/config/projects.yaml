@@ -1,0 +1,16 @@
+# Local Coverage Booster project configuration.
+# Keep real project-specific settings here, inside the Skill directory.
+# Do not put this configuration into business repositories.
+projects:
+  - name: foreign-trade-expert-backend
+    # 用户个人 Java 项目。配置保存在 Skill 内部，不写入业务仓。
+    project_root: /mnt/d/个人项目/foreign-trade-expert/backend
+    remote_url_contains: foreign-trade-expert
+    base_ref: main
+    gate_threshold: 60
+    local_target_threshold: 68
+    coverage_command: mvn org.jacoco:jacoco-maven-plugin:0.8.12:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.12:report
+    jacoco_xml: target/site/jacoco/jacoco.xml
+    test_command: mvn test
+    source_root: src/main/java
+    test_root: src/test/java

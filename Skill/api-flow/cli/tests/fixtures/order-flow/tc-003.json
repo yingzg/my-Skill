@@ -1,0 +1,20 @@
+{
+  "id": "tc-003",
+  "scenario": "库存不足",
+  "branch": "数量 > 库存",
+  "priority": "medium",
+  "expect_error": true,
+  "request": {
+    "method": "POST",
+    "url": "/api/orders",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "productId": "{{@product_id}}",
+      "userId": "{{@user_id}}",
+      "quantity": 999
+    }
+  },
+  "extract": {}
+}

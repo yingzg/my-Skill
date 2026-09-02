@@ -1,0 +1,3540 @@
+{
+  "report_id": "sql-review-golden",
+  "generated_at": "2026-08-04T09:44:34.597749+00:00",
+  "version": "1.0.0",
+  "context": {
+    "branch": "",
+    "base_ref": "origin/master",
+    "mr_url": null,
+    "mode": "local",
+    "total_sql_count": 34
+  },
+  "gate": {
+    "conclusion": "BLOCK",
+    "decision": "BLOCK",
+    "block_reason": "MEDIUM_OR_ABOVE_SQL_FOUND",
+    "thresholds": {
+      "HIGH_block": true,
+      "MEDIUM_block": true,
+      "CRITICAL_block": true
+    },
+    "statistics": {
+      "total": 34,
+      "CRITICAL": 2,
+      "HIGH": 2,
+      "MEDIUM": 27,
+      "LOW": 1,
+      "PASS": 2,
+      "ANALYSIS_FAILED": 0
+    }
+  },
+  "base_branch": "origin/master",
+  "total_sql": 34,
+  "findings": [
+    {
+      "sql_id": "mappers.xml:deleteAll:7",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "DELETE",
+      "mapper_method": "deleteAll",
+      "risk_level": "CRITICAL",
+      "risk_summary": "DELETE 无 WHERE → 全表删除",
+      "rationale": {
+        "static_rules": "Matched: R102, R103",
+        "explain_analysis": "type=ALL, key=None, rows=15823",
+        "degradation_note": null
+      },
+      "short_term_fix": "添加 WHERE 条件",
+      "long_term_fix": "为所有 DML 语句增加 WHERE 保护",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "CRITICAL",
+      "summary": "DELETE 无 WHERE → 全表删除",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 15823,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": true,
+          "severity": "CRITICAL"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:updateStatusNoWhere:5",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "UPDATE",
+      "mapper_method": "updateStatusNoWhere",
+      "risk_level": "CRITICAL",
+      "risk_summary": "UPDATE 无 WHERE → 全表更新",
+      "rationale": {
+        "static_rules": "Matched: R102, R103",
+        "explain_analysis": "type=ALL, key=None, rows=15823",
+        "degradation_note": null
+      },
+      "short_term_fix": "添加 WHERE 条件",
+      "long_term_fix": "为所有 DML 语句增加 WHERE 保护",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "CRITICAL",
+      "summary": "UPDATE 无 WHERE → 全表更新",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 15823,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": true,
+          "severity": "CRITICAL"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:findAll:2",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findAll",
+      "risk_level": "HIGH",
+      "risk_summary": "SELECT * 无WHERE → 全表扫描 15823 行",
+      "rationale": {
+        "static_rules": "Matched: R001, R002, R007",
+        "explain_analysis": "type=ALL, key=None, rows=15823",
+        "degradation_note": null
+      },
+      "short_term_fix": "添加 LIMIT 分页条件",
+      "long_term_fix": "引入分页查询",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "HIGH",
+      "summary": "SELECT * 无WHERE → 全表扫描 15823 行",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 15823,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": true,
+          "severity": "HIGH"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:findWithInclude:25",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findWithInclude",
+      "risk_level": "HIGH",
+      "risk_summary": "Matched: R002, R007",
+      "rationale": {
+        "static_rules": "Matched: R002, R007",
+        "explain_analysis": "type=ref, key=idx_order_no, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "HIGH",
+      "summary": "Matched: R002, R007",
+      "explain_type": "ref",
+      "explain_key": "idx_order_no",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": true,
+          "severity": "HIGH"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:countByStatus:3",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "countByStatus",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ref, key=idx_status, rows=5000",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "ref",
+      "explain_key": "idx_status",
+      "explain_rows": 5000,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:deleteById:6",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "DELETE",
+      "mapper_method": "deleteById",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R103",
+      "rationale": {
+        "static_rules": "Matched: R103",
+        "explain_analysis": "type=range, key=PRIMARY, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R103",
+      "explain_type": "range",
+      "explain_key": "PRIMARY",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:deleteByIds:18",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "DELETE",
+      "mapper_method": "deleteByIds",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R103",
+      "rationale": {
+        "static_rules": "Matched: R103",
+        "explain_analysis": "type=range, key=PRIMARY, rows=10",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R103",
+      "explain_type": "range",
+      "explain_key": "PRIMARY",
+      "explain_rows": 10,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findByBind:23",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findByBind",
+      "risk_level": "MEDIUM",
+      "risk_summary": "LIKE '%x%' 左模糊 → 全表扫描 + 文件排序",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ALL, key=None, rows=15823",
+        "degradation_note": null
+      },
+      "short_term_fix": "引入 Elasticsearch 全文索引",
+      "long_term_fix": "迁移至搜索中间件",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "LIKE '%x%' 左模糊 → 全表扫描 + 文件排序",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 15823,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:findByBindWithIf:24",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findByBindWithIf",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ALL, key=None, rows=500",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 500,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findByChoose:15",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findByChoose",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ref, key=idx_status, rows=5000",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "ref",
+      "explain_key": "idx_status",
+      "explain_rows": 5000,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findByCondition:12",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findByCondition",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=index_merge, key=idx_status,idx_order_no, rows=200",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "index_merge",
+      "explain_key": "idx_status,idx_order_no",
+      "explain_rows": 200,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findById:0",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findById",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=const, key=PRIMARY, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "const",
+      "explain_key": "PRIMARY",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findByIds:16",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findByIds",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=range, key=PRIMARY, rows=10",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "range",
+      "explain_key": "PRIMARY",
+      "explain_rows": 10,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findByMixed:26",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findByMixed",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=range, key=idx_status, rows=500",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "range",
+      "explain_key": "idx_status",
+      "explain_rows": 500,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findByOrderNo:1",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findByOrderNo",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ref, key=idx_order_no, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "ref",
+      "explain_key": "idx_order_no",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findBySingleIf:13",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findBySingleIf",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ALL, key=None, rows=5000",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 5000,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findBySubQuery:11",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findBySubQuery",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002, R008",
+      "rationale": {
+        "static_rules": "Matched: R002, R008",
+        "explain_analysis": "type=ref, key=idx_status, rows=100",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002, R008",
+      "explain_type": "ref",
+      "explain_key": "idx_status",
+      "explain_rows": 100,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findByTrim:21",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findByTrim",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002, R004",
+      "rationale": {
+        "static_rules": "Matched: R002, R004",
+        "explain_analysis": "type=index_merge, key=idx_status,idx_order_no, rows=200",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002, R004",
+      "explain_type": "index_merge",
+      "explain_key": "idx_status,idx_order_no",
+      "explain_rows": 200,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findByWhere:19",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findByWhere",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=index_merge, key=idx_status,idx_order_no, rows=300",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "index_merge",
+      "explain_key": "idx_status,idx_order_no",
+      "explain_rows": 300,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findUserById:27",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findUserById",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=const, key=PRIMARY, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "const",
+      "explain_key": "PRIMARY",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findUserWithOrders:28",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findUserWithOrders",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ALL, key=None, rows=5000",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 5000,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findUsersByKeyword:29",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findUsersByKeyword",
+      "risk_level": "MEDIUM",
+      "risk_summary": "LEFT LIKE 全表扫描 + filesort",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ALL, key=None, rows=2000",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 keyword 上创建前缀索引",
+      "long_term_fix": "引入全文搜索引擎",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "LEFT LIKE 全表扫描 + filesort",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 2000,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:findWithDetail:9",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findWithDetail",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=index_merge, key=idx_order_no,PRIMARY, rows=500",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "index_merge",
+      "explain_key": "idx_order_no,PRIMARY",
+      "explain_rows": 500,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findWithMultipleJoins:10",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "findWithMultipleJoins",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ALL, key=None, rows=15823",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 15823,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:gh001_emptyForeach:30",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "gh001_emptyForeach",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ALL, key=None, rows=15823",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 15823,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:gh002_foreachNestedIf:31",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "UPDATE",
+      "mapper_method": "gh002_foreachNestedIf",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R103",
+      "rationale": {
+        "static_rules": "Matched: R103",
+        "explain_analysis": "type=range, key=PRIMARY, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R103",
+      "explain_type": "range",
+      "explain_key": "PRIMARY",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:gh003_leftLike:32",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "gh003_leftLike",
+      "risk_level": "MEDIUM",
+      "risk_summary": "左模糊查询 → 全表扫描",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ALL, key=None, rows=15823",
+        "degradation_note": null
+      },
+      "short_term_fix": "使用前缀索引 + 反向存储",
+      "long_term_fix": "引入全文搜索引擎",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "左模糊查询 → 全表扫描",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 15823,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:updateByIf:14",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "UPDATE",
+      "mapper_method": "updateByIf",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R103",
+      "rationale": {
+        "static_rules": "Matched: R103",
+        "explain_analysis": "type=range, key=PRIMARY, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R103",
+      "explain_type": "range",
+      "explain_key": "PRIMARY",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:updateBySet:20",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "UPDATE",
+      "mapper_method": "updateBySet",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R103",
+      "rationale": {
+        "static_rules": "Matched: R103",
+        "explain_analysis": "type=range, key=PRIMARY, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R103",
+      "explain_type": "range",
+      "explain_key": "PRIMARY",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:updateByTrimSet:22",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "UPDATE",
+      "mapper_method": "updateByTrimSet",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R103",
+      "rationale": {
+        "static_rules": "Matched: R103",
+        "explain_analysis": "type=range, key=PRIMARY, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R103",
+      "explain_type": "range",
+      "explain_key": "PRIMARY",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:updateStatus:4",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "UPDATE",
+      "mapper_method": "updateStatus",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R103",
+      "rationale": {
+        "static_rules": "Matched: R103",
+        "explain_analysis": "type=range, key=PRIMARY, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R103",
+      "explain_type": "range",
+      "explain_key": "PRIMARY",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:gh004_limitNoOrder:33",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "SELECT",
+      "mapper_method": "gh004_limitNoOrder",
+      "risk_level": "LOW",
+      "risk_summary": "LIMIT 无 ORDER BY → 结果不稳定",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ALL, key=None, rows=15823",
+        "degradation_note": null
+      },
+      "short_term_fix": "添加 ORDER BY 子句",
+      "long_term_fix": "分页规范必须包含排序",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "LOW",
+      "summary": "LIMIT 无 ORDER BY → 结果不稳定",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 15823,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:batchInsert:17",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "INSERT",
+      "mapper_method": "batchInsert",
+      "risk_level": "PASS",
+      "risk_summary": "No rules matched (UNCERTAIN)",
+      "rationale": {
+        "static_rules": "No rules matched (UNCERTAIN)",
+        "explain_analysis": "type=INSERT, key=None, rows=3",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "PASS",
+      "summary": "No rules matched (UNCERTAIN)",
+      "explain_type": "INSERT",
+      "explain_key": null,
+      "explain_rows": 3,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:insertOrder:8",
+      "file_path": "",
+      "line": 0,
+      "statement_type": "INSERT",
+      "mapper_method": "insertOrder",
+      "risk_level": "PASS",
+      "risk_summary": "No rules matched (UNCERTAIN)",
+      "rationale": {
+        "static_rules": "No rules matched (UNCERTAIN)",
+        "explain_analysis": "type=INSERT, key=None, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "",
+      "explain_executed": true,
+      "level": "PASS",
+      "summary": "No rules matched (UNCERTAIN)",
+      "explain_type": "INSERT",
+      "explain_key": null,
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    }
+  ],
+  "review_needed": [],
+  "review_checklist": [],
+  "degradation_notes": []
+}

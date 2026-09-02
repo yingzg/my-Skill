@@ -1,0 +1,37 @@
+# local-coverage-booster project configuration example.
+# Copy entries into config/projects.yaml in this Skill directory.
+# Do not put this file into a business project repository.
+
+projects:
+  - name: example-service
+    # Optional. Exact local Git root. Use this when the same machine always uses one checkout path.
+    project_root: /path/to/example-service
+
+    # Optional. Stable substring from `git remote get-url origin`.
+    # Prefer this when different machines use different checkout paths.
+    remote_url_contains: example-service
+
+    # Branch/ref used as the comparison base for changed Java lines.
+    # Use auto when you want the Skill to try master, main, origin/master, origin/main, gitlab/master, gitlab/main, then HEAD~1.
+    base_ref: auto
+
+    # Real pipeline coverage gate threshold.
+    gate_threshold: 60
+
+    # Local target should be higher than the real gate to absorb local/remote coverage differences.
+    local_target_threshold: 68
+
+    # Command that runs tests and generates the JaCoCo XML report.
+    coverage_command: mvn org.jacoco:jacoco-maven-plugin:0.8.12:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.12:report
+
+    # Path to JaCoCo XML, relative to the project root.
+    jacoco_xml: target/site/jacoco/jacoco.xml
+
+    # Optional. Defaults to coverage_command when omitted.
+    test_command: mvn test
+
+    # Optional. Defaults to src/main/java.
+    source_root: src/main/java
+
+    # Optional. Defaults to src/test/java.
+    test_root: src/test/java
