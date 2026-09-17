@@ -18,8 +18,8 @@ description: 把 Code-intelligence 的 code.explore_symbol 返回的调用链（
 
 1. **拿数据**：用户给 symbol → 调 `code.explore_symbol` 拿 `ExploreResponse`；用户直接给 JSON → 跳过。
 2. **读主链路**：读 `main_paths`，按 `entry_symbol` 分组（一 entry 一组图）。
-3. **生成简化流程图**：节点/边按 `references/role-color-mapping.md`（着色）+ `references/relation-label-mapping.md`（边标签）生成 Mermaid `flowchart` 源；candidate 边加 `linkStyle ... stroke-dasharray`；**不含 folded_steps**。
-4. **生成详细时序图**：按 `references/sequence-diagram-mapping.md` 生成 Mermaid `sequenceDiagram` 源（participants + 主线消息 + folded 细节消息）。
+3. **生成简化流程图**：**从 `node.file` 提取类名**（`symbol` 可能是裸方法名），节点标签 = `类名.方法名`；按 `references/role-color-mapping.md`（着色，含 Impl 后缀剥除）+ `references/relation-label-mapping.md`（边标签）生成 Mermaid `flowchart` 源；candidate 边加 `linkStyle ... stroke-dasharray`；**不含 folded_steps**。
+4. **生成详细时序图**：按 `references/sequence-diagram-mapping.md` 生成 Mermaid `sequenceDiagram` 源（participants 类名从 `node.file` 提取 + 主线消息 + folded 细节消息）。
 5. **填 config**：按 `templates/flowchart-config.schema.md` 填 `title/coverage/graphs[]`（含 `mermaid_flowchart` + `mermaid_sequence`）。
 6. **渲染**：把 config 填入 `templates/flowchart.html`（替换 `window.FLOWCHART_CONFIG`），输出 HTML 文件。
 

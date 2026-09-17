@@ -68,3 +68,9 @@ sequenceDiagram
   S->>B: BizException (异常构造)
   S->>S: executePreCheckRebate
 ```
+
+## 真实数据注意事项
+
+真实 `code.explore_symbol` 的 **trace 路径**返回的节点 `symbol` 是**裸方法名**（如 `preCheckRebate`），不是上面的 `类名.方法名` 形式；类名在 `file`（`.../SettlementBillCommandProviderImpl.java`）和 `id`（`Trace:...:Class.java:402:method`）里。
+
+因此 SKILL 的类名提取规则是：**类名从 `node.file` 的 basename 取（去掉 `.java`），方法名从 `node.symbol` 取**，节点标签 = `类名.方法名`。详见 `references/explore-symbol-fields.md`。本 golden case 里输入用了完整 `symbol`，两种形式 SKILL 都要能正确处理。

@@ -49,7 +49,7 @@ Agent 填入 `templates/flowchart.html` 的配置对象，运行时替换模板�
 
 ## mermaid_flowchart 编码约定（Agent 生成时遵守）
 
-- 节点：`n1["ClassSimpleName.methodName"]`（标签带类名，无裸方法名）。
+- 节点：`n1["ClassSimpleName.methodName"]`（标签带类名，无裸方法名；**类名从 `node.file` 提取，不是从 `symbol`**，见 `references/explore-symbol-fields.md`）。
 - 边：`n1 -->|calls| n2`。
 - 角色着色：`classDef entry ...` + `class n1,n2 entry`。
 - candidate 虚线：`linkStyle 0 stroke:#9e9e9e,stroke-width:2px,stroke-dasharray:5 5`。

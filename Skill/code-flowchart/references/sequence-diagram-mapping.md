@@ -6,7 +6,7 @@
 
 `main_path.nodes` 的类名去重 + `folded_steps` 的目标类名去重，按首次出现顺序。
 
-类名 = `symbol` 里 `.` 前最后一段的简单类名（剥包前缀）。
+类名 = `node.file` 的 basename 去掉 `.java`（**不要**用 `symbol` 取类名——trace 节点的 `symbol` 是裸方法名，如 `preCheckRebate`，不含类名）。方法名 = `node.symbol` 按 `.` 分割取最后一段。
 
 ```text
 participant P as SettlementBillCommandProviderImpl
