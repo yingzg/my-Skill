@@ -1,44 +1,44 @@
 ---
 name: local-coverage-booster
-description: 本地 Java 单元测试覆盖率提升技能。Use when the user wants to improve local test coverage for changed Java code before pushing, generate meaningful JUnit5 + Mockito tests, analyze JaCoCo reports, calculate changed-line coverage from git diff, or avoid pseudo-coverage while trying to pass CI/SonarQube coverage gates.
+description: 本地 Java 单元测试覆盖率提升技能。当用户希望在 push 前提升变更 Java 代码的本地测试覆盖率、生成有意义的 JUnit5 + Mockito 测试、分析 JaCoCo 报告、通过 git diff 计算变更行覆盖率，或在试图通过 CI/SonarQube 覆盖率门禁时避免伪覆盖时使用。
 ---
 
-# Local Coverage Booster
+# 本地覆盖率提升
 
 提升当前分支新增/修改 Java 代码的本地单测覆盖率。用 git diff 定位变更行，用 JaCoCo XML 判断变更行是否被覆盖，补写 JUnit5 + Mockito 测试，并强制测试验证业务可观察结果。
 
-## Core Principle
+## 核心原则
 
-Optimize for passing real pipeline coverage gates, but validate locally first:
+以通过真实流水线覆盖率门禁为目标，但先在本地验证：
 
 ```text
 changed Java lines -> JaCoCo line coverage -> uncovered changed lines
   -> meaningful tests -> local verification -> before/after report
 ```
 
-Do not call SonarQube in V1. Treat local JaCoCo changed-line coverage as a conservative pre-push signal, not as the remote gate's exact value.
+V1 不调用 SonarQube。将本地 JaCoCo 变更行覆盖率视为 push 前的保守信号，而非远端门禁的精确值。
 
-## Files
+## 参考文件
 
-- Read `config/projects.yaml` first. If no project entry matches, auto-detect and ask for only missing essentials.
-- Read `references/config-guide.md` when configuration is missing or unclear.
-- Read `references/jacoco-report-format.md` before interpreting JaCoCo XML manually.
-- Read `references/junit5-mockito-aaa.md` before creating or heavily editing tests.
-- Read `references/observable-behavior-rules.md` before judging whether tests are meaningful.
-- Read `references/troubleshooting.md` when commands fail, JaCoCo XML is missing, or coverage does not move.
+- 先读取 `config/projects.yaml`。若没有匹配的项目配置项，则自动探测并仅询问缺失的必要信息。
+- 当配置缺失或不明确时，读取 `references/config-guide.md`。
+- 在手动解读 JaCoCo XML 之前，先读取 `references/jacoco-report-format.md`。
+- 在新建或大幅修改测试之前，先读取 `references/junit5-mockito-aaa.md`。
+- 在判断测试是否有意义之前，先读取 `references/observable-behavior-rules.md`。
+- 当命令失败、JaCoCo XML 缺失或覆盖率没有变化时，读取 `references/troubleshooting.md`。
 
-## Workflow
+## 工作流程
 
-### Step 0: Load Configuration
+### Step 0: 加载配置
 
-Match the current project against `config/projects.yaml` using this order:
+按以下顺序将当前项目与 `config/projects.yaml` 匹配：
 
-1. Exact `project_root`.
-2. `remote_url_contains` against `git remote get-url origin`.
-3. `name` against the project directory name.
-4. Auto-detect with `scripts/detect_project.py`.
+1. 精确匹配 `project_root`。
+2. 用 `remote_url_contains` 匹配 `git remote get-url origin` 的结果。
+3. 用 `name` 匹配项目目录名。
+4. 用 `scripts/detect_project.py` 自动探测。
 
-Required runtime values:
+必需的运行时值：
 
 ```text
 base_ref
@@ -49,11 +49,11 @@ test_root
 local_target_threshold
 ```
 
-If required values cannot be detected, stop and ask the user for those values. Do not write configuration into the business repository. If the user asks to persist config, write it to this Skill's `config/projects.yaml`.
+若无法探测到必需值，则停止并向用户询问这些值。不要将配置写入业务仓库。若用户要求持久化配置，则写入本 Skill 的 `config/projects.yaml`。
 
-### Step 1: Extract Changed Java Lines
+### Step 1: 提取变更 Java 行
 
-Run from the business project root:
+在业务项目根目录运行：
 
 ```bash
 python3 <skill_dir>/scripts/changed_lines.py \
@@ -63,11 +63,13 @@ python3 <skill_dir>/scripts/changed_lines.py \
   --output .coverage-booster/changed-lines.json
 ```
 
-If no changed Java lines remain after default exclusions, report that no local coverage boost is needed.
+变更行来源包括：已提交（committed）、已暂存（staged）、未暂存（unstaged）的修改，以及未跟踪（untracked）的新 Java 文件（通过 `git ls-files --others` 单独枚举，按全部行为新增处理）。
 
-### Step 2: Generate JaCoCo Report
+若经过默认排除规则后已无变更 Java 行，则报告无需本地覆盖率提升。
 
-Run:
+### Step 2: 生成 JaCoCo 报告
+
+运行：
 
 ```bash
 python3 <skill_dir>/scripts/run_coverage.py \
@@ -76,11 +78,11 @@ python3 <skill_dir>/scripts/run_coverage.py \
   --jacoco-xml <jacoco_xml>
 ```
 
-If the command fails or the XML is missing, read `references/troubleshooting.md`, explain the exact missing configuration, and stop.
+若命令失败或 XML 缺失，则读取 `references/troubleshooting.md`，说明确切的缺失配置，然后停止。
 
-### Step 3: Parse JaCoCo
+### Step 3: 解析 JaCoCo
 
-Run:
+运行：
 
 ```bash
 python3 <skill_dir>/scripts/parse_jacoco.py \
@@ -89,9 +91,9 @@ python3 <skill_dir>/scripts/parse_jacoco.py \
   --output .coverage-booster/jacoco-lines-before.json
 ```
 
-### Step 4: Compute Coverage Gap
+### Step 4: 计算覆盖率缺口
 
-Run:
+运行：
 
 ```bash
 python3 <skill_dir>/scripts/coverage_gap.py \
@@ -101,30 +103,30 @@ python3 <skill_dir>/scripts/coverage_gap.py \
   --output .coverage-booster/coverage-gap-before.json
 ```
 
-If `passed=true`, report the local target passed and do not add tests.
+若 `passed=true`，则报告本地目标已通过，不再补测试。
 
-### Step 5: Select Test Targets
+### Step 5: 选择补测目标
 
-Prioritize:
+优先处理：
 
-1. Service/domain/application classes.
-2. Files with the most uncovered changed lines.
-3. Public/protected methods with clear branches, returns, exceptions, or dependency calls.
-4. Code paths that can be tested with mocks without real DB/Redis/MQ/HTTP.
+1. Service / Domain / Application 层类。
+2. 未覆盖变更行最多的文件。
+3. 有明确分支、返回值、异常或依赖调用的 public/protected 方法。
+4. 无需真实 DB/Redis/MQ/HTTP 即可用 mock 测试的代码路径。
 
-Defer:
+暂缓处理：
 
-- DTO/VO/entity/config/generated/mapper code.
-- Private helpers unless reachable through a public method.
-- Paths requiring live infrastructure.
+- DTO/VO/entity/config/generated/mapper 类代码。
+- private 辅助方法，除非能通过 public 方法间接覆盖。
+- 需要真实基础设施的路径。
 
-### Step 6: Add Meaningful Tests
+### Step 6: 补写有意义的测试
 
-Read the target source, existing tests, dependent DTOs/enums/exceptions, and mockable collaborators.
+读取目标源码、现有测试、依赖的 DTO/Enum/Exception，以及可 mock 的协作者。
 
-Prefer appending to existing test classes. If no test exists, create `<ClassName>Test` under `test_root` with the same package.
+优先追加到已有测试类。若不存在测试类，则在 `test_root` 下按相同 package 创建 `<ClassName>Test`。
 
-Use AAA:
+使用 AAA：
 
 ```text
 Arrange: prepare inputs, mocks, and state.
@@ -132,9 +134,9 @@ Act: call the public method under test.
 Assert: verify observable business behavior.
 ```
 
-### Step 7: Quality Check Tests
+### Step 7: 测试质量检查
 
-Run:
+运行：
 
 ```bash
 python3 <skill_dir>/scripts/test_quality_check.py \
@@ -144,28 +146,28 @@ python3 <skill_dir>/scripts/test_quality_check.py \
   --output .coverage-booster/test-quality.json
 ```
 
-Fix all `ERROR` findings before verification. Review `WARNING` findings and improve tests where appropriate.
+在验证前修复所有 `ERROR` 项。审查 `WARNING` 项并在合适处改进测试。
 
-### Step 8: Verify And Iterate
+### Step 8: 验证与迭代
 
-Run tests and coverage again using `coverage_command`. Re-parse JaCoCo to:
+再次用 `coverage_command` 运行测试和覆盖率。重新解析 JaCoCo 生成：
 
 ```text
 .coverage-booster/jacoco-lines-after.json
 .coverage-booster/coverage-gap-after.json
 ```
 
-Stop when any condition is true:
+满足以下任一条件时停止：
 
-1. `local_changed_line_coverage >= local_target_threshold`.
-2. Two local coverage-boost iterations have completed.
-3. No remaining testable business methods exist.
-4. Tests fail repeatedly for reasons not fixable in tests.
-5. Continuing would require business-code changes.
+1. `local_changed_line_coverage >= local_target_threshold`。
+2. 已完成两轮本地覆盖率提升迭代。
+3. 没有剩余可测试的业务方法。
+4. 测试反复失败，且原因无法在测试内修复。
+5. 继续提升需要修改业务代码。
 
-### Step 9: Report
+### Step 9: 输出报告
 
-Run:
+运行：
 
 ```bash
 python3 <skill_dir>/scripts/summarize_report.py \
@@ -176,58 +178,58 @@ python3 <skill_dir>/scripts/summarize_report.py \
   --output .coverage-booster/report.md
 ```
 
-In the final answer, summarize:
+在最终回答中总结：
 
-- Before/after local changed-line coverage.
-- Test files changed.
-- What business behavior each test verifies.
-- Remaining uncovered changed lines and why.
-- Whether it is reasonable to push for pipeline validation.
+- before/after 本地变更行覆盖率。
+- 变更的测试文件。
+- 每个测试验证的业务行为。
+- 剩余未覆盖的变更行及原因。
+- 是否建议 push 以进行流水线验证。
 
-## MUST DO
+## 必须做（MUST DO）
 
-1. Calculate changed lines and JaCoCo coverage before deciding what tests to add.
-2. Target current-branch changed Java code unless the user asks for historical coverage.
-3. Prefer meaningful service/domain/application tests over structural DTO/config tests.
-4. Use AAA structure.
-5. Verify at least one observable business result in every new test.
-6. Use `assertThrows` for error branches and validate exception type, message, or code.
-7. Assert key fields for DTO/VO/List/Map returns.
-8. Verify important repository/client/gateway/producer call parameters.
-9. Run local tests and regenerate JaCoCo before claiming success.
-10. Keep tests deterministic; mock time, randomness, network, DB, Redis, MQ, and HTTP.
-11. Follow existing project test style before using the default template.
+1. 在决定补哪些测试之前，先计算变更行和 JaCoCo 覆盖率。
+2. 只针对当前分支变更的 Java 代码提升覆盖率，除非用户要求补历史覆盖率。
+3. 优先补有意义的 service/domain/application 层测试，而非结构化的 DTO/config 测试。
+4. 使用 AAA 结构。
+5. 每个新增测试至少验证一个业务可观察结果。
+6. 异常分支使用 `assertThrows`，并验证异常类型、消息或错误码。
+7. 对 DTO/VO/List/Map 返回值，断言关键字段。
+8. 验证重要的 repository/client/gateway/producer 调用参数。
+9. 在宣称成功之前，本地运行测试并重新生成 JaCoCo。
+10. 保持测试确定性；mock 时间、随机数、网络、DB、Redis、MQ 和 HTTP。
+11. 优先遵循项目已有测试风格，再考虑默认模板。
 
-## MUST NOT DO
+## 禁止做（MUST NOT DO）
 
-1. Do not modify production code to raise coverage.
-2. Do not test private methods directly.
-3. Do not delete existing tests.
-4. Do not rewrite existing test behavior unless current changes broke compilation.
-5. Do not use `assertTrue(true)`.
-6. Do not use only `assertNotNull(result)` as the sole assertion.
-7. Do not verify only `any()` arguments for important collaborator calls.
-8. Do not introduce `@SpringBootTest` unless the project already uses it or the user asks.
-9. Do not connect to real DB/Redis/MQ/HTTP services.
-10. Do not push unless the user explicitly asks.
-11. Do not describe local JaCoCo coverage as exact remote SonarQube coverage.
+1. 不得为了提升覆盖率修改生产代码。
+2. 不得直接测试 private 方法。
+3. 不得删除已有测试。
+4. 不得重写已有测试行为，除非当前变更导致编译失败。
+5. 不得使用 `assertTrue(true)`。
+6. 不得只把 `assertNotNull(result)` 作为唯一断言。
+7. 对于重要的协作者调用，不得只验证 `any()` 参数。
+8. 不得引入 `@SpringBootTest`，除非项目已使用或用户要求。
+9. 不得连接真实的 DB/Redis/MQ/HTTP 服务。
+10. 不得 push，除非用户明确要求。
+11. 不得把本地 JaCoCo 覆盖率描述为精确的远端 SonarQube 覆盖率。
 
-## Output Contract
+## 输出约定
 
-Always distinguish:
+始终区分：
 
 ```text
 local_changed_line_coverage: local JaCoCo + git diff approximation
 remote_gate_coverage: CI/SonarQube value, only known after remote scan
 ```
 
-Use this completion language:
+使用以下完成措辞：
 
 ```text
 Local target passed. Safe to push for pipeline validation.
 ```
 
-Do not say:
+不要这样说：
 
 ```text
 SonarQube gate will pass.

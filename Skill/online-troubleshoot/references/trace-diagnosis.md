@@ -4,6 +4,14 @@
 
 ---
 
+## 零、诊断优先级（先于模式匹配）
+
+1. 异常直接指向根因时（异常消息含明确业务语义，如「item snapshot missing」「余额不足」）→ 直接走 Phase C 提取异常线索，不强制匹配 Pattern；
+2. 症状型异常（Broken pipe / ClientAbortException / 超时 / 回滚无报错等，异常本身不指向根因）或异常不明确（黑洞 / N+1 等）→ 才用 6 个 Pattern 做进阶诊断；
+3. Pattern 都不匹配 → 输出基础 trace 摘要 + 标注 restricted_info（未匹配已知诊断模式），不强行套用。
+
+---
+
 ## 一、数据预处理
 
 ### 1.1 从 TraceDetail 提取信号

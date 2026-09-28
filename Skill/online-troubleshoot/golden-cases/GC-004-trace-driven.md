@@ -65,6 +65,8 @@ org.apache.catalina.connector.ClientAbortException: Broken pipe
 
 ### 代码搜索事实
 
+（给定事实：code-intelligence 已配置并接入 GitNexus，步骤 3 通过 code-intelligence 调 GitNexus 返回，source=gitnexus）
+
 结构搜索可定位：
 
 ```text
@@ -127,10 +129,9 @@ Agent 必须：
 
 1. 执行第 1 步历史案例预检，并说明没有高置信跳跃路径。
 2. 第 2 步识别到 traceId → 触发日志驱动快速路径：
-   - Phase A：调用 ITraceFetcher.getTrace 和 getLogs。
-   - Phase C：计算黑洞时间 = 6400 - 150 - 300 = 5950ms，占比 93%，标记为未埋点处理段。
-   - Phase D：匹配 Pattern 2（长耗时但子调用不慢）和 Pattern 1（Broken pipe）。
-   - Phase E：提取代码线索（接口路径 /api/trade/order/detail、异常类名 ClientAbortException）→ 交给第 3 步。
+   - 阶段 A：调用 ITraceFetcher.getTrace 和 getLogs。
+   - 阶段 B：计算黑洞时间 = 6400 - 150 - 300 = 5950ms，占比 93%，标记为未埋点处理段；匹配 Pattern 2（长耗时但子调用不慢）和 Pattern 1（Broken pipe）。
+   - 阶段 C：提取代码线索（接口路径 /api/trade/order/detail、异常类名 ClientAbortException）→ 交给第 3 步。
 3. 第 3 步使用精准线索搜索，定位到 OrderController、OrderDetailService 和 ReportService.buildReportData。
 4. 第 4 步说明 SQL 的表名来源、数据源来源和查询目的。
 5. 第 5 步执行数据库查询，确认数据量正常（3 条明细），排除数据缺失原因。
@@ -217,7 +218,7 @@ recommendations:
 
 为通过此 GC，`SKILL.md` 必须明确：
 
-- 步骤 2 有 traceId 时触发日志驱动快速路径，包含 Phase A（获取 Trace）、Phase C（黑洞计算）、Phase D（模式匹配）、Phase E（提取代码线索）。
+- 步骤 2 有 traceId 时触发日志驱动快速路径，包含阶段 A（获取 Trace）、阶段 B（黑洞计算 + 模式匹配）、阶段 C（提取代码线索）。
 - 黑洞时间计算公式 = 总耗时 - Σ(子span耗时)，阈值 ≥ 50% 触发诊断。
 - Pattern 2（长耗时但子调用不慢）的触发条件和代码搜索线索。
 - v0.2 Output Contract 包含七字段，`recommendations` 为新增必填字段。

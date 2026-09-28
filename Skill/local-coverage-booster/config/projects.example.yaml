@@ -1,37 +1,37 @@
-# local-coverage-booster project configuration example.
-# Copy entries into config/projects.yaml in this Skill directory.
-# Do not put this file into a business project repository.
+# local-coverage-booster 项目配置示例。
+# 将配置项复制到本 Skill 目录下的 config/projects.yaml。
+# 不要将此文件放入业务项目仓库。
 
 projects:
   - name: example-service
-    # Optional. Exact local Git root. Use this when the same machine always uses one checkout path.
+    # 可选。精确的本地 Git 根目录。当同一台机器始终使用同一个 checkout 路径时使用。
     project_root: /path/to/example-service
 
-    # Optional. Stable substring from `git remote get-url origin`.
-    # Prefer this when different machines use different checkout paths.
+    # 可选。来自 `git remote get-url origin` 的稳定子串。
+    # 当不同机器使用不同 checkout 路径时优先使用此项。
     remote_url_contains: example-service
 
-    # Branch/ref used as the comparison base for changed Java lines.
-    # Use auto when you want the Skill to try master, main, origin/master, origin/main, gitlab/master, gitlab/main, then HEAD~1.
+    # 用于变更 Java 行对比基准的分支/ref。
+    # 使用 auto 时，本 Skill 会依次尝试 master、main、origin/master、origin/main、gitlab/master、gitlab/main，然后 HEAD~1。
     base_ref: auto
 
-    # Real pipeline coverage gate threshold.
+    # 真实流水线覆盖率门禁阈值。
     gate_threshold: 60
 
-    # Local target should be higher than the real gate to absorb local/remote coverage differences.
+    # 本地目标应高于真实门禁，以吸收本地/远端覆盖率的差异。
     local_target_threshold: 68
 
-    # Command that runs tests and generates the JaCoCo XML report.
+    # 运行测试并生成 JaCoCo XML 报告的命令。
     coverage_command: mvn org.jacoco:jacoco-maven-plugin:0.8.12:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.12:report
 
-    # Path to JaCoCo XML, relative to the project root.
+    # JaCoCo XML 的路径，相对项目根目录。
     jacoco_xml: target/site/jacoco/jacoco.xml
 
-    # Optional. Defaults to coverage_command when omitted.
+    # 可选。省略时默认使用 coverage_command。
     test_command: mvn test
 
-    # Optional. Defaults to src/main/java.
+    # 可选。默认 src/main/java。
     source_root: src/main/java
 
-    # Optional. Defaults to src/test/java.
+    # 可选。默认 src/test/java。
     test_root: src/test/java

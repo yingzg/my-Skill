@@ -4,9 +4,9 @@ Agent 填入 `templates/flowchart.html` 的配置对象，运行时替换模板�
 
 ```json
 {
-  "title": "preCheckRebate 调用链",
-  "project": "intl-scheme",
-  "query": "preCheckRebate",
+  "title": "preCheckPayment 调用链",
+  "project": "demo-scheme",
+  "query": "preCheckPayment",
   "coverage": {
     "complete": false,
     "reason": "relation_budget_reached",
@@ -14,14 +14,14 @@ Agent 填入 `templates/flowchart.html` 的配置对象，运行时替换模板�
   },
   "graphs": [
     {
-      "entry_symbol": "SettlementBillCommandProviderImpl.preCheckRebate",
-      "exit_symbol": "SettlementAndRebateServiceImpl.executePreCheckRebate",
+      "entry_symbol": "OrderBillCommandProviderImpl.preCheckPayment",
+      "exit_symbol": "OrderAndPaymentServiceImpl.executePreCheckPayment",
       "path_status": "verified",
       "confidence": "medium",
       "mermaid_flowchart": "flowchart LR\n  n1[...] -->|calls| n2[...] ...",
-      "mermaid_sequence": "sequenceDiagram\n  participant P as ...\n  P->>C: preCheckRebate ...",
+      "mermaid_sequence": "sequenceDiagram\n  participant P as ...\n  P->>C: preCheckPayment ...",
       "folded": [
-        { "parent": "SettlementAndRebateServiceImpl.preCheckRebate", "items": ["checkPreCheckParam (校验)", "buildPreCheckRebateParam (参数组装)", "BizException (异常构造)"] }
+        { "parent": "OrderAndPaymentServiceImpl.preCheckPayment", "items": ["checkPreCheckParam (校验)", "buildPreCheckPaymentParam (参数组装)", "BizException (异常构造)"] }
       ]
     }
   ]

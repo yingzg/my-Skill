@@ -26,14 +26,14 @@ summary → main_paths（优先 high/medium）→ coverage → diagnostics
 
 | 字段 | 用途 |
 |---|---|
-| `symbol` | 方法名。**注意**：trace 节点可能是裸方法名（如 `preCheckRebate`），不含类名 |
+| `symbol` | 方法名。**注意**：trace 节点可能是裸方法名（如 `preCheckPayment`），不含类名 |
 | `file` | **提取类名的主来源**：basename 去掉 `.java`。也用于 tooltip / Note |
 | `location_type` | 角色着色主依据（trace 节点常为 `unknown`，需靠类名后缀兜底） |
 | `start_line` / `end_line` | 行号（trace 节点可能缺失，此时从 `id` 的 `...:line:method` 解析） |
 
 > **类名提取规则（重要）**：`node.symbol` 在 trace 路径上可能是裸方法名，**不要**从 `symbol` 提取类名。
 > 类名 = `node.file` 的 basename 去掉 `.java`；方法名 = `node.symbol` 按 `.` 分割取最后一段。
-> 节点标签 = `类名.方法名`（如 `SettlementBillCommandProviderImpl.preCheckRebate`）。
+> 节点标签 = `类名.方法名`（如 `OrderBillCommandProviderImpl.preCheckPayment`）。
 
 ## CodeRelation（边）
 

@@ -1,5 +1,5 @@
-# Report Template
+# 报告模板
 
-Placeholder for Phase 5 report rendering template.
+Phase 5 报告渲染模板的占位文件。
 
-Referenced by `build_report.py` for formatting the final review report output.
+供 `build_report.py` 格式化最终审查报告输出时引用。

@@ -6,11 +6,11 @@
 
 `main_path.nodes` 的类名去重 + `folded_steps` 的目标类名去重，按首次出现顺序。
 
-类名 = `node.file` 的 basename 去掉 `.java`（**不要**用 `symbol` 取类名——trace 节点的 `symbol` 是裸方法名，如 `preCheckRebate`，不含类名）。方法名 = `node.symbol` 按 `.` 分割取最后一段。
+类名 = `node.file` 的 basename 去掉 `.java`（**不要**用 `symbol` 取类名——trace 节点的 `symbol` 是裸方法名，如 `preCheckPayment`，不含类名）。方法名 = `node.symbol` 按 `.` 分割取最后一段。
 
 ```text
-participant P as SettlementBillCommandProviderImpl
-participant S as SettlementAndRebateServiceImpl
+participant P as OrderBillCommandProviderImpl
+participant S as OrderAndPaymentServiceImpl
 ```
 
 ## 2. 主线消息
@@ -21,7 +21,7 @@ participant S as SettlementAndRebateServiceImpl
 FromClass ->> ToClass: calledMethod
 ```
 
-若 from/to 同类 → 自调用：`S ->> S: executePreCheckRebate`。
+若 from/to 同类 → 自调用：`S ->> S: executePreCheckPayment`。
 
 ## 3. 折叠细节消息
 
@@ -55,20 +55,20 @@ reason 标签映射：
 
 ## 6. 完整示例
 
-输入：nodes=[P.preCheckRebate, C.preCheckRebate, S.preCheckRebate, S.executePreCheckRebate]，folded(n3)=[checkPreCheckParam(validation), buildPreCheckRebateParam(parameter_assembly), BizException(exception_construction)]
+输入：nodes=[P.preCheckPayment, C.preCheckPayment, S.preCheckPayment, S.executePreCheckPayment]，folded(n3)=[checkPreCheckParam(validation), buildPreCheckPaymentParam(parameter_assembly), BizException(exception_construction)]
 
 输出：
 
 ```mermaid
 sequenceDiagram
-  participant P as SettlementBillCommandProviderImpl
-  participant C as SettlementBillCommandServiceImpl
-  participant S as SettlementAndRebateServiceImpl
+  participant P as OrderBillCommandProviderImpl
+  participant C as OrderBillCommandServiceImpl
+  participant S as OrderAndPaymentServiceImpl
   participant B as BizException
-  P->>C: preCheckRebate
-  C->>S: preCheckRebate
+  P->>C: preCheckPayment
+  C->>S: preCheckPayment
   S->>S: checkPreCheckParam (校验)
-  S->>S: buildPreCheckRebateParam (参数组装)
+  S->>S: buildPreCheckPaymentParam (参数组装)
   S->>B: BizException (异常构造)
-  S->>S: executePreCheckRebate
+  S->>S: executePreCheckPayment
 ```

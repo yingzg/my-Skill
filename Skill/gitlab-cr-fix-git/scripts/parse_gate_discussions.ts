@@ -14,7 +14,7 @@ type Discussion = {
   notes?: Note[];
 };
 
-const DEFAULT_BOTS = new Set(["MiCR", "MockGateBot", "GateBot", "QualityBot"]);
+const DEFAULT_BOTS = new Set(["MockGateBot", "GateBot", "QualityBot"]);
 
 function parseRatio(body: string, patterns: RegExp[]) {
   for (const pattern of patterns) {

@@ -377,7 +377,7 @@ Client                                        Server
 
 ```bash
 # 进入项目目录
-cd /mnt/d/个人项目/mcpStartedGuide/mcp_getting_started
+cd ~/projects/mcp-demo/mcp_getting_started
 
 # 方式 1：使用 mcp 命令
 mcp dev web_search.py
@@ -441,11 +441,11 @@ async def web_search(query: str) -> str:
 
 ```bash
 # 1. 安装依赖
-cd /mnt/d/个人项目/mcpStartedGuide/mcp_getting_started
+cd ~/projects/mcp-demo/mcp_getting_started
 uv sync
 
 # 2. 添加 MCP 工具
-claude mcp add web-search uv run /mnt/d/个人项目/mcpStartedGuide/mcp_getting_started/web_search.py
+claude mcp add web-search uv run ~/projects/mcp-demo/mcp_getting_started/web_search.py
 
 # 3. 验证配置
 claude mcp list
@@ -465,7 +465,7 @@ claude
       "command": "uv",
       "args": [
         "run",
-        "/mnt/d/个人项目/mcpStartedGuide/mcp_getting_started/web_search.py"
+        "~/projects/mcp-demo/mcp_getting_started/web_search.py"
       ],
       "env": {}
     }

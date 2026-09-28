@@ -1,0 +1,27 @@
+{
+  "id": 13001,
+  "iid": 21,
+  "project_id": 200,
+  "title": "Fix statistics query controller compile gate",
+  "state": "opened",
+  "author": {
+    "username": "demo-user",
+    "name": "Demo User",
+    "email": "demo@example.com"
+  },
+  "source_branch": "fix/statistics-request-param-import",
+  "target_branch": "main",
+  "merge_status": "can_be_merged",
+  "detailed_merge_status": "ci_must_pass",
+  "web_url": "https://gitlab.example.com/demo/demo-service/-/merge_requests/21",
+  "head_pipeline": {
+    "id": 99021,
+    "status": "failed",
+    "web_url": "https://gitlab.example.com/demo/demo-service/-/pipelines/99021"
+  },
+  "diff_refs": {
+    "base_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "start_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "head_sha": "cccccccccccccccccccccccccccccccccccccccc"
+  }
+}

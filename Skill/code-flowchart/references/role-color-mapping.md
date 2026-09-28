@@ -2,8 +2,8 @@
 
 流程图节点按「角色桶」着色。映射顺序：先按 `location_type`，再按**类名**（从 `file` 提取）命名后缀兜底。
 
-> 注意：trace 节点的 `location_type` 通常是 `unknown`、`symbol` 是裸方法名（如 `preCheckRebate`），
-> 因此**类名必须从 `node.file` 的 basename 提取**，且命名兜底要先剥掉 `Impl` 后缀（`SettlementBillCommandProviderImpl` → `SettlementBillCommandProvider`）。
+> 注意：trace 节点的 `location_type` 通常是 `unknown`、`symbol` 是裸方法名（如 `preCheckPayment`），
+> 因此**类名必须从 `node.file` 的 basename 提取**，且命名兜底要先剥掉 `Impl` 后缀（`OrderBillCommandProviderImpl` → `OrderBillCommandProvider`）。
 
 | 角色桶 | location_type | 命名后缀兜底 | mermaid classDef | 颜色语义 |
 |---|---|---|---|---|

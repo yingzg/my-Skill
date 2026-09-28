@@ -15,7 +15,7 @@
 |----|------|:---:|
 | `CRITICAL` | 生产事故级风险 | BLOCK + 必须修复 |
 | `HIGH` | 高风险，强烈建议修复 | BLOCK |
-| `MEDIUM` | 中等风险，建议修复 | WARN（可配置为 BLOCK） |
+| `MEDIUM` | 中等风险，建议修复 | BLOCK |
 | `LOW` | 低风险，可在后续迭代优化 | PASS |
 | `PASS` | 无风险 | PASS |
 
@@ -64,38 +64,34 @@
 
 ## 三、phase4b_explain.json — EXPLAIN 结果
 
-> 由 `execute_explain.py` 生成，每条 SQL 的 EXPLAIN 输出。
+> 由 `execute_explain.py` 生成，每条 SQL 的 EXPLAIN 输出（`results[]`）。
 
 ```jsonc
 {
-  "sql_id": "string",              // ✅ SQL 唯一标识
-  "datasource": "string",          // ✅ 数据源标识（如 "db_order"）
-  "explain_executed": "boolean",   // ✅ 是否成功执行 EXPLAIN
-  "explain_error": "string | null",// ⚠️ explain_executed=false 时的失败原因
-
-  // ── 原始输出 ──
-  "explain_raw_table": "string | null",   // ⚠️ EXPLAIN 的表格输出（执行成功时必填）
-  "explain_raw_json": "object | null",    // ⚠️ EXPLAIN FORMAT=JSON 输出（执行成功时必填）
-
-  // ── 结构化解析 ──
-  "explain_parsed": {              // ⚠️ 执行成功时必填
-    "query_cost": "number | null",        // 优化器估算成本（来自 FORMAT=JSON）
-    "estimated_rows": "number | null",    // 预估扫描行数（rows 字段的总和）
-    "access_type": "string | null",       // 主表的 type（ALL/range/ref…）
-    "key_used": "string | null",          // 实际使用的索引名
-    "key_len": "number | null",           // 使用的索引长度
-    "extra": ["string"],                  // Extra 字段（数组，可能多个值）
-    "using_filesort": "boolean",          // 是否 Using filesort
-    "using_temporary": "boolean",         // 是否 Using temporary
-    "possible_keys": ["string"]           // 可能使用的索引列表
-  },
-
-  // ── 实际执行的 SQL ──
-  "proxy_sql": "string | null",    // ⚠️ DML 的 SELECT proxy 或 SELECT 原始 SQL（执行成功时必填）
-  "original_sql": "string",        // ✅ 原始 SQL（可能含 MyBatis 动态标签）
-  "statement_type": "string"       // ✅ SELECT / UPDATE / DELETE / INSERT
+  "run_id": "string",              // ✅ 运行标识
+  "generated_at": "string",        // ✅ ISO 8601 时间戳
+  "total": "number",               // ✅ 批次 SQL 总数
+  "executed": "number",            // ✅ 成功执行 EXPLAIN 的条数
+  "failed": "number",              // ✅ 失败的条数
+  "results": [
+    {
+      "sql_id": "string",          // ✅ SQL 唯一标识
+      "executed": "boolean",       // ✅ EXPLAIN 是否成功
+      "type": "string | null",     // ✅ 访问类型：ALL/index/range/ref/eq_ref/const…
+      "key": "string | null",      // ✅ 实际使用的索引名（key=NULL 表示未用索引）
+      "key_len": "number | null",  // ⚠️ 索引长度
+      "rows": "number | null",     // ✅ 预估扫描行数
+      "extra": "string | null",    // ⚠️ Using filesort / Using temporary 等
+      "raw_explain": "string | null", // ⚠️ EXPLAIN FORMAT=JSON 原始输出
+      "error": "string | null"     // ⚠️ executed=false 时的失败原因
+    }
+  ]
 }
 ```
+
+字段说明：
+- `executed=true` 时 `type/key/rows` 必有值；`executed=false` 时 `type/key/rows/extra` 为 `null`，`error` 说明原因（如 `explain_unavailable`、单条 EXPLAIN 失败、toolbox 超时等）。
+- `raw_explain` 保留 EXPLAIN 原始输出，供复盘确认「当时执行计划是什么」。
 
 ---
 
@@ -148,7 +144,7 @@
 
   // ═══ 门禁结论 ═══
   "gate": {
-    "conclusion": "string",        // ✅ "PASS" | "BLOCK" | "WARN"
+    "conclusion": "string",        // ✅ "PASS" | "BLOCK" | "INCONCLUSIVE"（INCONCLUSIVE=分析不完整，CI 下 exit 0 但需人工介入）
     "decision": "string",          // ✅ 兼容字段，当前与 conclusion 相同
     "block_reason": "string | null",// ⚠️ BLOCK 时的原因摘要
     "thresholds": {

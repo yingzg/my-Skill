@@ -61,31 +61,75 @@ def _extract_raw_sql(element: ET.Element) -> str:
     return " ".join(p.strip() for p in parts if p.strip())
 
 
+def _locate_stmt_lines(lines: list[str], tag: str, stmt_id: str) -> tuple[int, int]:
+    """Locate start/end line numbers of a statement tag in the original XML.
+
+    xml.etree does not expose source line numbers, so we locate a statement by
+    searching for its opening tag '<{tag} id="{stmt_id}"' and the matching
+    closing '</{tag}>' in the original file lines.
+    """
+    start = 0
+    for i, line in enumerate(lines, 1):
+        if f"<{tag}" in line and f'id="{stmt_id}"' in line:
+            start = i
+            break
+    if not start:
+        return 0, 0
+    end = start
+    for i in range(start, len(lines) + 1):
+        if f"</{tag}>" in lines[i - 1]:
+            end = i
+            break
+    return start, end
+
+
+def _record_error(errors: list | None, file_path: str, message: str, raw_fragment: str = "") -> None:
+    if errors is None:
+        return
+    errors.append({"file": file_path, "error": message, "raw_fragment": raw_fragment})
+
+
 def parse_mapper_file(
     file_path: str,
     datasource_name: str = "UNKNOWN",
+    errors: list | None = None,
 ) -> list[dict]:
     """Parse a single MyBatis Mapper XML file, return list of SqlRecord dicts.
 
-    Returns empty list on parse failure (graceful degradation).
+    Returns empty list on parse failure (graceful degradation). When `errors`
+    is provided, appends a {file, error, raw_fragment} record for each failure.
     """
     results = []
 
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
-        # Strip XML declaration + DOCTYPE; wrap in synthetic root for multi-<mapper> files
-        import re
-        content = re.sub(r'<\?xml[^?]*\?>', '', content, count=1)
-        content = re.sub(r'<!DOCTYPE[^>]*>', '', content, count=1)
+    except FileNotFoundError:
+        print(f"ERROR: File not found: {file_path}", file=sys.stderr)
+        _record_error(errors, file_path, "File not found")
+        return []
+
+    # 保留原始行，用于 SQL 语句行号定位（xml.etree 不提供 sourceline）
+    original_lines = content.split("\n")
+
+    # Strip XML declaration + DOCTYPE; wrap in synthetic root for multi-<mapper> files
+    import re
+    content = re.sub(r'<\?xml[^?]*\?>', '', content, count=1)
+    content = re.sub(r'<!DOCTYPE[^>]*>', '', content, count=1)
+    try:
         wrapped = f"<root>{content}</root>"
         tree = ET.ElementTree(ET.fromstring(wrapped))
         root = tree.getroot()
     except ET.ParseError as e:
         print(f"ERROR: XML parse failed in {file_path}: {e}", file=sys.stderr)
-        return []
-    except FileNotFoundError:
-        print(f"ERROR: File not found: {file_path}", file=sys.stderr)
+        fragment = ""
+        pos = getattr(e, "position", None)
+        if pos:
+            line_no = pos[0]
+            lo = max(1, line_no - 2)
+            hi = min(len(original_lines), line_no + 2)
+            fragment = "\n".join(original_lines[lo - 1:hi])
+        _record_error(errors, file_path, f"XML parse failed: {e}", fragment)
         return []
 
     def find_mappers(element: ET.Element):
@@ -109,9 +153,8 @@ def parse_mapper_file(
             raw_sql = _extract_raw_sql(stmt_elem)
             dynamic_tags = _extract_dynamic_tags(stmt_elem)
 
-            # Line number: approximate using sourceline if available
-            # xml.etree doesn't expose line numbers reliably, so we
-            # enumerate within the file as fallback.
+            line_start, line_end = _locate_stmt_lines(original_lines, tag, stmt_id)
+
             sql_index = len([r for r in results if r["file"] == file_path])
             sql_id = f"{os.path.basename(file_path)}:{stmt_id}:{sql_index}"
 
@@ -124,8 +167,8 @@ def parse_mapper_file(
                 "dynamic_tags": dynamic_tags,
                 "datasource": datasource_name,
                 "file": file_path,
-                "line_start": 0,   # can't get from xml.etree reliably
-                "line_end": 0,
+                "line_start": line_start,
+                "line_end": line_end,
             }
             results.append(result)
 
@@ -173,6 +216,14 @@ def main():
         "--strict", action="store_true",
         help="Exit 1 if any file fails to parse (default: skip on failure)"
     )
+    parser.add_argument(
+        "--only-statements", type=str,
+        help='JSON map of file path -> statement ids to parse, e.g. \'{"CustomerMapper.xml":["selectById"]}\''
+    )
+    parser.add_argument(
+        "--parse-errors-output", type=str, default="",
+        help="Write parse error details (JSON array of {file, error, raw_fragment}) to this file"
+    )
     args = parser.parse_args()
 
     if args.file:
@@ -196,11 +247,20 @@ def main():
             print(f"ERROR: Invalid --datasource-map JSON: {e}", file=sys.stderr)
             sys.exit(1)
 
+    only_statements = {}
+    if args.only_statements:
+        try:
+            only_statements = json.loads(args.only_statements)
+        except json.JSONDecodeError as e:
+            print(f"ERROR: Invalid --only-statements JSON: {e}", file=sys.stderr)
+            sys.exit(1)
+
     all_results = []
     parse_errors = 0
+    parse_error_details = []
 
     for file_path in files:
-        results = parse_mapper_file(file_path)
+        results = parse_mapper_file(file_path, errors=parse_error_details)
         if not results:
             parse_errors += 1
             continue
@@ -217,6 +277,13 @@ def main():
                             if r2["mapper_namespace"] == ns:
                                 r2["datasource"] = ds
 
+        if only_statements:
+            for key, allowed in only_statements.items():
+                if file_path.endswith(key) or key.endswith(file_path):
+                    allowed_set = set(allowed)
+                    results = [r for r in results if r["method_name"] in allowed_set]
+                    break
+
         all_results.extend(results)
 
     if not all_results:
@@ -225,6 +292,10 @@ def main():
 
     if parse_errors > 0:
         print(f"WARNING: {parse_errors}/{len(files)} file(s) failed to parse", file=sys.stderr)
+
+    if args.parse_errors_output and parse_error_details:
+        with open(args.parse_errors_output, "w", encoding="utf-8") as f:
+            json.dump(parse_error_details, f, ensure_ascii=False, indent=2)
 
     if args.format == "ndjson":
         for r in all_results:

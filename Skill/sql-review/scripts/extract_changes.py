@@ -9,6 +9,7 @@ Usage:
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -35,6 +36,42 @@ def glob_match(path: str, pattern: str) -> bool:
     p = Path(path)
     # PurePath.match() uses fnmatch rules — compatible with shell globs
     return p.match(pattern)
+
+
+def _changed_statements(repo: str, filepath: str, base: str) -> list[str]:
+    diff = run_git(["diff", "--unified=0", f"{base}...HEAD", "--", filepath], repo)
+    if diff.returncode != 0:
+        return []
+    changed_lines = set()
+    for line in diff.stdout.split("\n"):
+        if not line.startswith("@@"):
+            continue
+        match = re.search(r"\+(\d+)(?:,(\d+))?", line)
+        if match:
+            start = int(match.group(1))
+            count = int(match.group(2)) if match.group(2) else 1
+            changed_lines.update(range(start, start + count))
+    if not changed_lines:
+        return []
+
+    show = run_git(["show", f"HEAD:{filepath}"], repo)
+    if show.returncode != 0:
+        return []
+    lines = show.stdout.split("\n")
+
+    statements = set()
+    for line_no in changed_lines:
+        if line_no < 1 or line_no > len(lines):
+            continue
+        for i in range(line_no, 0, -1):
+            match = re.search(
+                r'<(?:select|update|delete|insert)\b[^>]*\bid\s*=\s*"([^"]+)"',
+                lines[i - 1],
+            )
+            if match:
+                statements.add(match.group(1))
+                break
+    return sorted(statements)
 
 
 def main():
@@ -83,7 +120,11 @@ def main():
             continue
         status, filepath = parts
         if glob_match(filepath, args.pattern):
-            files.append({"path": filepath, "status": status})
+            files.append({
+                "path": filepath,
+                "status": status,
+                "changed_statements": _changed_statements(repo, filepath, args.base),
+            })
 
     output = {
         "files": files,

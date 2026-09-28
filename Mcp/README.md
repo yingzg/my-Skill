@@ -1,35 +1,35 @@
 # GitLab Stdio MCP
 
-A local stdio MCP server for GitLab repository and CI/CD operations.
+用于 GitLab 仓库和 CI/CD 操作的本地 stdio MCP 服务器。
 
-## Scope
+## 范围
 
-Included:
+包含：
 
-- Repository and merge request tools
-- CI/CD variables, trigger tokens, pipelines, and job tools
-- Runtime parameter validation
-- Secret redaction
-- Project allowlist support
-- Readonly mode
-- `confirm_message` guardrails for high-risk local write operations
+- 仓库和合并请求（merge request）工具
+- CI/CD 变量、触发器令牌（trigger token）、流水线和作业工具
+- 运行时参数校验
+- 密钥脱敏
+- 项目白名单支持
+- 只读模式
+- 用于高风险本地写操作的 `confirm_message` 防护措施
 
-Excluded from v1:
+v1 不包含：
 
-- HTTP / Streamable HTTP transport
-- Approval UI
-- User and group administration
-- GitLab integrations and webhooks
+- HTTP / Streamable HTTP 传输
+- 审批 UI
+- 用户和组管理
+- GitLab 集成和 webhook
 
-## Configuration
+## 配置
 
-Required:
+必需：
 
 ```bash
 GITLAB_API_TOKEN=your-token
 ```
 
-Optional:
+可选：
 
 ```bash
 GITLAB_API_URL=https://gitlab.com/api/v4
@@ -39,14 +39,14 @@ MCP_GITLAB_JOB_TRACE_TAIL_LINES=300
 LOG_LEVEL=info
 ```
 
-## Build
+## 构建
 
 ```bash
 npm install
 npm run build
 ```
 
-## MCP Client Configuration
+## MCP 客户端配置
 
 ```json
 {
@@ -63,14 +63,14 @@ npm run build
 }
 ```
 
-## High-Risk Confirm Messages
+## 高风险确认消息
 
-These are local stdio guardrails, not strong human approval.
+这些是本地 stdio 防护措施，而非强人工审批。
 
-| Operation | Required `confirm_message` |
+| 操作 | 所需的 `confirm_message` |
 |---|---|
-| Merge MR | `MERGE <project_id>!<iid>` |
-| Rebase MR | `REBASE <project_id>!<iid>` |
-| Close MR | `CLOSE <project_id>!<iid>` |
-| Delete CI/CD variable | `DELETE_VARIABLE <project_id>:<key>` |
-| Delete trigger token | `DELETE_TRIGGER_TOKEN <project_id>:<trigger_id>` |
+| 合并 MR | `MERGE <project_id>!<iid>` |
+| 变基 MR | `REBASE <project_id>!<iid>` |
+| 关闭 MR | `CLOSE <project_id>!<iid>` |
+| 删除 CI/CD 变量 | `DELETE_VARIABLE <project_id>:<key>` |
+| 删除触发器令牌 | `DELETE_TRIGGER_TOKEN <project_id>:<trigger_id>` |

@@ -46,7 +46,9 @@ CASE-088: 账单状态为 INIT 时不允许导出
 
 ### 代码搜索事实
 
-增强 grep 或结构搜索可定位：
+（给定事实：code-intelligence 未配置，步骤 3 走增强 grep 兜底，source=grep）
+
+增强 grep 可定位：
 
 ```text
 file: settlement-service/src/main/java/com/x/settlement/BillExportService.java

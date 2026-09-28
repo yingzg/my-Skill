@@ -128,6 +128,43 @@ def _format_table(findings: list[dict]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _format_mr_comment(report: dict) -> str:
+    gate = report["gate"]
+    stats = gate["statistics"]
+    findings = report["findings"]
+
+    lines = [
+        "## SQL 慢查询审查报告",
+        "",
+        f"**门禁结论：{gate['conclusion']}**",
+        "",
+        "| 风险 | 数量 |",
+        "|------|------|",
+    ]
+    for level in ("CRITICAL", "HIGH", "MEDIUM", "LOW", "PASS"):
+        lines.append(f"| {level} | {stats.get(level, 0)} |")
+
+    risky = [f for f in findings if f.get("risk_level") in ("CRITICAL", "HIGH", "MEDIUM")]
+    if risky:
+        lines += ["", "### 风险 SQL 明细", "", "| SQL | 位置 | 风险 | 说明 | 修复建议 |", "|-----|------|------|------|----------|"]
+        for f in risky:
+            if f.get("file_path"):
+                location = f"{f['file_path']}:{f.get('line', 0)}"
+            else:
+                location = f.get("mapper_method", "")
+            summary = (f.get("risk_summary") or "").replace("|", "\\|")
+            fix = (f.get("short_term_fix") or "").replace("|", "\\|")
+            lines.append(f"| {f['mapper_method']} | {location} | {f['risk_level']} | {summary} | {fix} |")
+
+    checklist = report.get("review_checklist", [])
+    if checklist:
+        lines += ["", "### 待人工复查", ""]
+        for item in checklist:
+            lines.append(f"- `{item.get('tag', '')}`: {item.get('reason', '')}")
+
+    return "\n".join(lines) + "\n"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="SQL Review final report builder")
     parser.add_argument("--rules-file", required=True)
@@ -137,6 +174,8 @@ def main() -> None:
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--mode", default="local", choices=["local", "ci"])
     parser.add_argument("--mr-url", default="")
+    parser.add_argument("--mr-comment-output", default="",
+                        help="Write CI MR comment markdown to this file")
     parser.add_argument("--output", default="")
     args = parser.parse_args()
 
@@ -186,8 +225,8 @@ def main() -> None:
                 ),
                 "degradation_note": None if explain_executed else "EXPLAIN not available",
             },
-            "short_term_fix": risk.get("short_term_fix", ""),
-            "long_term_fix": risk.get("long_term_fix", ""),
+            "short_term_fix": risk.get("short_term_fix", "") or rule.get("short_term_fix", ""),
+            "long_term_fix": risk.get("long_term_fix", "") or rule.get("long_term_fix", ""),
             "call_chain": risk.get("call_chain", []),
             "call_chain_broken": bool(risk.get("call_chain_broken", False)),
             "resolved_sql": rule.get("resolved_sql", ""),
@@ -266,7 +305,17 @@ def main() -> None:
     if args.output:
         with open(args.output, "w") as f:
             f.write(out + "\n")
-    print(out)
+
+    if args.mode == "ci":
+        print(f"GATE: {gate_conclusion}")
+        mr_comment = _format_mr_comment(report)
+        if args.mr_comment_output:
+            with open(args.mr_comment_output, "w") as f:
+                f.write(mr_comment)
+        else:
+            print(mr_comment, file=sys.stderr)
+    else:
+        print(out)
 
 
 if __name__ == "__main__":

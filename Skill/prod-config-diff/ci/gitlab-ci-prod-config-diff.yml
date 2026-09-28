@@ -1,0 +1,102 @@
+# AI 生成代码 - Prod Config Diff GitLab CI Job 定义
+#
+# ===== 集成方式 =====
+#
+# 远程引用（接入项目零文件依赖，skill-hub 更新后自动生效）：
+#   1. 项目 .gitlab-ci.yml 中添加:
+#       include:
+#         - project: 'your-org/skill-hub'
+#           ref: master
+#           file: 'skill/prod-config-diff/ci/gitlab-ci-prod-config-diff.yml'
+#   2. skill-hub Settings > CI/CD > Job token permissions 中允许目标项目
+#      （或在目标项目配置 SKILL_HUB_TOKEN CI 变量）
+#
+# ===== 环境变量 =====
+# GitLab CI 自动提供: CI_API_V4_URL, CI_PROJECT_ID, CI_MERGE_REQUEST_IID,
+#   CI_JOB_TOKEN, CI_MERGE_REQUEST_TARGET_BRANCH_NAME, CI_MERGE_REQUEST_DIFF_BASE_SHA
+# 可选: SKILL_HUB_TOKEN（跨项目 clone 用，如 CI_JOB_TOKEN 无权限时使用）
+
+prod-config-diff:
+  image: micr.cloud.mioffice.cn/mit-infra/maven-jdk8:2025-10-16
+  stage: scan
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        # Pattern A: 文件名含 prod（如 application-prod.yml）
+        - "**/*prod*.yml"
+        - "**/*prod*.yaml"
+        - "**/application-prod*"
+        # Pattern B: 目录名含 prod（如 eu-prod/application-db.yml）
+        - "**/*prod*/**/*.yml"
+        - "**/*prod*/**/*.yaml"
+  variables:
+    GIT_DEPTH: 0
+    PYTHONUNBUFFERED: "1"
+    SKILL_HUB_PROJECT: "your-org/skill-hub"
+    SKILL_HUB_REF: "master"
+    SKILL_HUB_SCRIPT_DIR: "skill/prod-config-diff/scripts"
+  script:
+    # 从 skill-hub 下载脚本
+    - |
+      SCRIPT_DIR="/tmp/prod-config-diff-scripts"
+      mkdir -p "${SCRIPT_DIR}"
+
+      if [ -n "${SKILL_HUB_TOKEN}" ]; then
+        CLONE_URL="${CI_SERVER_PROTOCOL:-https}://oauth2:${SKILL_HUB_TOKEN}@${CI_SERVER_HOST}/${SKILL_HUB_PROJECT}.git"
+      else
+        CLONE_URL="${CI_SERVER_PROTOCOL:-https}://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/${SKILL_HUB_PROJECT}.git"
+      fi
+
+      echo "从 skill-hub 下载 prod-config-diff 脚本..."
+      git clone --depth 1 --branch "${SKILL_HUB_REF}" "${CLONE_URL}" /tmp/skill-hub-clone 2>&1 || {
+        echo "Clone 失败，请检查:"
+        echo "  1. skill-hub Settings > CI/CD > Job token permissions 是否允许本项目"
+        echo "  2. 或配置 SKILL_HUB_TOKEN CI 变量"
+        exit 1
+      }
+
+      for f in prod_config_diff.py output_mr.py; do
+        cp "/tmp/skill-hub-clone/${SKILL_HUB_SCRIPT_DIR}/${f}" "${SCRIPT_DIR}/${f}"
+      done
+      rm -rf /tmp/skill-hub-clone
+      echo "脚本下载完成"
+    # Step 1: 对比 prod 配置
+    - |
+      echo ""
+      echo "============================================================"
+      echo "  Prod Config Diff"
+      echo "============================================================"
+
+      BASE_SHA=$(git merge-base "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" HEAD 2>/dev/null)
+      if [ -z "${BASE_SHA}" ]; then
+        BASE_SHA="${CI_MERGE_REQUEST_DIFF_BASE_SHA}"
+      fi
+      if [ -z "${BASE_SHA}" ]; then
+        echo "错误: 无法确定 diff base"
+        exit 1
+      fi
+      echo "  base_sha: ${BASE_SHA:0:12} (target: ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME})"
+
+      echo ""
+      echo "Step 1: 对比 prod 配置差异..."
+      python3 "${SCRIPT_DIR}/prod_config_diff.py" || true
+    # Step 2: 发布 MR 评论
+    - |
+      RESULT_FILE="/tmp/prod_config_diff_result.json"
+      if [ -f "${RESULT_FILE}" ]; then
+        ISSUE_COUNT=$(python3 -c "import json; data=json.load(open('${RESULT_FILE}')); print(sum(len(m.get('issues',[])) for m in data))" 2>/dev/null || echo "0")
+        if [ "${ISSUE_COUNT}" != "0" ]; then
+          echo ""
+          echo "Step 2: 发布 MR 评论（${ISSUE_COUNT} 个问题）..."
+          python3 "${SCRIPT_DIR}/output_mr.py" "${RESULT_FILE}"
+        else
+          echo "未发现 prod 配置不一致，跳过评论。"
+        fi
+      else
+        echo "未生成结果文件，跳过评论。"
+      fi
+  artifacts:
+    when: always
+    paths:
+      - /tmp/prod_config_diff_result.json
+    expire_in: 7 days

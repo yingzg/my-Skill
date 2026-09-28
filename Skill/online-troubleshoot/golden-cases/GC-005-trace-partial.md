@@ -32,11 +32,13 @@ error:
 
 ### 历史案例预检
 
-`CASES_DIR` 中没有高置信命中。中置信命中一个历史上"活动名称重复保存失败"的案例，但机制不同。
+`.troubleshoot/cases/` 中没有高置信命中。中置信命中一个历史上"活动名称重复保存失败"的案例，但机制不同。
 
 ### 代码搜索事实
 
-结构搜索可按关键词定位：
+（给定事实：code-intelligence 未配置，步骤 3 走增强 grep 兜底，source=grep）
+
+增强 grep 可按关键词定位：
 
 ```text
 file: promotion-service/src/main/java/com/x/promotion/service/ActivityService.java

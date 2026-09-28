@@ -29,15 +29,15 @@ CONFIG_PREFIX_RE = re.compile(
 PACKAGE_RE = re.compile(r'^\s*package\s+([\w.]+)\s*;')
 
 
-def scan_java_files(project_root: str) -> list[Path]:
-    src = Path(project_root) / "src" / "main" / "java"
+def scan_java_files(project_root: str, project_src: str = "src/main/java") -> list[Path]:
+    src = Path(project_root) / project_src
     if not src.is_dir():
         return []
     return sorted(src.rglob("*.java"))
 
 
-def scan_config_files(project_root: str) -> list[Path]:
-    resources = Path(project_root) / "src" / "main" / "resources"
+def scan_config_files(project_root: str, project_src: str = "src/main/java") -> list[Path]:
+    resources = (Path(project_root) / project_src).parent / "resources"
     if not resources.is_dir():
         return []
     files: list[Path] = []
@@ -215,12 +215,14 @@ def main():
         description="Discover datasource mappings from Java project"
     )
     parser.add_argument("--project-root", type=str, default=os.getcwd(),
-                        help="Java project root (must contain src/main/java)")
+                        help="Java project root")
+    parser.add_argument("--project-src", type=str, default="src/main/java",
+                        help="Java source path relative to project-root")
     args = parser.parse_args()
 
     project_root = os.path.abspath(args.project_root)
-    java_files = scan_java_files(project_root)
-    config_files = scan_config_files(project_root)
+    java_files = scan_java_files(project_root, args.project_src)
+    config_files = scan_config_files(project_root, args.project_src)
 
     if not java_files:
         output = {

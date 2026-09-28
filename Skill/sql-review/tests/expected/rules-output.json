@@ -1,11 +1,14 @@
 {
   "run_id": "golden",
-  "generated_at": "2026-07-30T13:07:09.355006+00:00",
+  "generated_at": "2026-09-09T09:01:32.234101+00:00",
   "rules_version": "1.0.0",
   "results": [
     {
       "sql_id": "mappers.xml:findById:0",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 10,
+      "resolved_sql": "SELECT id, order_no, status, created_at\n    FROM orders\n    WHERE id = #{id}",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -84,11 +87,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:findByOrderNo:1",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 16,
+      "resolved_sql": "SELECT id, order_no, amount\n    FROM orders\n    WHERE order_no = #{orderNo}",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -167,11 +175,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:findAll:2",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 22,
+      "resolved_sql": "SELECT * FROM orders",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -250,11 +263,16 @@
         }
       ],
       "overall_risk": "HIGH",
-      "risk_reason": "Matched: R001, R002, R007"
+      "risk_reason": "Matched: R001, R002, R007",
+      "short_term_fix": "添加必要的 WHERE 过滤条件 + LIMIT，或确认该场景确实需要全量数据（如定时导出）并增加分批拉取逻辑",
+      "long_term_fix": "对于定时全量导出的场景，使用游标分页（WHERE id > :lastId ORDER BY id LIMIT 1000）替代一次性加载"
     },
     {
       "sql_id": "mappers.xml:countByStatus:3",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 26,
+      "resolved_sql": "SELECT COUNT(*) FROM orders WHERE status = #{status}",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -333,11 +351,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:updateStatus:4",
       "statement_type": "UPDATE",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 34,
+      "resolved_sql": "UPDATE orders SET status = #{status}, updated_at = NOW()\n    WHERE id = #{id}",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -416,11 +439,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R103"
+      "risk_reason": "Matched: R103",
+      "short_term_fix": "添加 LIMIT N 限制单次操作行数，配合循环分批执行",
+      "long_term_fix": "建立『大批量写操作必须走分批脚本』的发布规范"
     },
     {
       "sql_id": "mappers.xml:updateStatusNoWhere:5",
       "statement_type": "UPDATE",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 39,
+      "resolved_sql": "UPDATE orders SET status = #{status}",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -499,11 +527,16 @@
         }
       ],
       "overall_risk": "CRITICAL",
-      "risk_reason": "Matched: R102, R103"
+      "risk_reason": "Matched: R102, R103",
+      "short_term_fix": "必须添加 WHERE 子句限定操作范围。若确实需要操作全表，使用 TRUNCATE（更快且隐式提交）并添加注释说明意图",
+      "long_term_fix": "数据库层面开启 sql_safe_updates=1（禁止无 WHERE 或 WHERE 不走索引的写操作）"
     },
     {
       "sql_id": "mappers.xml:deleteById:6",
       "statement_type": "DELETE",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 43,
+      "resolved_sql": "DELETE FROM orders WHERE id = #{id}",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -577,16 +610,21 @@
         },
         {
           "rule_id": "R104",
-          "matched": false,
-          "severity": "NONE"
+          "matched": true,
+          "severity": "MEDIUM"
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R103"
+      "risk_reason": "Matched: R103, R104",
+      "short_term_fix": "添加 LIMIT N 限制单次操作行数，配合循环分批执行",
+      "long_term_fix": "建立『大批量写操作必须走分批脚本』的发布规范"
     },
     {
       "sql_id": "mappers.xml:deleteAll:7",
       "statement_type": "DELETE",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 47,
+      "resolved_sql": "DELETE FROM orders",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -660,16 +698,21 @@
         },
         {
           "rule_id": "R104",
-          "matched": false,
-          "severity": "NONE"
+          "matched": true,
+          "severity": "MEDIUM"
         }
       ],
       "overall_risk": "CRITICAL",
-      "risk_reason": "Matched: R102, R103"
+      "risk_reason": "Matched: R102, R103, R104",
+      "short_term_fix": "必须添加 WHERE 子句限定操作范围。若确实需要操作全表，使用 TRUNCATE（更快且隐式提交）并添加注释说明意图",
+      "long_term_fix": "数据库层面开启 sql_safe_updates=1（禁止无 WHERE 或 WHERE 不走索引的写操作）"
     },
     {
       "sql_id": "mappers.xml:insertOrder:8",
       "statement_type": "INSERT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 51,
+      "resolved_sql": "INSERT INTO orders (order_no, status, amount, created_at)\n    VALUES (#{orderNo}, #{status}, #{amount}, NOW())",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -748,11 +791,16 @@
         }
       ],
       "overall_risk": "UNCERTAIN",
-      "risk_reason": "No rules matched (UNCERTAIN)"
+      "risk_reason": "No rules matched (UNCERTAIN)",
+      "short_term_fix": "",
+      "long_term_fix": ""
     },
     {
       "sql_id": "mappers.xml:findWithDetail:9",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 60,
+      "resolved_sql": "SELECT o.id, o.order_no, d.product_name, d.quantity\n    FROM orders o\n    JOIN order_detail d ON o.id = d.order_id\n    WHERE o.id = #{id}",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -831,11 +879,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:findWithMultipleJoins:10",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 67,
+      "resolved_sql": "SELECT o.id, o.order_no, d.product_name, u.name AS user_name\n    FROM orders o\n    LEFT JOIN order_detail d ON o.id = d.order_id\n    LEFT JOIN users u ON o.user_id = u.id\n    WHERE o.status = #{status}",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -914,11 +967,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:findBySubQuery:11",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 79,
+      "resolved_sql": "SELECT id, order_no, status\n    FROM orders\n    WHERE user_id IN (\n      SELECT id FROM users WHERE status = 'ACTIVE'\n    )",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -997,11 +1055,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002, R008"
+      "risk_reason": "Matched: R002, R008",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:findByCondition:12",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 91,
+      "resolved_sql": "SELECT id, order_no, status\n    FROM orders\n    WHERE 1=1 <if test=\"status != null\">AND status = #{status}</if> <if test=\"orderNo != null and orderNo != ''\">AND order_no = #{orderNo}</if>",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -1080,11 +1143,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:findBySingleIf:13",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 99,
+      "resolved_sql": "SELECT id, order_no, status FROM orders <if test=\"amount != null\">WHERE amount &gt; #{amount}</if>",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -1163,11 +1231,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:updateByIf:14",
       "statement_type": "UPDATE",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 104,
+      "resolved_sql": "UPDATE orders SET updated_at = NOW() <if test=\"status != null\">, status = #{status}</if> <if test=\"amount != null\">, amount = #{amount}</if>\n    WHERE id = #{id}",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -1246,11 +1319,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R103"
+      "risk_reason": "Matched: R103",
+      "short_term_fix": "添加 LIMIT N 限制单次操作行数，配合循环分批执行",
+      "long_term_fix": "建立『大批量写操作必须走分批脚本』的发布规范"
     },
     {
       "sql_id": "mappers.xml:findByChoose:15",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 115,
+      "resolved_sql": "SELECT id, order_no, status FROM orders <where>\n      <choose>\n        <when test=\"status != null\">AND status = #{status}</when>\n        <when test=\"orderNo != null\">AND order_no = #{orderNo}</when>\n        <otherwise>AND id &gt; 0</otherwise>\n      </choose>\n    </where>",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -1329,11 +1407,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:findByIds:16",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 130,
+      "resolved_sql": "SELECT id, order_no, status\n    FROM orders\n    WHERE id IN <foreach collection=\"ids\" item=\"id\" open=\"(\" close=\")\" separator=\",\">\n      #{id}\n    </foreach>",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -1412,11 +1495,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:batchInsert:17",
       "statement_type": "INSERT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 139,
+      "resolved_sql": "INSERT INTO orders (order_no, status, amount)\n    VALUES <foreach collection=\"list\" item=\"order\" separator=\",\">\n      (#{order.orderNo}, #{order.status}, #{order.amount})\n    </foreach>",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -1495,11 +1583,16 @@
         }
       ],
       "overall_risk": "UNCERTAIN",
-      "risk_reason": "No rules matched (UNCERTAIN)"
+      "risk_reason": "No rules matched (UNCERTAIN)",
+      "short_term_fix": "",
+      "long_term_fix": ""
     },
     {
       "sql_id": "mappers.xml:deleteByIds:18",
       "statement_type": "DELETE",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 147,
+      "resolved_sql": "DELETE FROM orders WHERE id IN <foreach collection=\"ids\" item=\"id\" open=\"(\" close=\")\" separator=\",\">\n      #{id}\n    </foreach>",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -1573,16 +1666,21 @@
         },
         {
           "rule_id": "R104",
-          "matched": false,
-          "severity": "NONE"
+          "matched": true,
+          "severity": "MEDIUM"
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R103"
+      "risk_reason": "Matched: R103, R104",
+      "short_term_fix": "添加 LIMIT N 限制单次操作行数，配合循环分批执行",
+      "long_term_fix": "建立『大批量写操作必须走分批脚本』的发布规范"
     },
     {
       "sql_id": "mappers.xml:findByWhere:19",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 158,
+      "resolved_sql": "SELECT id, order_no, status FROM orders <where>\n      <if test=\"status != null\">AND status = #{status}</if>\n      <if test=\"orderNo != null\">AND order_no = #{orderNo}</if>\n      <if test=\"amount != null\">AND amount &gt;= #{amount}</if>\n    </where>",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -1661,11 +1759,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:updateBySet:20",
       "statement_type": "UPDATE",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 171,
+      "resolved_sql": "UPDATE orders <set>\n      <if test=\"status != null\">status = #{status},</if>\n      <if test=\"amount != null\">amount = #{amount},</if>\n      updated_at = NOW(),\n    </set>\n    WHERE id = #{id}",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -1744,11 +1847,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R103"
+      "risk_reason": "Matched: R103",
+      "short_term_fix": "添加 LIMIT N 限制单次操作行数，配合循环分批执行",
+      "long_term_fix": "建立『大批量写操作必须走分批脚本』的发布规范"
     },
     {
       "sql_id": "mappers.xml:findByTrim:21",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 185,
+      "resolved_sql": "SELECT id, order_no, status FROM orders <trim prefix=\"WHERE\" prefixOverrides=\"AND |OR \">\n      <if test=\"status != null\">AND status = #{status}</if>\n      <if test=\"orderNo != null\">AND order_no = #{orderNo}</if>\n    </trim>",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -1827,11 +1935,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002, R004"
+      "risk_reason": "Matched: R002, R004",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:updateByTrimSet:22",
       "statement_type": "UPDATE",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 193,
+      "resolved_sql": "UPDATE orders <trim prefix=\"SET\" suffixOverrides=\",\">\n      <if test=\"status != null\">status = #{status},</if>\n      <if test=\"amount != null\">amount = #{amount},</if>\n    </trim>\n    WHERE id = #{id}",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -1910,11 +2023,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R103"
+      "risk_reason": "Matched: R103",
+      "short_term_fix": "添加 LIMIT N 限制单次操作行数，配合循环分批执行",
+      "long_term_fix": "建立『大批量写操作必须走分批脚本』的发布规范"
     },
     {
       "sql_id": "mappers.xml:findByBind:23",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 206,
+      "resolved_sql": "<bind name=\"pattern\" value=\"'%' + keyword + '%'\" />\n    SELECT id, order_no, status FROM orders\n    WHERE order_no LIKE #{pattern}",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -1993,11 +2111,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:findByBindWithIf:24",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 212,
+      "resolved_sql": "<bind name=\"pattern\" value=\"'%' + keyword + '%'\" />\n    SELECT id, order_no, status FROM orders <where>\n      <if test=\"keyword != null and keyword != ''\">\n        order_no LIKE #{pattern}\n      </if>\n    </where>",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -2076,11 +2199,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:findWithInclude:25",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 237,
+      "resolved_sql": "SELECT <include refid=\"BaseColumnList\" /> FROM orders <include refid=\"WhereClause\" />",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -2159,11 +2287,16 @@
         }
       ],
       "overall_risk": "HIGH",
-      "risk_reason": "Matched: R002, R007"
+      "risk_reason": "Matched: R002, R007",
+      "short_term_fix": "添加必要的 WHERE 过滤条件 + LIMIT，或确认该场景确实需要全量数据（如定时导出）并增加分批拉取逻辑",
+      "long_term_fix": "对于定时全量导出的场景，使用游标分页（WHERE id > :lastId ORDER BY id LIMIT 1000）替代一次性加载"
     },
     {
       "sql_id": "mappers.xml:findByMixed:26",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 246,
+      "resolved_sql": "SELECT id, order_no, status, amount FROM orders <where>\n      <if test=\"statusList != null and statusList.size() &gt; 0\">\n        AND status IN\n        <foreach collection=\"statusList\" item=\"s\" open=\"(\" close=\")\" separator=\",\">\n          #{s}\n        </foreach>\n      </if>\n      <if test=\"minAmount != null\">AND amount &gt;= #{minAmount}</if>\n      <if test=\"maxAmount != null\">AND amount &lt;= #{maxAmount}</if>\n    </where> <if test=\"orderBy != null\">ORDER BY ${orderBy}</if>",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -2207,8 +2340,8 @@
         },
         {
           "rule_id": "R009",
-          "matched": false,
-          "severity": "NONE"
+          "matched": true,
+          "severity": "LOW"
         },
         {
           "rule_id": "R010",
@@ -2242,11 +2375,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002, R009",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:findUserById:27",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 270,
+      "resolved_sql": "SELECT id, name, email FROM users WHERE id = #{id}",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -2325,11 +2463,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:findUserWithOrders:28",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 274,
+      "resolved_sql": "SELECT u.id, u.name, COUNT(o.id) AS order_count\n    FROM users u\n    LEFT JOIN orders o ON u.id = o.user_id\n    WHERE u.status = #{status}\n    GROUP BY u.id, u.name\n    ORDER BY order_count DESC\n    LIMIT #{limit}",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -2338,8 +2481,8 @@
         },
         {
           "rule_id": "R002",
-          "matched": true,
-          "severity": "MEDIUM"
+          "matched": false,
+          "severity": "NONE"
         },
         {
           "rule_id": "R003",
@@ -2373,8 +2516,8 @@
         },
         {
           "rule_id": "R009",
-          "matched": false,
-          "severity": "NONE"
+          "matched": true,
+          "severity": "LOW"
         },
         {
           "rule_id": "R010",
@@ -2407,12 +2550,17 @@
           "severity": "NONE"
         }
       ],
-      "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "overall_risk": "LOW",
+      "risk_reason": "Matched: R009",
+      "short_term_fix": "评估：① 在排序列上建索引；② 若 rows 很小（< 1000），可接受 filesort 开销",
+      "long_term_fix": "自查所有高频查询的排序字段，确保其索引覆盖"
     },
     {
       "sql_id": "mappers.xml:findUsersByKeyword:29",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 284,
+      "resolved_sql": "<bind name=\"pattern\" value=\"'%' + keyword + '%'\" />\n    SELECT id, name, email FROM users <where>\n      <choose>\n        <when test=\"keyword != null\">name LIKE #{pattern}</when>\n        <otherwise>1=1</otherwise>\n      </choose>\n    </where>",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -2491,11 +2639,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:gh001_emptyForeach:30",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 304,
+      "resolved_sql": "SELECT id, status FROM orders WHERE id IN <foreach collection=\"emptyList\" item=\"id\" open=\"(\" close=\")\" separator=\",\">\n      #{id}\n    </foreach>",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -2574,11 +2727,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:gh002_foreachNestedIf:31",
       "statement_type": "UPDATE",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 312,
+      "resolved_sql": "<foreach collection=\"list\" item=\"order\" separator=\";\">\n      UPDATE orders\n      <set>\n        <if test=\"order.status != null\">status = #{order.status}</if>\n        <if test=\"order.amount != null\">amount = #{order.amount}</if>\n      </set>\n      WHERE id = #{order.id}\n    </foreach>",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -2657,11 +2815,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R103"
+      "risk_reason": "Matched: R103",
+      "short_term_fix": "添加 LIMIT N 限制单次操作行数，配合循环分批执行",
+      "long_term_fix": "建立『大批量写操作必须走分批脚本』的发布规范"
     },
     {
       "sql_id": "mappers.xml:gh003_leftLike:32",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 324,
+      "resolved_sql": "SELECT id, order_no FROM orders\n    WHERE order_no LIKE CONCAT('%', #{keyword})",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -2740,11 +2903,16 @@
         }
       ],
       "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "risk_reason": "Matched: R002",
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
     },
     {
       "sql_id": "mappers.xml:gh004_limitNoOrder:33",
       "statement_type": "SELECT",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 330,
+      "resolved_sql": "SELECT id, order_no FROM orders\n    WHERE status = #{status}\n    LIMIT #{offset}, #{limit}",
       "rule_matches": [
         {
           "rule_id": "R001",
@@ -2753,8 +2921,8 @@
         },
         {
           "rule_id": "R002",
-          "matched": true,
-          "severity": "MEDIUM"
+          "matched": false,
+          "severity": "NONE"
         },
         {
           "rule_id": "R003",
@@ -2822,8 +2990,10 @@
           "severity": "NONE"
         }
       ],
-      "overall_risk": "MEDIUM",
-      "risk_reason": "Matched: R002"
+      "overall_risk": "UNCERTAIN",
+      "risk_reason": "No rules matched (UNCERTAIN)",
+      "short_term_fix": "",
+      "long_term_fix": ""
     }
   ]
 }

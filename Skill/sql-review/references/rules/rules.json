@@ -40,7 +40,10 @@
       },
       "match": {
         "method": "regex_absence",
-        "pattern": "(?i)\\bLIMIT\\s+\\d+\\b"
+        "pattern": "(?i)\\bLIMIT\\b"
+      },
+      "exempt": {
+        "method": "schema_pk_eq_query"
       },
       "description": "SELECT 查询未指定 LIMIT 子句，当表数据量大时，单次返回海量数据会导致：① 应用内存溢出；② 网络传输耗时；③ 数据库 I/O 飙升",
       "short_term_fix_template": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
@@ -115,10 +118,9 @@
         "DELETE": "HIGH"
       },
       "match": {
-        "method": "regex",
-        "pattern": "(?i)\\bWHERE\\b.+\\bvarchar\\b.+=\\s*\\d+|\\bWHERE\\b.+[=<>]\\s*\\d+\\s*(?:AND|OR|LIMIT|ORDER|GROUP|$)"
+        "method": "schema_column_eq_number"
       },
-      "description": "WHERE 条件中字符串列与数字进行比较（如 WHERE varchar_col = 123），MySQL 会将字符串列隐式转换为数字，导致索引失效",
+      "description": "WHERE 条件中字符串列与数字字面量比较（如 WHERE varchar_col = 123），MySQL 会将字符串列隐式转换为数字，导致索引失效。基于表 DDL 的列类型准确判断，仅字符串列与数字比较时命中",
       "short_term_fix_template": "确保比较值类型与列类型一致：WHERE varchar_col = '123'",
       "long_term_fix_template": "在 MyBatis 中启用 jdbcType 严格校验（#{param,jdbcType=VARCHAR}）"
     },
@@ -157,32 +159,32 @@
 
     {
       "id": "R009",
-      "name": "ORDER BY 非索引列",
+      "name": "存在 ORDER BY（可能 filesort）",
       "category": "排序优化",
       "applicable_to": ["SELECT"],
       "db_types": ["mysql"],
       "risk_level": "LOW",
       "match": {
-        "method": "static",
-        "check": "order_by_non_index"
+        "method": "regex",
+        "pattern": "(?i)\\bORDER\\s+BY\\b"
       },
-      "description": "ORDER BY 的列不是驱动表上的索引列，MySQL 需要执行额外排序（Using filesort）。需结合 EXPLAIN 的 rows 确认影响面",
+      "description": "SQL 使用了 ORDER BY 排序。若排序列不在索引中，MySQL 将触发额外排序（Using filesort）。需结合 EXPLAIN 确认是否 filesort 及影响行数",
       "short_term_fix_template": "评估：① 在排序列上建索引；② 若 rows 很小（< 1000），可接受 filesort 开销",
       "long_term_fix_template": "自查所有高频查询的排序字段，确保其索引覆盖"
     },
 
     {
       "id": "R010",
-      "name": "笛卡尔积 JOIN",
+      "name": "显式笛卡尔积 CROSS JOIN",
       "category": "查询结构",
       "applicable_to": ["SELECT"],
       "db_types": ["mysql"],
       "risk_level": "HIGH",
       "match": {
-        "method": "static",
-        "check": "cartesian_join"
+        "method": "regex",
+        "pattern": "(?i)\\bCROSS\\s+JOIN\\b"
       },
-      "description": "多表 JOIN 缺少关联条件（或条件中使用了永远为 TRUE 的表达式），导致产生笛卡尔积。N × M 行，数据量爆炸",
+      "description": "使用 CROSS JOIN 显式产生笛卡尔积，N × M 行数据量爆炸。注意：逗号连接的隐式笛卡尔积（FROM a, b 且无关联条件）无法由正则可靠检测，需结合 EXPLAIN 或人工确认",
       "short_term_fix_template": "检查 ON 子句或 WHERE 中的表关联条件，确保每个 JOIN 都有正确的关联列",
       "long_term_fix_template": "Code Review 强制检查：每个 JOIN 必须有 ON 条件"
     },
@@ -211,10 +213,10 @@
       "db_types": ["mysql"],
       "risk_level": "HIGH",
       "match": {
-        "method": "static",
-        "check": "missing_status_guard"
+        "method": "schema_soft_delete_guard",
+        "pattern": "(?i)(status_code|is_deleted|statecode|del_flag|deleted|is_del|delete_flag)"
       },
-      "description": "UPDATE/DELETE 语句的 WHERE 子句中缺少 status_code = 0（或 is_deleted = 0）条件，可能意外修改或删除已被软删除的数据",
+      "description": "UPDATE/DELETE 语句中缺少软删除字段条件（status_code / is_deleted / statecode / del_flag 等），可能意外修改或删除已被软删除的数据。基于表 DDL 判断：仅当表确实含软删除字段、且 WHERE 子句未引用该字段时才命中（无 DDL 或表无软删除字段时不误报）",
       "short_term_fix_template": "在 WHERE 子句中添加 AND status_code = 0（或 is_deleted = 0）",
       "long_term_fix_template": "在 BaseMapper 层引入拦截器，自动为 UPDATE/DELETE 附加软删除条件；或迁移至 MyBatis-Plus 的逻辑删除功能"
     },
@@ -244,7 +246,7 @@
       "risk_level": "MEDIUM",
       "match": {
         "method": "regex_absence",
-        "pattern": "(?i)\\bLIMIT\\s+\\d+\\b"
+        "pattern": "(?i)\\bLIMIT\\b"
       },
       "description": "UPDATE/DELETE 未指定 LIMIT，当 WHERE 条件匹配大量行时，将导致：① 长事务锁大量行；② 从库延迟；③ undo log 膨胀",
       "short_term_fix_template": "添加 LIMIT N 限制单次操作行数，配合循环分批执行",
@@ -259,8 +261,8 @@
       "db_types": ["mysql"],
       "risk_level": "MEDIUM",
       "match": {
-        "method": "static",
-        "check": "delete_present"
+        "method": "regex",
+        "pattern": "(?i)\\bDELETE\\s+FROM\\b"
       },
       "description": "代码直接执行了 DELETE 物理删除。在没有明确业务原因的情况下，更推荐使用软删除（is_deleted=1）以保留数据可追溯性",
       "short_term_fix_template": "确认磁盘压力：若磁盘充裕，改为软删除（UPDATE SET is_deleted = 1）；若磁盘紧张，改用归档后删除的流程",

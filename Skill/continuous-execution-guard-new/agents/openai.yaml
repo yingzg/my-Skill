@@ -1,4 +1,0 @@
-interface:
-  display_name: "连续执行守卫"
-  short_description: "让复杂任务默认持续执行到完成态"
-  default_prompt: "使用 $continuous-execution-guard-new 持续推进这个任务，直到形成经过验证的可交付结果。"

@@ -9,9 +9,9 @@
 
 ## 1. 背景
 
-原始学习样本 `sonar-coverage-booster` 的核心目标是：当 SonarQube PR 质量门禁因为新增代码覆盖率不足而失败时，自动定位未覆盖代码、补写 JUnit5 + Mockito 测试、推送后轮询 SonarQube 验证达标。
+本工具最初的设计目标是：当 SonarQube PR 质量门禁因为新增代码覆盖率不足而失败时，自动定位未覆盖代码、补写 JUnit5 + Mockito 测试、推送后轮询 SonarQube 验证达标。
 
-复刻时不继续依赖公司内部 SonarQube、GitLab CI 和固定项目配置，而是改造为一个本地覆盖率提升 Skill：
+本工具不再依赖公司内部 SonarQube、GitLab CI 和固定项目配置，而是设计为一个本地覆盖率提升 Skill：
 
 ```text
 当前分支代码变更
@@ -304,7 +304,8 @@ python3 scripts/changed_lines.py --base-ref <base_ref> --source-root <source_roo
 1. 只统计新增/修改行。
 2. 只统计 Java 文件。
 3. 应用内置排除规则。
-4. 如果没有 Java 变更，直接结束。
+4. 未跟踪（untracked）的新 Java 文件按"全部行为新增"处理，同样纳入统计。
+5. 如果没有 Java 变更，直接结束。
 
 ### Step 2: 生成本地 JaCoCo 覆盖率报告
 
@@ -643,13 +644,15 @@ project_root
 职责：
 
 ```text
-从 git diff 提取当前分支相对 base_ref 的新增/修改 Java 行。
+从 git diff 提取当前分支相对 base_ref 的新增/修改 Java 行，
+并通过 git ls-files --others 补充未跟踪（untracked）的新 Java 文件。
 ```
 
 核心命令：
 
 ```bash
-git diff -U0 <base_ref>...HEAD -- '*.java'
+git diff -U0 <merge_base> -- ":(glob)**/*.java"
+git ls-files --others --exclude-standard   # 补充未跟踪的新 Java 文件
 ```
 
 输出：
@@ -734,6 +737,14 @@ git diff -U0 <base_ref>...HEAD -- '*.java'
 4. `verify(... any())` 且无 `argThat` / `ArgumentCaptor` / 具体参数断言
 5. 修改了 `source_root` 下文件
 6. 没有任何 assert 或 verify
+
+局限（正则静态检查，无法识别语义问题）：
+
+1. 断言值写错（代码返回 "FR" 却断言 "DE"）。
+2. 测试未真正命中目标分支（断言了但没走到该分支）。
+3. 断言与业务语义脱节（断言了无关字段）。
+
+这些需要依赖代码理解与业务可观察结果规则，脚本只兜底拦截最明显的伪覆盖。
 
 ### 13.7 summarize_report.py
 
@@ -877,7 +888,7 @@ GitLab MCP 只提供 MR 上下文和协作输出。
 
 ## 20. 推荐结论
 
-`local-coverage-booster` 应该复刻原 `sonar-coverage-booster` 的核心闭环能力，但去掉公司内部 SonarQube 依赖：
+`local-coverage-booster` 的核心设计是保留完整的闭环能力，但去掉公司内部 SonarQube 依赖：
 
 ```text
 SonarQube API 门禁修复

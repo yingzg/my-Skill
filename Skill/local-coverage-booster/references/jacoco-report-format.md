@@ -1,22 +1,22 @@
-# JaCoCo Report Format
+# JaCoCo 报告格式
 
-JaCoCo is the local coverage data source for this Skill.
+JaCoCo 是本 Skill 的本地覆盖率数据来源。
 
-Common Maven XML path:
+常见 Maven XML 路径：
 
 ```text
 target/site/jacoco/jacoco.xml
 ```
 
-Common Gradle XML path:
+常见 Gradle XML 路径：
 
 ```text
 build/reports/jacoco/test/jacocoTestReport.xml
 ```
 
-## XML Shape
+## XML 结构
 
-JaCoCo XML contains packages, source files, and line records:
+JaCoCo XML 包含 package、sourcefile 和 line 记录：
 
 ```xml
 <package name="com/example/order">
@@ -27,19 +27,19 @@ JaCoCo XML contains packages, source files, and line records:
 </package>
 ```
 
-Line fields:
+行字段：
 
-| Field | Meaning |
+| 字段 | 含义 |
 |---|---|
-| `nr` | Source line number. |
-| `mi` | Missed instructions. |
-| `ci` | Covered instructions. |
-| `mb` | Missed branches. |
-| `cb` | Covered branches. |
+| `nr` | 源码行号。 |
+| `mi` | 未覆盖指令数。 |
+| `ci` | 已覆盖指令数。 |
+| `mb` | 未覆盖分支数。 |
+| `cb` | 已覆盖分支数。 |
 
-## Local Coverage Interpretation
+## 本地覆盖率判读
 
-This Skill uses a pragmatic line-level interpretation:
+本 Skill 采用务实的行级判读：
 
 ```text
 coverable = mi + ci + mb + cb > 0
@@ -47,17 +47,17 @@ covered = ci > 0 or cb > 0
 uncovered = coverable and not covered
 ```
 
-Branch gaps matter even if the line is partially executed, but V1 reports changed-line coverage first. When a changed line has `mb > 0`, inspect the surrounding branch and add a branch-specific test if the remote gate cares about branch coverage.
+即使某行被部分执行，分支缺口也仍然重要，但 V1 优先报告变更行覆盖率。当变更行存在 `mb > 0` 时，检查其周围分支，并在远端门禁关注分支覆盖率时补充针对该分支的测试。
 
-## Difference From SonarQube
+## 与 SonarQube 的差异
 
-Local JaCoCo changed-line coverage is not guaranteed to exactly match remote SonarQube new-line coverage.
+本地 JaCoCo 变更行覆盖率不保证与远端 SonarQube 新增行覆盖率完全一致。
 
-Common causes:
+常见原因：
 
-- SonarQube exclusions differ from local defaults.
-- CI runs a different module/test profile.
-- Generated or Lombok code affects line mapping.
-- Remote pipeline merges target branch state differently.
+- SonarQube 排除规则与本地默认规则不同。
+- CI 运行了不同的模块/测试 profile。
+- 生成代码或 Lombok 代码影响行映射。
+- 远端流水线对目标分支的合并方式不同。
 
-Use `local_target_threshold` higher than the real gate threshold to absorb these differences.
+将 `local_target_threshold` 设为高于真实门禁阈值，以吸收这些差异。

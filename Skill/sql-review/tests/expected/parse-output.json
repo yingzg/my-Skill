@@ -8,8 +8,8 @@
     "dynamic_tags": [],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 10,
+    "line_end": 14
   },
   {
     "sql_id": "mappers.xml:findByOrderNo:1",
@@ -20,8 +20,8 @@
     "dynamic_tags": [],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 16,
+    "line_end": 20
   },
   {
     "sql_id": "mappers.xml:findAll:2",
@@ -32,8 +32,8 @@
     "dynamic_tags": [],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 22,
+    "line_end": 24
   },
   {
     "sql_id": "mappers.xml:countByStatus:3",
@@ -44,8 +44,8 @@
     "dynamic_tags": [],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 26,
+    "line_end": 28
   },
   {
     "sql_id": "mappers.xml:updateStatus:4",
@@ -56,8 +56,8 @@
     "dynamic_tags": [],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 34,
+    "line_end": 37
   },
   {
     "sql_id": "mappers.xml:updateStatusNoWhere:5",
@@ -68,8 +68,8 @@
     "dynamic_tags": [],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 39,
+    "line_end": 41
   },
   {
     "sql_id": "mappers.xml:deleteById:6",
@@ -80,8 +80,8 @@
     "dynamic_tags": [],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 43,
+    "line_end": 45
   },
   {
     "sql_id": "mappers.xml:deleteAll:7",
@@ -92,8 +92,8 @@
     "dynamic_tags": [],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 47,
+    "line_end": 49
   },
   {
     "sql_id": "mappers.xml:insertOrder:8",
@@ -104,8 +104,8 @@
     "dynamic_tags": [],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 51,
+    "line_end": 54
   },
   {
     "sql_id": "mappers.xml:findWithDetail:9",
@@ -116,8 +116,8 @@
     "dynamic_tags": [],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 60,
+    "line_end": 65
   },
   {
     "sql_id": "mappers.xml:findWithMultipleJoins:10",
@@ -128,8 +128,8 @@
     "dynamic_tags": [],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 67,
+    "line_end": 73
   },
   {
     "sql_id": "mappers.xml:findBySubQuery:11",
@@ -140,8 +140,8 @@
     "dynamic_tags": [],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 79,
+    "line_end": 85
   },
   {
     "sql_id": "mappers.xml:findByCondition:12",
@@ -161,8 +161,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 91,
+    "line_end": 97
   },
   {
     "sql_id": "mappers.xml:findBySingleIf:13",
@@ -178,8 +178,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 99,
+    "line_end": 102
   },
   {
     "sql_id": "mappers.xml:updateByIf:14",
@@ -199,8 +199,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 104,
+    "line_end": 109
   },
   {
     "sql_id": "mappers.xml:findByChoose:15",
@@ -232,8 +232,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 115,
+    "line_end": 124
   },
   {
     "sql_id": "mappers.xml:findByIds:16",
@@ -249,8 +249,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 130,
+    "line_end": 137
   },
   {
     "sql_id": "mappers.xml:batchInsert:17",
@@ -266,8 +266,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 139,
+    "line_end": 145
   },
   {
     "sql_id": "mappers.xml:deleteByIds:18",
@@ -283,8 +283,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 147,
+    "line_end": 152
   },
   {
     "sql_id": "mappers.xml:findByWhere:19",
@@ -312,8 +312,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 158,
+    "line_end": 165
   },
   {
     "sql_id": "mappers.xml:updateBySet:20",
@@ -337,8 +337,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 171,
+    "line_end": 179
   },
   {
     "sql_id": "mappers.xml:findByTrim:21",
@@ -362,8 +362,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 185,
+    "line_end": 191
   },
   {
     "sql_id": "mappers.xml:updateByTrimSet:22",
@@ -387,8 +387,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 193,
+    "line_end": 200
   },
   {
     "sql_id": "mappers.xml:findByBind:23",
@@ -404,8 +404,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 206,
+    "line_end": 210
   },
   {
     "sql_id": "mappers.xml:findByBindWithIf:24",
@@ -429,8 +429,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 212,
+    "line_end": 220
   },
   {
     "sql_id": "mappers.xml:findWithInclude:25",
@@ -450,8 +450,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 237,
+    "line_end": 240
   },
   {
     "sql_id": "mappers.xml:findByMixed:26",
@@ -487,8 +487,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 246,
+    "line_end": 259
   },
   {
     "sql_id": "mappers.xml:findUserById:27",
@@ -499,8 +499,8 @@
     "dynamic_tags": [],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 270,
+    "line_end": 272
   },
   {
     "sql_id": "mappers.xml:findUserWithOrders:28",
@@ -511,8 +511,8 @@
     "dynamic_tags": [],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 274,
+    "line_end": 282
   },
   {
     "sql_id": "mappers.xml:findUsersByKeyword:29",
@@ -544,8 +544,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 284,
+    "line_end": 293
   },
   {
     "sql_id": "mappers.xml:gh001_emptyForeach:30",
@@ -561,8 +561,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 304,
+    "line_end": 309
   },
   {
     "sql_id": "mappers.xml:gh002_foreachNestedIf:31",
@@ -590,8 +590,8 @@
     ],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 312,
+    "line_end": 321
   },
   {
     "sql_id": "mappers.xml:gh003_leftLike:32",
@@ -602,8 +602,8 @@
     "dynamic_tags": [],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 324,
+    "line_end": 327
   },
   {
     "sql_id": "mappers.xml:gh004_limitNoOrder:33",
@@ -614,7 +614,7 @@
     "dynamic_tags": [],
     "datasource": "UNKNOWN",
     "file": "tests/fixtures/mappers.xml",
-    "line_start": 0,
-    "line_end": 0
+    "line_start": 330,
+    "line_end": 334
   }
 ]

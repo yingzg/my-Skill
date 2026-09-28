@@ -147,6 +147,39 @@ def parse_diff(diff_text: str, source_root: str, excludes: list[str]) -> dict:
     }
 
 
+def get_untracked_java_files(project_root: Path) -> list[str]:
+    proc = run_git(project_root, ["ls-files", "--others", "--exclude-standard"])
+    if proc.returncode != 0:
+        return []
+    return [
+        normalize(line.strip())
+        for line in proc.stdout.splitlines()
+        if line.strip().endswith(".java")
+    ]
+
+
+def collect_untracked_changes(
+    project_root: Path, source_root: str, excludes: list[str]
+) -> list[dict]:
+    # git diff never includes untracked files, so enumerate them separately.
+    entries = []
+    for path in get_untracked_java_files(project_root):
+        if source_root and source_root not in path:
+            continue
+        if is_excluded(path, excludes):
+            continue
+        full = project_root / path
+        try:
+            content = full.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        line_count = len(content.splitlines())
+        if line_count == 0:
+            continue
+        entries.append({"path": path, "changed_lines": list(range(1, line_count + 1))})
+    return entries
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--base-ref", default="auto")
@@ -163,6 +196,10 @@ def main() -> int:
     except DiffError as exc:
         raise SystemExit(str(exc)) from exc
     result = parse_diff(diff_text, normalize(args.source_root), excludes)
+    result["files"].extend(
+        collect_untracked_changes(project_root, normalize(args.source_root), excludes)
+    )
+    result["files"].sort(key=lambda f: f["path"])
     result["base_ref"] = resolved_base_ref
     result["project_root"] = str(project_root)
     result["changed_files"] = len(result["files"])

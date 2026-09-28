@@ -105,7 +105,7 @@ gitlab_list_merge_request_discussions.json
 
 用途：
 
-1. 解析 GateBot / MiCR-like 门禁报告。
+1. 解析 GateBot / 门禁 Bot 类门禁报告。
 2. 判断已有评论，避免重复发布。
 3. 识别人工讨论、系统 note 和可能的 approval 线索。
 
@@ -211,20 +211,55 @@ gitlab_get_job_trace.txt
 下载 JUnit XML、coverage XML、test result JSON 或其他 CI artifact。
 ```
 
-建议 fixture 文件：
+fixture 文件：
 
 ```text
 junit_report.xml
-coverage_report.xml
+jacoco.xml
 test_case_result.json
+```
+
+解析脚本：
+
+```bash
+node --experimental-strip-types scripts/parse_junit_xml.ts <junit_report.xml>
+node --experimental-strip-types scripts/parse_coverage_xml.ts <jacoco.xml>
+```
+
+### JUnit XML 契约
+
+```xml
+<testsuite name="com.demo.OrderServiceTest" tests="5" errors="0" skipped="0" failures="1">
+  <testcase name="createOrder_shouldReject" classname="com.demo.OrderServiceTest">
+    <failure message="expected ..." type="java.lang.AssertionError">...</failure>
+  </testcase>
+</testsuite>
 ```
 
 说明：
 
-1. artifact 通常比 job trace 更结构化、更可靠。
-2. 首个版本可以只依赖 trace，但生产级诊断应补 artifact 支持。
+1. `parse_junit_xml.ts` 累加所有 `<testsuite>` 的 tests/failures/errors/skipped，提取含 `<failure>`/`<error>` 子元素的 testcase 明细。
+2. JUnit XML 通常是「单个测试类」的报告；全局通过率应优先用 job trace 的 `Total` 数字。
+
+### JaCoCo coverage XML 契约
+
+```xml
+<report name="order-service">
+  <package name="com/demo/order">...</package>
+  <counter type="LINE" missed="55" covered="45"/>
+</report>
+```
+
+说明：
+
+1. `parse_coverage_xml.ts` 提取 `<report>` 直接子级（最后一个 `</package>` 之后）的 counter，计算行/分支覆盖率。
+2. JaCoCo 的 line coverage 是「全量」覆盖，非「新增代码」覆盖；门禁诊断时须标注，Sonar `new_line_coverage` 才是新增代码口径。
+
+artifact 通常比 job trace 更结构化、更可靠。生产级诊断应优先 artifact。
 
 ## Sonar 指标 API
+
+**数据来源边界**：本 skill 只解析 Sonar measures，不内置 Sonar API 调用、不管理 token。真实模式下 measures 数据须由外部提供（MCP 扩展、独立脚本或用户手动喂 JSON）；缺失时覆盖率诊断降级为「从 JaCoCo artifact 自算」，且必须标注口径差异。
 
 期望结构：
 
@@ -252,6 +287,8 @@ sonar_measures_component.json
 1. 判断新增代码覆盖率是否达标。
 2. 计算覆盖率差距。
 3. 为“应补哪些测试”提供诊断依据。
+
+说明：本 skill 不解析 Sonar 的 bugs / vulnerabilities / code_smells 等代码规范维度。代码规范门禁缺失时显式标注，不得把「覆盖率达标」等同于「Sonar 质量门禁通过」。
 
 ## `gitlab_get_merge_request_approvals`
 

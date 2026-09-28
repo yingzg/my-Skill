@@ -11,8 +11,8 @@ PASS=0
 FAIL=0
 
 compare_json() {
-    jq --sort-keys 'if type == "array" then . else del(.generated_at, .run_id) end' "$1" > /tmp/jq_expected.json
-    jq --sort-keys 'if type == "array" then . else del(.generated_at, .run_id) end' "$2" > /tmp/jq_actual.json
+    jq --sort-keys 'if type == "array" then . else del(.generated_at, .run_id, .context.branch) end' "$1" > /tmp/jq_expected.json
+    jq --sort-keys 'if type == "array" then . else del(.generated_at, .run_id, .context.branch) end' "$2" > /tmp/jq_actual.json
     diff -u /tmp/jq_expected.json /tmp/jq_actual.json
 }
 
@@ -183,12 +183,12 @@ else
     echo -e "${RED}FAIL${NC} (script error)"; FAIL=$((FAIL + 1)); cat /tmp/test_stderr.log
 fi
 
-# Test 10c: run_review.py end-to-end dry run using mi-intl-scheme-style Mapper XML fixture
+# Test 10c: run_review.py end-to-end dry run using demo-scheme-style Mapper XML fixture
 echo -n "TEST: run_review dry-run e2e ... "
 E2E_WORK_DIR="/tmp/sql-review-e2e-test"
 rm -rf "$E2E_WORK_DIR"
 if python3 scripts/run_review.py \
-    --files "[\"$SCRIPT_DIR/fixtures/e2e/IcrmCommonMapper.xml\"]" \
+    --files "[\"$SCRIPT_DIR/fixtures/e2e/DemoCommonMapper.xml\"]" \
     --project-root "$SCRIPT_DIR/fixtures/e2e" \
     --project-src java \
     --base-branch origin/master \
@@ -244,6 +244,81 @@ if python3 scripts/parse_mapper.py --file tests/fixtures/mappers.xml 2>/dev/null
 else
     echo -e "${RED}FAIL${NC} (script error)"; FAIL=$((FAIL + 1))
 fi
+
+# Test 13: discover_schema.py parse_create_table (DDL 类型白名单 + 复合主键)
+echo -n "TEST: discover_schema parse_create_table ... "
+if (cd "$PROJECT_DIR/scripts" && python3 - <<'PY' 2>/dev/null
+import discover_schema
+ddl = "CREATE TABLE t (`id` bigint NOT NULL, `code` varchar(32), `status` enum('a','b'), `data` json, PRIMARY KEY (`id`), KEY `idx_code` (`code`))"
+s = discover_schema.parse_create_table(ddl)
+assert s["columns"]["id"] == "bigint"
+assert s["columns"]["code"] == "varchar"
+assert s["columns"]["status"] == "enum"
+assert s["columns"]["data"] == "json"
+assert s["primary_key"] == "id"
+assert s["primary_keys"] == ["id"]
+assert s["indexes"]["idx_code"] == ["code"]
+ddl2 = "CREATE TABLE t2 (`a` int, `b` int, PRIMARY KEY (`a`, `b`))"
+s2 = discover_schema.parse_create_table(ddl2)
+assert s2["primary_key"] == "a"
+assert s2["primary_keys"] == ["a", "b"]
+print("OK")
+PY
+); then
+    echo -e "${GREEN}PASS${NC}"; PASS=$((PASS + 1))
+else
+    echo -e "${RED}FAIL${NC}"; FAIL=$((FAIL + 1))
+fi
+
+# Test 14: match_rules.py schema 感知（主键豁免 + 隐式转换 + 跨表回归）
+echo -n "TEST: match_rules schema-aware ... "
+if (cd "$PROJECT_DIR/scripts" && python3 - <<'PY' 2>/dev/null
+import match_rules
+schemas = {
+    "orders": {"columns": {"id": "bigint", "user_id": "bigint", "code": "varchar", "del_flag": "tinyint"}, "primary_key": "id", "indexes": {}},
+    "users": {"columns": {"user_id": "bigint", "name": "varchar"}, "primary_key": "user_id", "indexes": {}},
+}
+assert match_rules._is_pk_eq_query("SELECT * FROM orders WHERE id = ?", "orders", schemas) is True
+assert match_rules._is_pk_eq_query("SELECT * FROM orders WHERE user_id = ?", "orders", schemas) is False
+assert match_rules._check_string_column_eq_number("SELECT * FROM orders WHERE code = 123", "orders", schemas) is True
+assert match_rules._check_string_column_eq_number("SELECT * FROM orders WHERE del_flag = 0", "orders", schemas) is False
+r101 = {"id": "R101", "match": {"method": "schema_soft_delete_guard", "pattern": "(?i)(status_code|is_deleted|statecode|del_flag|deleted|is_del|delete_flag)"}, "risk_level": "HIGH"}
+assert match_rules.match_rule("UPDATE orders SET status = ? WHERE id = ?", r101, "UPDATE", "orders", schemas) == (True, "HIGH")
+assert match_rules.match_rule("UPDATE orders SET status = ? WHERE id = ? AND del_flag = 0", r101, "UPDATE", "orders", schemas) == (False, "NONE")
+assert match_rules.match_rule("UPDATE users SET name = ? WHERE user_id = ?", r101, "UPDATE", "users", schemas) == (False, "NONE")
+assert match_rules.match_rule("UPDATE t SET x = ? WHERE id = ?", r101, "UPDATE", "UNKNOWN", schemas) == (False, "NONE")
+print("OK")
+PY
+); then
+    echo -e "${GREEN}PASS${NC}"; PASS=$((PASS + 1))
+else
+    echo -e "${RED}FAIL${NC}"; FAIL=$((FAIL + 1))
+fi
+
+# Test 15: parse_mapper.py 负向用例（broken XML 跳过 + --parse-errors-output 落盘带 raw_fragment）
+echo -n "TEST: parse_mapper negative (broken XML recorded) ... "
+BROKEN_XML=$(mktemp --suffix=.xml)
+BROKEN_ERR=$(mktemp)
+cat > "$BROKEN_XML" <<'EOF'
+<mapper namespace="com.example.BrokenMapper">
+    <select id="broken" resultType="map">
+        SELECT * FROM t WHERE amount < 100
+    </select>
+</mapper>
+EOF
+python3 scripts/parse_mapper.py \
+    --files "[\"$BROKEN_XML\", \"tests/fixtures/mappers.xml\"]" \
+    --parse-errors-output "$BROKEN_ERR" 2>/dev/null > "$TMP_ACTUAL"
+if jq -e 'length == 34' "$TMP_ACTUAL" >/dev/null 2>&1; then
+    if jq -e 'length == 1 and .[0].file and .[0].error and (.[0].raw_fragment | length > 0)' "$BROKEN_ERR" >/dev/null 2>&1; then
+        echo -e "${GREEN}PASS${NC}"; PASS=$((PASS + 1)); rm -f "$TMP_ACTUAL"
+    else
+        echo -e "${RED}FAIL${NC} (parse-errors-output missing raw_fragment)"; FAIL=$((FAIL + 1))
+    fi
+else
+    echo -e "${RED}FAIL${NC} (expected 34 parsed statements)"; FAIL=$((FAIL + 1))
+fi
+rm -f "$BROKEN_XML" "$BROKEN_ERR"
 
 echo ""
 if [ $FAIL -eq 0 ]; then

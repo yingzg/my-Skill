@@ -1,0 +1,15 @@
+{
+  "changes": [
+    {
+      "old_path": "backend/src/main/java/com/example/statistics/controller/StatisticsController.java",
+      "new_path": "backend/src/main/java/com/example/statistics/controller/StatisticsController.java",
+      "a_mode": "100644",
+      "b_mode": "100644",
+      "new_file": false,
+      "renamed_file": false,
+      "deleted_file": false,
+      "diff": "@@ -3,6 +3,7 @@ package com.example.statistics.controller;\n import com.example.common.result.Result;\n import com.example.statistics.mapper.StatisticsMapper;\n import org.springframework.web.bind.annotation.GetMapping;\n+import org.springframework.web.bind.annotation.RequestParam;\n import org.springframework.web.bind.annotation.RequestMapping;\n import org.springframework.web.bind.annotation.RestController;\n"
+    }
+  ]
+}
+

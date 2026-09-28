@@ -27,7 +27,8 @@ description: 本地 SQL 慢查询审查技能。自动提取当前分支变更�
 ### Step 0: 初始化
 
 ```bash
-SCRIPTS="/mnt/g/my-Skill/Skill/sql-review/scripts"
+# SCRIPTS 指向本 SKILL.md 同级目录下的 scripts/（替换为实际安装路径）
+SCRIPTS="/path/to/Skill/sql-review/scripts"
 export RUN_ID="run_$(date +%Y%m%d_%H%M%S)"
 export WORK_DIR="/tmp/sql_review/${RUN_ID}"
 ```
@@ -63,22 +64,27 @@ python3 "$SCRIPTS/run_review.py" \
   --output "$WORK_DIR/phase5_report.json"
 ```
 
-`--project-src` 应优先指向本次变更相关的 Java 源码模块，例如 `intl-scheme-infra/src/main/java`。多模块项目需要追到 Controller 时，可以扩大到更上层模块或仓库根目录，但当前调用链追踪是 grep/regex 递归扫描，整仓扫描可能耗时数分钟。
+`--project-src` 应优先指向本次变更相关的 Java 源码模块，例如 `demo-scheme-infra/src/main/java`。多模块项目需要追到 Controller 时，可以扩大到更上层模块或仓库根目录，但当前调用链追踪是 grep/regex 递归扫描，整仓扫描可能耗时数分钟。
 
-本地无数据库连接、或只想验证流程时加 `--dry-run`：
+真实 EXPLAIN 通过 Google Toolbox for Databases（`--prebuilt mysql --stdio`）执行 `EXPLAIN FORMAT=JSON`。**数据库凭据是必需前置条件**——未配置 `MYSQL_*` 时，本地模式必须中断并向用户索取凭据，禁止静默降级：
 
 ```bash
-python3 "$SCRIPTS/run_review.py" \
-  --files "$FILES_JSON" \
-  --project-root . \
-  --project-src src/main/java \
-  --base-branch origin/master \
-  --run-id "$RUN_ID" \
-  --work-dir "$WORK_DIR" \
-  --dry-run \
-  --mode local \
-  --output "$WORK_DIR/phase5_report.json"
+export MYSQL_HOST="<数据库 IP>"
+export MYSQL_PORT="3306"
+export MYSQL_USER="<用户名>"
+export MYSQL_PASSWORD="<密码>"
+export MYSQL_DATABASE="<库名>"
 ```
+
+LLM 深度分析（Phase 3 真实路径还原 + Phase 4b 风险定性）通过环境变量配置，未配置时自动降级为确定性分析（optimistic 展开 + 规则风险等级）：
+
+```bash
+export LLM_API_KEY="<API Key>"
+export LLM_BASE_URL="https://api.deepseek.com"   # 可选，默认 DeepSeek
+export LLM_MODEL="deepseek-v4-flash"             # 可选，默认 deepseek-v4-flash
+```
+
+> `--dry-run` 仅用于 `tests/run.sh` 回归测试（用写死的 mock EXPLAIN + golden file 验证流程），**不用于生产审查**——它产出的是伪造的 EXPLAIN 数据，报告不可信。生产审查必须真实 EXPLAIN。
 
 `run_review.py` 固定执行：
 
@@ -90,7 +96,7 @@ python3 "$SCRIPTS/run_review.py" \
 | 4 | 主表提取 | `phase3_5_tables.jsonl` |
 | 5 | DML 转 SELECT proxy | `phase3_5_proxy.jsonl` |
 | 6 | 静态规则匹配 | `phase4a_rules.json` |
-| 7 | EXPLAIN 或 dry-run EXPLAIN | `phase4b_explain.json` |
+| 7 | EXPLAIN（真实执行计划） | `phase4b_explain.json` |
 | 8 | 调用链上下文合并 | `phase4b_risk.json` |
 | 9 | 最终报告生成 | `phase5_report.json` |
 
@@ -138,6 +144,8 @@ build_report.py
 
 ## 降级处理速查表
 
+> **CI 模式永不中断**：下表「⚠️ 中断」仅适用于本地交互式模式。CI 模式下，所有「中断」一律降级为「记录到 `degradation_notes` + 继续执行 + `GATE: INCONCLUSIVE`」，exit code 保持 0，绝不因业务性失败卡住 pipeline。只有脚本自身崩溃（Python 异常/语法错误）才允许 CI 失败。
+
 | 场景 | 决策 | 复查标记 | 后续行为 |
 |------|:---:|---------|---------|
 | 非 git 仓库 (D0) | ⚠️ **中断** | — | 提示用户手动指定文件列表 |
@@ -168,6 +176,7 @@ build_report.py
 5. **调用链断裂、EXPLAIN 不可用、参数不确定必须进入复查清单或 finding 字段**：不可静默忽略。
 6. **最终风险等级不得输出 `UNCERTAIN`**：`UNCERTAIN` 只允许作为中间阶段信号。
 7. **完成代码或规则调整后必须运行 `bash tests/run.sh`**：端到端测试不通过不得声称完成。
+8. **本地模式缺数据库凭据必须中断向用户索取**：禁止静默降级为 `--dry-run` 或伪造 EXPLAIN 数据。
 
 ## MUST NOT DO
 
@@ -177,6 +186,7 @@ build_report.py
 4. **禁止覆盖已有的 `$WORK_DIR` 文件**：每次运行使用新的 `RUN_ID`
 5. **禁止修改 `references/rules/rules.json` 中的规则**：规则变更属于独立流程，不在审查管道内
 6. **禁止在 `SKILL.md` 内继续堆叠长篇内联编排代码**：新增机械流程应进入 `scripts/` 并补测试
+7. **禁止手工修正管道结论**：管道输出的风险等级是唯一权威；认为误报时只能补充 schema 来源让管道重跑，禁止手工读 DDL/源码改写结论
 
 ---
 
@@ -198,3 +208,34 @@ build_report.py
 **门禁结论**（CI 模式）：
 - `CRITICAL`、`HIGH` 或 `MEDIUM` 存在 → **BLOCK**
 - 仅 `LOW` / `PASS` → **PASS**
+- 分析不完整（规则缺失、全部 XML 解析失败）→ **INCONCLUSIVE**（exit 0，报告标注需人工介入）
+
+CI 模式下 `run_review.py` 用 `--mode ci` 调用时，`build_report.py` 向 stdout 输出 `GATE: PASS/BLOCK`，并生成 MR 评论 markdown：
+
+```bash
+python3 "$SCRIPTS/build_report.py" \
+  --run-id "$RUN_ID" \
+  --rules-file "$WORK_DIR/phase4a_rules.json" \
+  --explain-file "$WORK_DIR/phase4b_explain.json" \
+  --risk-file "$WORK_DIR/phase4b_risk.json" \
+  --base-branch "$BASE_BRANCH" \
+  --mode ci \
+  --mr-comment-output "$WORK_DIR/mr-comment.md"
+```
+
+然后回贴 MR 评论（**脚本内完成，不依赖 AI 运行时/MCP**）：
+
+```bash
+python3 "$SCRIPTS/post_mr_comment.py" --comment-file "$WORK_DIR/mr-comment.md"
+```
+
+`post_mr_comment.py` 从环境变量读配置（GitLab CI 内置变量优先，显式变量兜底）：
+
+| 配置 | 来源（优先级从左到右） |
+|------|------|
+| 认证 token | `GITLAB_TOKEN`（PRIVATE-TOKEN，优先，PAT 需 api scope）→ `CI_JOB_TOKEN`（JOB-TOKEN，兜底只读） |
+| API base | `CI_API_V4_URL` → `GITLAB_API_URL`（默认 `https://gitlab.com/api/v4`） |
+| 项目 ID | `CI_PROJECT_ID` → `GITLAB_PROJECT_ID` |
+| MR iid | `CI_MERGE_REQUEST_IID` → `GITLAB_MR_IID` |
+
+> **注意认证权限**：GitLab CI 的 `CI_JOB_TOKEN` 默认**仅有读权限**（可 clone），**不能评论 MR**（写操作返回 401）。回贴 MR 评论需二选一：① 在项目 `Settings → CI/CD → Variables` 配置 `GITLAB_TOKEN`（Personal Access Token，需 `api` scope，建议 masked）；② 在项目 `Settings → CI/CD → Token Access` 开启 job token 的 API 写权限。其余变量（`CI_API_V4_URL`/`CI_PROJECT_ID`/`CI_MERGE_REQUEST_IID`）在 GitLab CI 环境自动存在，零配置。

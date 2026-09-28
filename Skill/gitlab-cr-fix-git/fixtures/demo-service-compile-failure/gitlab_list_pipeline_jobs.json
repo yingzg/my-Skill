@@ -1,0 +1,10 @@
+[
+  {
+    "id": 88001,
+    "name": "maven-test",
+    "status": "failed",
+    "stage": "test",
+    "web_url": "https://gitlab.example.com/demo/demo-service/-/jobs/88001"
+  }
+]
+

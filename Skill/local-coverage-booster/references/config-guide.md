@@ -1,14 +1,14 @@
-# Configuration Guide
+# 配置指南
 
-Keep project configuration inside this Skill directory:
+将项目配置保存在本 Skill 目录内：
 
 ```text
 local-coverage-booster/config/projects.yaml
 ```
 
-Do not write configuration into a business repository unless the user explicitly changes this policy.
+除非用户明确修改此策略，否则不要将配置写入业务仓库。
 
-## Minimal Project Entry
+## 最小项目配置
 
 ```yaml
 projects:
@@ -21,32 +21,32 @@ projects:
     jacoco_xml: target/site/jacoco/jacoco.xml
 ```
 
-## Fields
+## 字段说明
 
-| Field | Required | Default | Meaning |
+| 字段 | 必填 | 默认值 | 含义 |
 |---|---|---|---|
-| `name` | yes | none | Human-readable project name. Also used as weak fallback matching. |
-| `project_root` | no | none | Exact local Git root. Best when path is stable. |
-| `remote_url_contains` | no | none | Stable substring from `git remote get-url origin`. Recommended for shared config. |
-| `base_ref` | no | `auto` | Ref used for changed-line comparison. Auto tries local main/master before common remote refs. |
-| `gate_threshold` | no | `60` | Real remote gate threshold. |
-| `local_target_threshold` | no | `gate_threshold + 8` | Local target with safety buffer. |
-| `coverage_command` | yes | auto-detect | Command that runs tests and generates JaCoCo XML. |
-| `jacoco_xml` | yes | auto-detect | JaCoCo XML path relative to project root. |
-| `test_command` | no | `coverage_command` | Command for local test verification. |
-| `source_root` | no | `src/main/java` | Production Java root. |
-| `test_root` | no | `src/test/java` | Test Java root. |
+| `name` | 是 | 无 | 人类可读的项目名。也用作弱匹配的兜底条件。 |
+| `project_root` | 否 | 无 | 精确的本地 Git 根目录。路径稳定时最合适。 |
+| `remote_url_contains` | 否 | 无 | 来自 `git remote get-url origin` 的稳定子串。共享配置时推荐使用。 |
+| `base_ref` | 否 | `auto` | 用于变更行对比的 ref。auto 会优先尝试本地 main/master，再尝试常见远端 ref。 |
+| `gate_threshold` | 否 | `60` | 真实的远端门禁阈值。 |
+| `local_target_threshold` | 否 | `gate_threshold + 8` | 带安全缓冲的本地目标。 |
+| `coverage_command` | 是 | 自动探测 | 运行测试并生成 JaCoCo XML 的命令。 |
+| `jacoco_xml` | 是 | 自动探测 | 相对项目根目录的 JaCoCo XML 路径。 |
+| `test_command` | 否 | `coverage_command` | 本地测试验证命令。 |
+| `source_root` | 否 | `src/main/java` | 生产 Java 根目录。 |
+| `test_root` | 否 | `src/test/java` | 测试 Java 根目录。 |
 
-## Matching Order
+## 匹配顺序
 
-1. Exact `project_root`.
-2. `remote_url_contains`.
-3. `name` equals project directory name.
-4. Auto-detection.
+1. 精确匹配 `project_root`。
+2. `remote_url_contains`。
+3. `name` 等于项目目录名。
+4. 自动探测。
 
-## Multi-Module Maven
+## 多模块 Maven
 
-Use module-specific commands and paths:
+使用模块专用命令和路径：
 
 ```yaml
 projects:
@@ -62,4 +62,4 @@ projects:
     jacoco_xml: order-service/target/site/jacoco/jacoco.xml
 ```
 
-Prefer one entry per module when one MR only changes a known module. This keeps reports smaller and feedback faster.
+当一个 MR 只改动已知模块时，建议每个模块一个配置项。这样报告更小、反馈更快。

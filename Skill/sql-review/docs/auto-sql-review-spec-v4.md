@@ -544,7 +544,7 @@ extract_tables.py 的输出逻辑：
   scheme.users: 3条     → 与 products 合并 → Batch 2 (6+3=9条)
   icrm.base_info: 8条   → Batch 3 (8条)
   icrm.apply_line: 4条  → 与 base_info 合并 → Batch 3 (8+4=12条)
-  intlcrm.customers: 4条 → 独立批次 → Batch 4 (4条, 允许<MIN)
+  democrm.customers: 4条 → 独立批次 → Batch 4 (4条, 允许<MIN)
 ```
 
 ### 11.4 快速通道与深度分析的边界
@@ -568,6 +568,8 @@ extract_tables.py 的输出逻辑：
 ---
 
 ## 12. SQL 审查规则体系
+
+> **落地说明**：本节为 V4 设计草案。最终 `references/rules/rules.json` 落地时做了调整：① 规则精简为 15 条（R001-R011 性能 + R101-R104 数据安全），非草案的「40+ 通用 + 7 条 DML」；② 字段名 `rule_id`→`id`、`match.type`→`match.method`、`short_term_fix`→`short_term_fix_template`；③ 「缺失 WHERE」拆分为 R007（SELECT 无 WHERE）与 R102（UPDATE/DELETE 无 WHERE）两条独立规则，未用 severity_by_type 统一。**以 rules.json 为准。**
 
 ### 12.1 规则引擎架构
 

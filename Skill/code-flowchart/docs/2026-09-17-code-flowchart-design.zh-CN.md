@@ -92,7 +92,7 @@ summary → main_paths（优先 high/medium）→ coverage（判断能否说完�
 
 - 标签 = `ClassSimpleName.methodName`（从 `CodeLocation.symbol` 剥包前缀）。
 - `symbol` 缺失时回退 `file:line`。
-- **绝不用裸方法名**——v0.3.2 专门修过 `preCheckRebate --calls--> preCheckRebate` 的同名歧义，流程图上重蹈会毁掉演示可信度。
+- **绝不用裸方法名**——v0.3.2 专门修过 `preCheckPayment --calls--> preCheckPayment` 的同名歧义，流程图上重蹈会毁掉演示可信度。
 
 ### 6.2 节点角色着色（4 桶，复用 role-classifier 语义）
 
@@ -190,7 +190,7 @@ Skill/code-flowchart/
 │   ├── sequence-diagram-mapping.md       # folded_steps→时序图消息映射
 │   └── explore-symbol-fields.md          # 引用 schema-contract 关键字段
 ├── examples/
-│   └── precheck-rebate.md                # 真实 eval case 输入→输出
+│   └── precheck-payment.md                # 真实 eval case 输入→输出
 └── docs/
     └── 2026-09-17-code-flowchart-design.zh-CN.md
 ```
@@ -210,13 +210,13 @@ Skill/code-flowchart/
 
 ### 9.1 golden case
 
-基准输入：`preCheckRebate` eval case。
+基准输入：`preCheckPayment` eval case。
 
 ```text
-SettlementBillCommandProviderImpl.preCheckRebate
-  → SettlementBillCommandServiceImpl.preCheckRebate
-  → SettlementAndRebateServiceImpl.preCheckRebate
-  → SettlementAndRebateServiceImpl.executePreCheckRebate
+OrderBillCommandProviderImpl.preCheckPayment
+  → OrderBillCommandServiceImpl.preCheckPayment
+  → OrderAndPaymentServiceImpl.preCheckPayment
+  → OrderAndPaymentServiceImpl.executePreCheckPayment
 ```
 
 断言：
@@ -256,5 +256,5 @@ SettlementBillCommandProviderImpl.preCheckRebate
 2. `references/` 映射表（角色颜色、边标签、字段引用）。
 3. `templates/flowchart.html`（内联 mermaid.js + UI chrome）。
 4. `templates/flowchart-config.schema.md`。
-5. `examples/precheck-rebate.md` golden case。
+5. `examples/precheck-payment.md` golden case。
 6. 边界 case 验证。

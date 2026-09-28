@@ -25,6 +25,7 @@ Golden Cases 是 `online-troubleshoot` Skill 的回归压力测试集，不是�
 - `GC-003-partial-success.md`：信息缺失和数据库不可用，要求 Fail-Closed 输出 `partial_success`。
 - `GC-004-trace-driven.md`：Trace 驱动排查，验证日志驱动快速路径 + 三层建议（P0/P1/P2）输出。
 - `GC-005-trace-partial.md`：Trace API 不可用时的降级行为，验证快速路径失败后退回标准流程。
+- `GC-006-code-intelligence.md`：code-intelligence 适配，验证步骤 3 用 MCP 工具检索、source=code_intel 标记、diagnostics 映射到 restricted_info。
 
 ## 通用失败判据
 

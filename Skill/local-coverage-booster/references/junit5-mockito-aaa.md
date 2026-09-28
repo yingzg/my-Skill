@@ -1,14 +1,14 @@
 # JUnit5 + Mockito + AAA
 
-AAA means:
+AAA 的含义：
 
 ```text
-Arrange: prepare inputs, mocks, and state.
-Act: call the public method under test.
-Assert: verify observable business behavior.
+Arrange: 准备输入、mock 和状态。
+Act: 调用被测 public 方法。
+Assert: 验证业务可观察结果。
 ```
 
-## Default Shape
+## 默认结构
 
 ```java
 @ExtendWith(MockitoExtension.class)
@@ -41,7 +41,7 @@ class OrderServiceTest {
 }
 ```
 
-## Exception Branch
+## 异常分支
 
 ```java
 @Test
@@ -61,26 +61,38 @@ void createOrder_missingSku_shouldThrowBizException() {
 }
 ```
 
-`Act` and `Assert` can be combined for `assertThrows`, because the assertion must wrap the action.
+`assertThrows` 可将 `Act` 与 `Assert` 合并，因为断言必须包裹动作。
 
-## Mockito Rules
+## Mockito 规则
 
-- Prefer exact values or `argThat` for important parameters.
-- Use `ArgumentCaptor` when the saved/published object has many fields.
-- Use `lenient()` only when a stub is intentionally not used by every path.
-- Avoid `@SpringBootTest` unless existing project tests already use it or the user asks.
+- 重要参数优先使用精确值或 `argThat`。
+- 当保存/发布的对象字段很多时，使用 `ArgumentCaptor`。
+- 仅当某个 stub 有意不被每条路径使用时，才使用 `lenient()`。
+- 除非项目现有测试已使用或用户要求，否则避免 `@SpringBootTest`。
 
-## Good Assertions
+## Mockito 高级用法
 
-- Return status, amount, count, country, type, error code.
-- Exception type and message/code.
-- Repository saved entity fields.
-- Client/gateway request fields.
-- Producer message topic/key/body.
+| 场景 | 用法 |
+|---|---|
+| 捕获复杂参数后逐字段断言 | `ArgumentCaptor<Order> captor = ArgumentCaptor.forClass(Order.class); verify(repo).save(captor.capture()); assertEquals(..., captor.getValue().getSkuId());` |
+| stub 抛异常（测下游异常分支） | `doThrow(new BizException("...")).when(client).queryPrice(any());` |
+| 处理 void 方法 | `doNothing().when(service).notify(any());` 或 `doReturn(value).when(mock).method();` |
+| 约束调用次数 | `verify(repo, times(2)).save(any());` / `verify(repo, never()).save(any());` / `verify(repo, atMostOnce()).save(any());` |
+| 验证调用顺序 | `InOrder inOrder = inOrder(repo, client); inOrder.verify(repo).findById(any()); inOrder.verify(client).notify(any());` |
+| 可选 stub（非每条路径都用到） | `lenient().when(client.query(any())).thenReturn(resp);` |
+| 时间可控 | `when(clock.instant()).thenReturn(fixedInstant);` |
 
-## Weak Assertions
+## 好的断言
 
-Avoid:
+- 返回状态、金额、数量、国家、类型、错误码。
+- 异常类型和消息/错误码。
+- Repository 保存实体的字段。
+- Client/gateway 请求字段。
+- Producer 消息的 topic/key/body。
+
+## 弱断言
+
+避免：
 
 ```java
 assertTrue(true);
@@ -88,4 +100,4 @@ assertNotNull(result);
 verify(repository).save(any());
 ```
 
-These may execute code but do not prove business behavior.
+这些虽然可能执行了代码，但无法证明业务行为。

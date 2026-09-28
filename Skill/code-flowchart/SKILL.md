@@ -37,4 +37,4 @@ description: 把 Code-intelligence 的 code.explore_symbol 返回的调用链（
 - 契约：`templates/flowchart-config.schema.md`
 - 映射：`references/role-color-mapping.md`、`references/relation-label-mapping.md`、`references/sequence-diagram-mapping.md`
 - 字段：`references/explore-symbol-fields.md`
-- 示例：`examples/precheck-rebate.md`
+- 示例：`examples/precheck-payment.md`

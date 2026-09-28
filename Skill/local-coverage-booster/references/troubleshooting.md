@@ -1,79 +1,79 @@
-# Troubleshooting
+# 常见问题排查
 
-## JaCoCo XML Missing
+## JaCoCo XML 缺失
 
-Symptoms:
+症状：
 
 ```text
-Command succeeded but JaCoCo XML was not found
+命令执行成功但未找到 JaCoCo XML
 ```
 
-Check:
+检查：
 
-1. Maven can download and run `jacoco-maven-plugin`, or the Gradle JaCoCo plugin exists.
-2. `coverage_command` attaches the JaCoCo agent before tests and then generates XML.
-3. `jacoco_xml` path matches the module being tested.
+1. Maven 可以下载并运行 `jacoco-maven-plugin`，或 Gradle 存在 JaCoCo 插件。
+2. `coverage_command` 在测试前挂载 JaCoCo agent，随后生成 XML。
+3. `jacoco_xml` 路径与被测模块匹配。
 
-Common Maven command:
+常见 Maven 命令：
 
 ```bash
 mvn org.jacoco:jacoco-maven-plugin:0.8.12:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.12:report
 ```
 
-Common Gradle command:
+常见 Gradle 命令：
 
 ```bash
 ./gradlew test jacocoTestReport
 ```
 
-## Coverage Does Not Move
+## 覆盖率没有变化
 
-Possible causes:
+可能原因：
 
-- Test did not execute the changed method.
-- Test class naming does not match Surefire includes.
-- Maven command ran a different module.
-- JaCoCo XML path points to a stale report.
-- The uncovered line is not coverable bytecode.
-- The code path requires different branch input.
+- 测试没有执行到变更的方法。
+- 测试类命名不符合 Surefire includes。
+- Maven 命令运行了错误的模块。
+- JaCoCo XML 路径指向了过期报告。
+- 未覆盖行不是可覆盖的字节码。
+- 代码路径需要不同的分支输入。
 
-Actions:
+处理步骤：
 
-1. Run the specific test class.
-2. Confirm the test appears in test logs.
-3. Delete old JaCoCo report and regenerate.
-4. Verify `coverage_command`, module path, and `jacoco_xml`.
-5. Inspect `mb/cb` branch counters for partial branch coverage.
+1. 运行具体的测试类。
+2. 确认测试出现在测试日志中。
+3. 删除旧 JaCoCo 报告并重新生成。
+4. 检查 `coverage_command`、模块路径和 `jacoco_xml`。
+5. 检查 `mb/cb` 分支计数器是否存在部分分支覆盖。
 
 ## Mockito UnnecessaryStubbingException
 
-Move stubs into only the test methods that use them, or use `lenient()` for intentionally optional stubs.
+将 stub 移到实际使用它的测试方法内，或对有意可选的 stub 使用 `lenient()`。
 
-Prefer:
+优先：
 
 ```java
 lenient().when(client.query(any())).thenReturn(response);
 ```
 
-only when the same setup supports multiple branches.
+仅在相同 setup 支持多个分支时使用。
 
-## Tests Need Real Infrastructure
+## 测试需要真实基础设施
 
-Do not connect to real DB/Redis/MQ/HTTP.
+不要连接真实 DB/Redis/MQ/HTTP。
 
-Options:
+可选方案：
 
-1. Mock repository/client/gateway/producer.
-2. Test the branch through a smaller public method.
-3. Mark the line as not suitable for V1 local unit testing in the report.
+1. Mock repository/client/gateway/producer。
+2. 通过更小的 public 方法测试该分支。
+3. 在报告中标记该行不适合 V1 本地单元测试。
 
-## Local Passes But Remote Fails
+## 本地通过但远端失败
 
-Common reasons:
+常见原因：
 
-- SonarQube exclusions differ.
-- CI runs another Maven profile.
-- CI target branch differs from local `base_ref`.
-- Multi-module report path differs.
+- SonarQube 排除规则不同。
+- CI 运行了另一个 Maven profile。
+- CI 目标分支与本地 `base_ref` 不同。
+- 多模块报告路径不同。
 
-Raise `local_target_threshold` and align `coverage_command` with CI.
+提高 `local_target_threshold`，并将 `coverage_command` 与 CI 对齐。

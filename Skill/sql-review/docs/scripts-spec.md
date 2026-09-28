@@ -10,19 +10,23 @@
 
 | # | 脚本 | Phase | 输入 | 输出 | 降级 |
 |:-:|------|:---:|------|------|:---:|
-| 1 | `extract_changes.py` | 0 | base 分支名 | 变更文件列表（内存） | D0中断 / D1优雅退出 |
+| 1 | `extract_changes.py` | 0 | base 分支名 | 变更文件列表 + `changed_statements`（SQL 块级 diff） | D0中断 / D1优雅退出 |
 | 2 | `discover_datasource.py` | 0.5 | 项目根目录 | 数据源映射表（内存） | D4降级 |
 | 3 | `parse_mapper.py` | 1 | XML 文件 + 数据源映射 | SqlRecord 列表（内存） | D2降级 / D3中断 |
 | 4 | `trace_callchain.py` | 2 | 方法全限定名列表 + 源码目录 | 调用链（内存） | D8降级 |
-| 5 | `resolve_dynamic_sql.py` | 3 | SqlRecord[] + 调用链（LLM） | resolved_sql（内存） | D9降级 |
-| 6 | `extract_tables.py` | 3.5a | resolved_sql[] | main_table 列表（内存） | — |
-| 7 | `dml_to_select_proxy.py` | 3.5b | resolved_sql[]（仅 DML） | proxy_sql 列表（内存） | — |
-| 8 | `match_rules.py` | 4a | sqls[] + rules.json | 规则结果 + 风险分类（JSON） | D10中断 / D11中断 / D12中断 |
-| 9 | `execute_explain.py` | 4b | sqls[] + datasource | EXPLAIN 结果（JSON） | D5降级 / D6降级 / D7降级 |
-| 10 | `build_report.py` | 5 | 4a_results + 4b_results + 4b_risk | final_report（JSON + 终端 + MR） | D16中断 |
-| 11 | `run_review.py` | 0-5 | Mapper XML 文件列表 + 项目根目录 | 全链路产物 + final_report | 继承各阶段策略 |
+| 5 | `resolve_dynamic_sql.py` | 3 | SqlRecord[] | resolved_sql（确定性展开，标 needs_llm） | D9降级 |
+| 6 | `llm_resolve.py` | 3 | resolve 输出 + 调用链 | 最终 resolved_sql（LLM 真实路径还原） | D9降级 |
+| 7 | `extract_tables.py` | 3.5a | resolved_sql[] | main_table 列表（内存） | — |
+| 8 | `discover_schema.py` | 3.5c | 表名列表 | 表 DDL（columns/主键/索引） | D5降级 |
+| 9 | `dml_to_select_proxy.py` | 3.5b | resolved_sql[]（仅 DML） | proxy_sql 列表（内存） | — |
+| 10 | `match_rules.py` | 4a | sqls[] + rules.json + schema | 规则结果 + 风险分类（JSON） | D10中断 / D11中断 / D12中断 |
+| 11 | `execute_explain.py` | 4b | sqls[] + datasource + schema | EXPLAIN 结果（JSON） | D5降级 / D6降级 / D7降级 |
+| 12 | `llm_risk_analysis.py` | 4b | rules + explain + risk | 风险定性（预筛 + 分批 LLM） | D13降级 / D14降级 |
+| 13 | `build_report.py` | 5 | 4a_results + 4b_results + 4b_risk | final_report + GATE + mr-comment | D16中断 |
+| 14 | `run_review.py` | 0-5 | Mapper XML 文件列表 + 项目根目录 | 全链路产物 + final_report | 继承各阶段策略 |
+| 15 | `post_mr_comment.py` | CI | mr-comment.md | 回贴 MR 评论（GitLab API） | 回贴失败仅告警 |
 
-> 共 11 个脚本。`run_review.py` 是推荐主入口，负责把 1-10 号脚本串成可测试的端到端流程。Phase 4b 的 LLM 风险定性不再放在 `SKILL.md` 内联执行；当前主流程先输出确定性报告，LLM 深度复核作为后续人工分析入口。
+> 共 15 个脚本（12 个确定性脚本 + 2 个 LLM 脚本 + 1 个 CI 回贴脚本）+ 2 个公共模块（`db_client.py`、`llm_client.py`）。`run_review.py` 是推荐主入口。LLM 在 2 个环节介入：① `llm_resolve.py`（Phase 3，判断动态 `<if>/<choose>` 条件激活状态，真实路径还原）；② `llm_risk_analysis.py`（Phase 4b，合并规则 + EXPLAIN + 调用链，生成自然语言风险描述与分级修复建议）。两者通过 `llm_client.py`（OpenAI-compatible 客户端，默认 DeepSeek deepseek-v4-flash）调用，未配置 `LLM_API_KEY` 时自动降级为确定性分析。`discover_schema.py`（Phase 3.5c）通过 `db_client.py` 获取表 DDL，供 schema 感知规则与 EXPLAIN 参数化使用。`post_mr_comment.py` 在 CI 模式用 `GITLAB_TOKEN`（优先，PAT 需 api scope）或 `CI_JOB_TOKEN`（兜底，只读）回贴 MR 评论。
 
 ---
 
@@ -366,7 +370,7 @@ python3 resolve_dynamic_sql.py [--mode optimistic|resolve] [--skip-finalize]
 #### `optimistic` 模式（默认）
 
 对所有 `<if>` / `<choose>` 条件标签采用乐观假设（`test` 表达式结果为 `true`），直接展开标签内容。
-`<foreach>` 标签展开为 `(?, ?, ...)` 占位符。
+`<foreach>` 标签展开为 `open + body + close`（如 `IN (#{id})`），body 内 `#{...}` 后续统一参数化为 `?`（不展开为多个 `?`）。
 `<bind>` / `<include>` 保留原样（确定性脚本已有展开逻辑）。
 
 不适合需考虑实际参数是否传值的场景；适合快速静态分析。
@@ -613,7 +617,7 @@ clean = finalize_sql("SELECT * FROM t WHERE id = #{id}")
 2. 对于输入中的每条 SQL：
    - 确定 `statement_type`。
    - 对于每一条规则，检查 `applicable_to` → 如果不适用则跳过。
-   - 对 `proxy_sql`（DML 时）或 `resolved_sql`（SELECT 时）执行 `pattern` 正则匹配。
+   - 对 `resolved_sql`（解析后、保留 DML 类型语义）执行 `pattern` 正则匹配。`proxy_sql`（DML 转 SELECT）仅用于 EXPLAIN，不参与规则匹配。
    - 如果匹配：在 `severity_by_type` 中按该语句类型查阅严重等级（如果没找到条目则使用 `default_severity`）。
    - 汇总：在所有匹配的规则中取最高严重等级。
    - 分类：`LOW` / `MEDIUM` / `HIGH` / `CRITICAL` / `UNCERTAIN`（无匹配）。
@@ -898,7 +902,7 @@ CI 模式（`--mode ci`）额外：
 |------|:---:|------|
 | 输入文件缺失 | 1 | 中断，并给出缺失文件清单 |
 | JSON 解析失败 | 1 | 列出无法解析的文件 |
-| Schema 校验不匹配 | 1 | D16：将 3 份原始中间文件转存至 `/tmp/sql-review-dump/`，stderr 报告 |
+| Schema 校验不匹配 | 1 | D16：中断并打印 `$WORK_DIR` 路径，中间文件保留在 work_dir 供人工排查 |
 | 无 SQL 可报告（全部降级失败） | 0 | 输出空报告，`gate: PASS`，`review_needed` 非空 |
 
 # ## 10. 9 不允许做什么
@@ -914,7 +918,7 @@ CI 模式（`--mode ci`）额外：
 - **门禁 PASS**：全部 LOW → 验证 `gate.decision=PASS`
 - **去重**：将两条重复的降级标记输入 → 验证 `review_needed` 中仅出现一次
 - **缺失输入**：运行但不给 `--explain-file` → 验证 exit 1
-- **格式不合格的 JSON**：给出一个被截断的 phase4b_risk.json → 验证 D16 dump
+- **格式不合格的 JSON**：给出一个被截断的 phase4b_risk.json → 验证 D16 中断且打印 work_dir 路径
 
 ---
 
@@ -981,7 +985,7 @@ CI 模式（`--mode ci`）额外：
 
 ### 11.6 对应测试样例
 
-- **端到端 dry-run**：输入 `tests/fixtures/e2e/IcrmCommonMapper.xml`，验证最终报告包含 3 条 finding。
+- **端到端 dry-run**：输入 `tests/fixtures/e2e/DemoCommonMapper.xml`，验证最终报告包含 3 条 finding。
 - **调用链合并**：验证 `selectByCnId` 的 `call_chain` 进入最终 report，且 `call_chain_broken=false`。
 - **接口注入链路**：实现类 `implements` 接口、上层按接口注入时，仍能追到更完整的调用链。
 - **产物路径**：验证 `artifacts.rules_file`、`artifacts.explain_file` 指向对应阶段文件。

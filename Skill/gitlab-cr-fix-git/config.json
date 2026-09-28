@@ -1,0 +1,25 @@
+{
+  "gate": {
+    "bot_usernames": ["MockGateBot", "GateBot", "QualityBot"],
+    "min_effective_comments": 5,
+    "test_pass_rate_threshold": 100
+  },
+  "pipeline": {
+    "test_job_patterns": [
+      "sonar-scan\\+test",
+      "unit[-_ ]?test",
+      "\\btest\\b",
+      "maven.*test",
+      "npm.*test"
+    ],
+    "build_job_patterns": [
+      "\\bbuild\\b",
+      "\\bcompile\\b",
+      "mvn.*(package|install|compile)",
+      "gradle.*(build|assemble)"
+    ]
+  },
+  "sonar": {
+    "coverage_threshold": 60
+  }
+}

@@ -170,8 +170,7 @@ def resolve(raw_sql: str, dynamic_tags: list[dict],
         sql = PARAM_RE.sub('?', sql)
         sql = _ws(sql)
 
-        needs_llm = (len(unresolved) > 0 or
-                     (dynamic_tags and len(dynamic_tags) > 0))
+        needs_llm = len(unresolved) > 0
 
         if dynamic_tags:
             uncertain.append("dynamic_tags_present")
@@ -231,6 +230,8 @@ def finalize_sql(resolved_with_tags: str) -> str:
     sql = _process_where_tag(sql)
     sql = _process_set_tag(sql)
     sql = _process_trim_tag(sql)
+
+    sql = sql.replace('&gt;', '>').replace('&lt;', '<').replace('&amp;', '&')
 
     sql = _ws(sql)
     return sql

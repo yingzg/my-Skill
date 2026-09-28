@@ -1,0 +1,107 @@
+# ============================================================
+# SQL Review CI 配置（供项目 include 引用）
+# 位置：yingzg-group/my-skill 仓库 Skill/sql-review/ci/gitlab-ci-sql-review.yml
+#
+# 使用方式（项目 .gitlab-ci.yml）：
+#   include:
+#     - project: 'yingzg-group/my-skill'
+#       file: 'Skill/sql-review/ci/gitlab-ci-sql-review.yml'
+#       ref: master
+#
+# 前置条件：
+#   1. 项目 stages 需包含 scan
+#   2. 自建 runner 打 tag self-hosted，且能访问宿主机 MySQL(docker0 网关)
+#   3. 宿主机预下载 toolbox 并通过 volume 挂载进 job 容器
+#   4. GitLab CI/CD Variables 配置 MYSQL_PORT/USER/PASSWORD/DATABASE
+# ============================================================
+
+sql-review:
+  stage: scan
+  image: python:3.11-slim
+  needs: []
+  tags:
+    - self-hosted                      # 强制自建 runner（能连宿主机 MySQL）
+  variables:
+    GIT_DEPTH: 0                       # extract_changes.py 需要完整历史做 diff
+    TOOLBOX_BIN: "/usr/local/bin/toolbox"   # 宿主机预下载后 volume 挂载
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - "backend/**/*.xml"
+        - "backend/**/*.java"
+      when: on_success
+    - when: never
+  before_script:
+    # 0. 安装 git（python:3.11-slim 镜像不带 git）
+    - apt-get update -qq && apt-get install -y -qq git
+    # 1. 用 Job Token 从独立仓库拉取 skill（需配置跨项目 Job Token 权限）
+    - git clone --depth 1 "https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/yingzg-group/my-skill.git" /tmp/my-skill
+    - export SKILL="/tmp/my-skill/Skill/sql-review"
+    # 2. MySQL 走 docker0 网关（runner 是 docker executor，宿主机 MySQL 映射 3306）
+    - export MYSQL_HOST="${MYSQL_HOST:-172.17.0.1}"
+    - export MYSQL_PORT="${MYSQL_PORT:-3306}"
+  script:
+    # 1. fetch MR 目标分支（保证 origin/<base> 存在）
+    - git fetch origin "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+
+    # 2. 提取变更的 mapper XML 及其变更的 statement（SQL 块级 diff，只审变更的 SQL）
+    - |
+      CHANGES_JSON=$(python3 "$SKILL/scripts/extract_changes.py" \
+        --base "origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" \
+        --repo backend)
+      FILES_JSON=$(echo "$CHANGES_JSON" | python3 -c "import sys,json; print(json.dumps([f['path'] for f in json.load(sys.stdin)['files']]))")
+      CHANGED_STATEMENTS=$(echo "$CHANGES_JSON" | python3 -c "import sys,json; d=json.load(sys.stdin); print(json.dumps({f['path']: f.get('changed_statements', []) for f in d['files']}))")
+
+    # 3. 无 mapper 变更则正常跳过
+    - |
+      if [ "$FILES_JSON" = "[]" ]; then
+        echo "no SQL changes detected, skip"
+        exit 0
+      fi
+
+    # 4. 端到端审查（CI 模式：业务失败自动降级 exit 0；直接产出报告 + MR 评论）
+    - |
+      export RUN_ID="run_${CI_PIPELINE_ID}_${CI_JOB_ID}"
+      export WORK_DIR="sql_review/${RUN_ID}"
+      python3 "$SKILL/scripts/run_review.py" \
+        --files "$FILES_JSON" \
+        --project-root backend \
+        --project-src src/main/java \
+        --base-branch "origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" \
+        --run-id "$RUN_ID" \
+        --work-dir "$WORK_DIR" \
+        --mode ci \
+        --changed-statements "$CHANGED_STATEMENTS" \
+        --output "$WORK_DIR/phase5_report.json" \
+        --mr-comment-output "$WORK_DIR/mr-comment.md"
+
+    # 5. 回贴 MR 评论（回贴失败仅告警，不阻断门禁判断）
+    - python3 "$SKILL/scripts/post_mr_comment.py" --comment-file "$WORK_DIR/mr-comment.md" || echo "WARN: 回贴 MR 评论失败（检查 GITLAB_TOKEN / job token 写权限）"
+
+    # 6. 门禁判定：读报告 gate.conclusion（PASS / BLOCK / INCONCLUSIVE）
+    - |
+      if [ -f "$WORK_DIR/phase5_report.json" ]; then
+        GATE=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('gate',{}).get('conclusion','UNKNOWN'))" "$WORK_DIR/phase5_report.json")
+      else
+        GATE="INCONCLUSIVE"
+      fi
+      echo "SQL Review Gate: ${GATE:-UNKNOWN}"
+      case "$GATE" in
+        BLOCK)
+          echo "发现 MEDIUM 及以上风险，阻断 MR 合并"
+          exit 1
+          ;;
+        PASS)
+          echo "SQL 审查通过"
+          exit 0
+          ;;
+        *)
+          echo "门禁结论：${GATE}（分析不完整），不阻断，请人工复查报告"
+          exit 0
+          ;;
+      esac
+  artifacts:
+    when: always
+    paths:
+      - sql_review/*/phase5_report.json
+    expire_in: 7 days

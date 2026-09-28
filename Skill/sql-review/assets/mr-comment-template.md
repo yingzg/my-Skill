@@ -1,5 +1,5 @@
-# MR Comment Template
+# MR 评论模板
 
-Placeholder for CI-mode merge request comment template.
+CI 模式下合并请求评论模板的占位文件。
 
-Referenced by `build_report.py` for formatting MR comments in CI pipeline.
+供 `build_report.py` 在 CI 流水线中格式化 MR 评论时引用。

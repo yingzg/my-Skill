@@ -25,39 +25,39 @@
 | `Skill/code-flowchart/references/relation-label-mapping.md` | relation_type → 边标签 |
 | `Skill/code-flowchart/references/sequence-diagram-mapping.md` | folded_steps → 时序图消息映射 |
 | `Skill/code-flowchart/references/explore-symbol-fields.md` | 引用 schema-contract 关键字段 |
-| `Skill/code-flowchart/examples/precheck-rebate.md` | golden case（输入 → 期望输出） |
+| `Skill/code-flowchart/examples/precheck-payment.md` | golden case（输入 → 期望输出） |
 
 ---
 
 ## Task 1: golden case（先写验收标准）
 
 **Files:**
-- Create: `Skill/code-flowchart/examples/precheck-rebate.md`
+- Create: `Skill/code-flowchart/examples/precheck-payment.md`
 
 - [ ] **Step 1: 写 golden case 文档（定义「正确输出」）**
 
 ````markdown
-# Golden Case: preCheckRebate 调用链
+# Golden Case: preCheckPayment 调用链
 
 ## 输入：ExploreResponse（截取 main_paths 关键字段）
 
 ```json
 {
-  "project": { "name": "intl-scheme" },
-  "query": { "type": "symbol", "text": "preCheckRebate" },
+  "project": { "name": "demo-scheme" },
+  "query": { "type": "symbol", "text": "preCheckPayment" },
   "coverage": { "complete": false, "relation_budget_reached": true, "note": "本次返回预算内候选主链路" },
   "main_paths": [
     {
       "id": "main_path_1",
       "path_status": "verified",
       "confidence": "medium",
-      "entry_symbol": "SettlementBillCommandProviderImpl.preCheckRebate",
-      "exit_symbol": "SettlementAndRebateServiceImpl.executePreCheckRebate",
+      "entry_symbol": "OrderBillCommandProviderImpl.preCheckPayment",
+      "exit_symbol": "OrderAndPaymentServiceImpl.executePreCheckPayment",
       "nodes": [
-        { "id": "n1", "symbol": "SettlementBillCommandProviderImpl.preCheckRebate", "location_type": "service", "file": "src/main/java/.../SettlementBillCommandProviderImpl.java", "start_line": 88 },
-        { "id": "n2", "symbol": "SettlementBillCommandServiceImpl.preCheckRebate", "location_type": "service", "file": "src/main/java/.../SettlementBillCommandServiceImpl.java", "start_line": 55 },
-        { "id": "n3", "symbol": "SettlementAndRebateServiceImpl.preCheckRebate", "location_type": "service", "file": "src/main/java/.../SettlementAndRebateServiceImpl.java", "start_line": 120 },
-        { "id": "n4", "symbol": "SettlementAndRebateServiceImpl.executePreCheckRebate", "location_type": "service", "file": "src/main/java/.../SettlementAndRebateServiceImpl.java", "start_line": 200 }
+        { "id": "n1", "symbol": "OrderBillCommandProviderImpl.preCheckPayment", "location_type": "service", "file": "src/main/java/.../OrderBillCommandProviderImpl.java", "start_line": 88 },
+        { "id": "n2", "symbol": "OrderBillCommandServiceImpl.preCheckPayment", "location_type": "service", "file": "src/main/java/.../OrderBillCommandServiceImpl.java", "start_line": 55 },
+        { "id": "n3", "symbol": "OrderAndPaymentServiceImpl.preCheckPayment", "location_type": "service", "file": "src/main/java/.../OrderAndPaymentServiceImpl.java", "start_line": 120 },
+        { "id": "n4", "symbol": "OrderAndPaymentServiceImpl.executePreCheckPayment", "location_type": "service", "file": "src/main/java/.../OrderAndPaymentServiceImpl.java", "start_line": 200 }
       ],
       "relations": [
         { "from": "n1", "to": "n2", "relation_type": "calls" },
@@ -65,8 +65,8 @@
         { "from": "n3", "to": "n4", "relation_type": "calls" }
       ],
       "folded_steps": [
-        { "parent_node_id": "n3", "node": { "symbol": "SettlementAndRebateServiceImpl.checkPreCheckParam" }, "reason": "validation" },
-        { "parent_node_id": "n3", "node": { "symbol": "SettlementAndRebateServiceImpl.buildPreCheckRebateParam" }, "reason": "parameter_assembly" },
+        { "parent_node_id": "n3", "node": { "symbol": "OrderAndPaymentServiceImpl.checkPreCheckParam" }, "reason": "validation" },
+        { "parent_node_id": "n3", "node": { "symbol": "OrderAndPaymentServiceImpl.buildPreCheckPaymentParam" }, "reason": "parameter_assembly" },
         { "parent_node_id": "n3", "node": { "symbol": "BizException.BizException" }, "reason": "exception_construction" }
       ]
     }
@@ -78,34 +78,34 @@
 
 ### 简化流程图（flowchart）
 
-1. **节点顺序**：`ProviderImpl.preCheckRebate → CommandServiceImpl.preCheckRebate → SettlementAndRebateServiceImpl.preCheckRebate → executePreCheckRebate`。
-2. **节点标签含类名**：每个节点 label 形如 `SettlementAndRebateServiceImpl.preCheckRebate`（无裸方法名）。
-3. **不含折叠细节**：`checkPreCheckParam` / `buildPreCheckRebateParam` / `BizException` **不出现在流程图节点/边里**（只在 `+N folded` 徽标）。
-4. **entry/exit 徽标**：`▶ Entry: SettlementBillCommandProviderImpl.preCheckRebate` + `■ Exit: SettlementAndRebateServiceImpl.executePreCheckRebate`。
+1. **节点顺序**：`ProviderImpl.preCheckPayment → CommandServiceImpl.preCheckPayment → OrderAndPaymentServiceImpl.preCheckPayment → executePreCheckPayment`。
+2. **节点标签含类名**：每个节点 label 形如 `OrderAndPaymentServiceImpl.preCheckPayment`（无裸方法名）。
+3. **不含折叠细节**：`checkPreCheckParam` / `buildPreCheckPaymentParam` / `BizException` **不出现在流程图节点/边里**（只在 `+N folded` 徽标）。
+4. **entry/exit 徽标**：`▶ Entry: OrderBillCommandProviderImpl.preCheckPayment` + `■ Exit: OrderAndPaymentServiceImpl.executePreCheckPayment`。
 5. **verified 线型**：`path_status=verified` → 实线边。
 6. **coverage banner**：`complete=false` → 醒目「候选主流程，非完整运行时调用链」。
 
 ### 详细时序图（sequenceDiagram）
 
-7. **participants**：`SettlementBillCommandProviderImpl`、`SettlementBillCommandServiceImpl`、`SettlementAndRebateServiceImpl`、`BizException`。
-8. **主线消息**：`P->>C: preCheckRebate`、`C->>S: preCheckRebate`、`S->>S: executePreCheckRebate`。
-9. **折叠细节消息**（按顺序）：`S->>S: checkPreCheckParam (校验)`、`S->>S: buildPreCheckRebateParam (参数组装)`、`S->>BizException: BizException (异常构造)`。
+7. **participants**：`OrderBillCommandProviderImpl`、`OrderBillCommandServiceImpl`、`OrderAndPaymentServiceImpl`、`BizException`。
+8. **主线消息**：`P->>C: preCheckPayment`、`C->>S: preCheckPayment`、`S->>S: executePreCheckPayment`。
+9. **折叠细节消息**（按顺序）：`S->>S: checkPreCheckParam (校验)`、`S->>S: buildPreCheckPaymentParam (参数组装)`、`S->>BizException: BizException (异常构造)`。
 10. **+3 folded**：简化流程图有 `+3 folded` 徽标；时序图把 3 项细节展开为消息。
 
 参考时序图：
 
 ```mermaid
 sequenceDiagram
-  participant P as SettlementBillCommandProviderImpl
-  participant C as SettlementBillCommandServiceImpl
-  participant S as SettlementAndRebateServiceImpl
+  participant P as OrderBillCommandProviderImpl
+  participant C as OrderBillCommandServiceImpl
+  participant S as OrderAndPaymentServiceImpl
   participant B as BizException
-  P->>C: preCheckRebate
-  C->>S: preCheckRebate
+  P->>C: preCheckPayment
+  C->>S: preCheckPayment
   S->>S: checkPreCheckParam (校验)
-  S->>S: buildPreCheckRebateParam (参数组装)
+  S->>S: buildPreCheckPaymentParam (参数组装)
   S->>B: BizException (异常构造)
-  S->>S: executePreCheckRebate
+  S->>S: executePreCheckPayment
 ```
 ````
 
@@ -117,8 +117,8 @@ sequenceDiagram
 
 ```bash
 cd /mnt/g/my-Skill
-git add Skill/code-flowchart/examples/precheck-rebate.md
-git commit -m "docs(code-flowchart): add precheck-rebate golden case"
+git add Skill/code-flowchart/examples/precheck-payment.md
+git commit -m "docs(code-flowchart): add precheck-payment golden case"
 ```
 
 ---
@@ -237,8 +237,8 @@ git commit -m "docs(code-flowchart): add relation-label mapping"
 类名 = `symbol` 里 `.` 前最后一段的简单类名（剥包前缀）。
 
 ```text
-participant P as SettlementBillCommandProviderImpl
-participant S as SettlementAndRebateServiceImpl
+participant P as OrderBillCommandProviderImpl
+participant S as OrderAndPaymentServiceImpl
 ```
 
 ## 2. 主线消息
@@ -249,7 +249,7 @@ participant S as SettlementAndRebateServiceImpl
 FromClass ->> ToClass: calledMethod
 ```
 
-若 from/to 同类 → 自调用：`S ->> S: executePreCheckRebate`。
+若 from/to 同类 → 自调用：`S ->> S: executePreCheckPayment`。
 
 ## 3. 折叠细节消息
 
@@ -283,22 +283,22 @@ reason 标签映射：
 
 ## 6. 完整示例
 
-输入：nodes=[P.preCheckRebate, C.preCheckRebate, S.preCheckRebate, S.executePreCheckRebate]，folded(n3)=[checkPreCheckParam(validation), buildPreCheckRebateParam(parameter_assembly), BizException(exception_construction)]
+输入：nodes=[P.preCheckPayment, C.preCheckPayment, S.preCheckPayment, S.executePreCheckPayment]，folded(n3)=[checkPreCheckParam(validation), buildPreCheckPaymentParam(parameter_assembly), BizException(exception_construction)]
 
 输出：
 
 ```mermaid
 sequenceDiagram
-  participant P as SettlementBillCommandProviderImpl
-  participant C as SettlementBillCommandServiceImpl
-  participant S as SettlementAndRebateServiceImpl
+  participant P as OrderBillCommandProviderImpl
+  participant C as OrderBillCommandServiceImpl
+  participant S as OrderAndPaymentServiceImpl
   participant B as BizException
-  P->>C: preCheckRebate
-  C->>S: preCheckRebate
+  P->>C: preCheckPayment
+  C->>S: preCheckPayment
   S->>S: checkPreCheckParam (校验)
-  S->>S: buildPreCheckRebateParam (参数组装)
+  S->>S: buildPreCheckPaymentParam (参数组装)
   S->>B: BizException (异常构造)
-  S->>S: executePreCheckRebate
+  S->>S: executePreCheckPayment
 ```
 ```
 
@@ -401,9 +401,9 @@ Agent 填入 `templates/flowchart.html` 的配置对象，运行时替换模板�
 
 ```json
 {
-  "title": "preCheckRebate 调用链",
-  "project": "intl-scheme",
-  "query": "preCheckRebate",
+  "title": "preCheckPayment 调用链",
+  "project": "demo-scheme",
+  "query": "preCheckPayment",
   "coverage": {
     "complete": false,
     "reason": "relation_budget_reached",
@@ -411,14 +411,14 @@ Agent 填入 `templates/flowchart.html` 的配置对象，运行时替换模板�
   },
   "graphs": [
     {
-      "entry_symbol": "SettlementBillCommandProviderImpl.preCheckRebate",
-      "exit_symbol": "SettlementAndRebateServiceImpl.executePreCheckRebate",
+      "entry_symbol": "OrderBillCommandProviderImpl.preCheckPayment",
+      "exit_symbol": "OrderAndPaymentServiceImpl.executePreCheckPayment",
       "path_status": "verified",
       "confidence": "medium",
       "mermaid_flowchart": "flowchart LR\n  n1[...] -->|calls| n2[...] ...",
-      "mermaid_sequence": "sequenceDiagram\n  participant P as ...\n  P->>C: preCheckRebate ...",
+      "mermaid_sequence": "sequenceDiagram\n  participant P as ...\n  P->>C: preCheckPayment ...",
       "folded": [
-        { "parent": "SettlementAndRebateServiceImpl.preCheckRebate", "items": ["checkPreCheckParam (校验)", "buildPreCheckRebateParam (参数组装)", "BizException (异常构造)"] }
+        { "parent": "OrderAndPaymentServiceImpl.preCheckPayment", "items": ["checkPreCheckParam (校验)", "buildPreCheckPaymentParam (参数组装)", "BizException (异常构造)"] }
       ]
     }
   ]
@@ -516,7 +516,7 @@ description: 把 Code-intelligence 的 code.explore_symbol 返回的调用链（
 - 契约：`templates/flowchart-config.schema.md`
 - 映射：`references/role-color-mapping.md`、`references/relation-label-mapping.md`、`references/sequence-diagram-mapping.md`
 - 字段：`references/explore-symbol-fields.md`
-- 示例：`examples/precheck-rebate.md`
+- 示例：`examples/precheck-payment.md`
 ````
 
 - [ ] **Step 2: 提交**
@@ -734,15 +734,15 @@ git commit -m "feat(code-flowchart): add self-contained HTML template with inlin
 ## Task 9: 验证 golden case（端到端）
 
 **Files:**
-- Test: 手工用 `precheck-rebate.md` 的输入跑通渲染，断言 10 项验收。
+- Test: 手工用 `precheck-payment.md` 的输入跑通渲染，断言 10 项验收。
 
 - [ ] **Step 1: 生成一份测试 HTML（config = golden case 输入）**
 
-按 `flowchart-config.schema.md` 手工构造 config，或让 `code.explore_symbol` 对真实 `intl-scheme` 项目跑 `preCheckRebate` 后填充。用 playwright 打开渲染结果。
+按 `flowchart-config.schema.md` 手工构造 config，或让 `code.explore_symbol` 对真实 `demo-scheme` 项目跑 `preCheckPayment` 后填充。用 playwright 打开渲染结果。
 
 - [ ] **Step 2: 逐条断言 10 项验收**
 
-对照 `examples/precheck-rebate.md` 的「期望输出」：流程图 6 项（节点顺序/标签含类名/不含折叠细节/entry-exit/实线/coverage banner）+ 时序图 4 项（participants/主线消息/折叠细节消息/+3 folded 展开）。
+对照 `examples/precheck-payment.md` 的「期望输出」：流程图 6 项（节点顺序/标签含类名/不含折叠细节/entry-exit/实线/coverage banner）+ 时序图 4 项（participants/主线消息/折叠细节消息/+3 folded 展开）。
 
 - [ ] **Step 3: 边界 case 验证**
 

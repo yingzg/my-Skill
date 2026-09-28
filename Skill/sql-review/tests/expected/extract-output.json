@@ -2,11 +2,13 @@
   "files": [
     {
       "path": "src/main/java/com/example/mapper/OrderMapper.xml",
-      "status": "A"
+      "status": "A",
+      "changed_statements": []
     },
     {
       "path": "src/main/java/com/example/mapper/UserMapper.xml",
-      "status": "A"
+      "status": "A",
+      "changed_statements": []
     }
   ],
   "total_count": 2

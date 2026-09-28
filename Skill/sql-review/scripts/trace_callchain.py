@@ -27,7 +27,7 @@ METHOD_DEF_RE = re.compile(
     r'(\w+)\s*\('
 )
 
-MAX_METHODS = 50
+MAX_METHODS = 500
 SKIPPABLE = frozenset({
     "if", "for", "while", "switch", "catch", "synchronized",
     "return", "throw", "new", "class", "interface",

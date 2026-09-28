@@ -19,7 +19,7 @@ GitLab MR Review & Gate Diagnosis Skill
 一句话定义：
 
 ```text
-审查 GitLab MR 并发布行级评论，从 GitLab、job trace、GateBot/MiCR-like 评论和 Sonar 数据中诊断 CI/门禁失败，最后输出报告和 handoff package，且不修改代码或仓库状态。
+审查 GitLab MR 并发布行级评论，从 GitLab、job trace、GateBot / 门禁 Bot 类评论和 Sonar 数据中诊断 CI/门禁失败，最后输出报告和 handoff package，且不修改代码或仓库状态。
 ```
 
 ## 能力分组
@@ -67,7 +67,7 @@ Fallback 规则：
 
 | 子能力 | 说明 | 归属 |
 |---|---|---|
-| GateBot/MiCR-like 解析 | 解析 Bot 评论中的有效评论数、覆盖率、单测通过率、Sonar 门禁、pipeline、approval。 | Skill script |
+| GateBot / 门禁 Bot 类解析 | 解析 Bot 评论中的有效评论数、覆盖率、单测通过率、Sonar 门禁、pipeline、approval。 | Skill script |
 | Pipeline 状态诊断 | 读取 MR head pipeline 状态并分类为 success / failed / running / blocked。 | GitLab MCP + skill parser |
 | Job 选择 | 识别失败 job，以及可能的测试 / Sonar / build job。 | Skill script |
 | Job trace 诊断 | 从日志中解析编译错误、失败测试、测试总数和通过率。 | Skill script |
@@ -128,6 +128,18 @@ Fallback 规则：
 | `git status --short` | 必要时报告本地上下文；不修改状态。 |
 
 这些只读操作之后，不得在本 skill 内执行 checkout、commit、push、merge、rebase、stash 或 reset。
+
+## 依赖前置检查（硬门禁）
+
+执行任何流程前，必须先检查必需依赖。**任一缺失 → 立即停止并报告，禁止降级、禁止绕过、禁止用替代手段顶替。**
+
+| 场景 | 必需依赖 | 缺失时的行为 |
+|---|---|---|
+| 真实模式 | GitLab MCP（`gitlab_get_merge_request` 等） | 停止，报告缺 GitLab MCP |
+| 真实模式 + 要求发布评论 | `gitlab_create_merge_request_diff_note` + 写权限 token（`glpat-`，scope `api`） | 停止，报告需 glpat- token |
+| Fixture 模式 | skill 目录、fixtures、node 22+ | 停止，报告缺项 |
+
+**根因说明**：MR 审查的正确性完全依赖 GitLab MCP 返回的「MR 真实 diff」（含正确 target 分支）。历史教训：曾因缺少 GitLab MCP，用 SSH clone 自行推断，误把 `main`（1 commit 空分支）当成 target，将「18 个文件 +226/-38 的 MR」误判为「441 文件全量导入」，审查对象全错，产出整份无效报告。因此**依赖缺失必须硬停止，绝不允许 SSH clone / curl 等替代手段绕过 MCP**。
 
 ## GitLab MCP 边界
 
@@ -259,27 +271,12 @@ gitlab_test_webhook
 
 ## Skill 脚本边界
 
-Skill 脚本应保持小型、轻依赖，只做事实提取。它们不应调用 GitLab API。
+Skill 脚本保持小型、轻依赖，只做事实提取，不调用 GitLab API。选型上使用 TypeScript + Node 22 `node --experimental-strip-types` 直接运行，无外部依赖，fixture 演示无需 `npm install`。
 
-### 现有脚本保留建议
+完整脚本清单与每个脚本的用途/输入/输出契约见 `scripts-contract.json`（Agent 执行前先读契约而非脚本源码）。要点：
 
-| 脚本 | 是否保留 | 说明 |
-|---|---:|---|
-| `parse_mr_url.ts` | 是 | 纯输入解析器。 |
-| `summarize_gitlab_mr.ts` | 是 | 后续增加 `diff_refs` 感知。 |
-| `summarize_gitlab_changes.ts` | 是 | 保留风险分组和文件摘要。 |
-| `parse_gate_discussions.ts` | 是 | 后续让 Bot 名称和模式可配置。 |
-| `parse_pipeline_jobs.ts` | 是 | 后续让 job patterns 可配置。 |
-| `parse_job_trace.ts` | 是 | 保留编译 / 测试失败提取。 |
-| `parse_sonar_measures.ts` | 是 | 后续让阈值可配置。 |
-
-### 建议新增脚本
-
-| 脚本 | 用途 |
-|---|---|
-| `parse_git_remote.ts` | 读取 git remote URL 字符串，解析 host/project path，不修改 repo 状态。 |
-| `map_diff_lines.ts` | 将 GitLab changes diff hunk 转换为可评论行位置。 |
-| `build_review_report.ts` 或 fixture runner | 聚合 fixture 输出，生成 demo / 回归报告。 |
+- 可执行脚本 12 个，共享模块 2 个（`config.ts`、`sonar_measures.ts`，非可执行入口）。
+- 输入约定：脚本统一支持文件路径入参；`build_gate_report.ts`、`parse_junit_xml.ts`、`parse_coverage_xml.ts`、`parse_sonar_measures.ts` 额外支持 stdin（`-` 参数）；`parse_mr_url.ts` / `parse_git_remote.ts` 直接接收命令行参数字符串。禁止手拼 JSON。
 
 `map_diff_lines.ts` 是稳定行级评论的前置条件。
 
@@ -373,7 +370,7 @@ Skill 脚本应保持小型、轻依赖，只做事实提取。它们不应调�
 输入 MR URL
   -> 读取 MR 元数据
   -> 读取 discussions
-  -> 解析 GateBot/MiCR-like 报告
+  -> 解析 GateBot / 门禁 Bot 类报告
   -> 如果存在 pipeline，读取 pipeline jobs
   -> 选择失败 / 测试 / Sonar jobs
   -> 可用时读取 trace / artifacts
@@ -472,7 +469,7 @@ Fixture 模式应继续使用生产形态文件，而不是简化过的玩具输
 
 | 阻塞项 | 证据来源 | 建议类型 |
 |---|---|---|
-| 有效评论数不足 | GateBot/MiCR-like 报告、discussions | 如果用户要求 review，则生成高质量行级评论；否则建议找 reviewer。 |
+| 有效评论数不足 | GateBot / 门禁 Bot 类报告、discussions | 如果用户要求 review，则生成高质量行级评论；否则建议找 reviewer。 |
 | Pipeline 失败 | MR head pipeline、pipeline jobs | 检查失败 jobs 和 traces。 |
 | 编译失败 | Job trace / artifacts | 报告文件、行号、symbol 和修复方向。 |
 | 单测失败 | Job trace / JUnit XML | 报告失败测试、错误信息、相关变更文件和验证命令。 |
@@ -627,10 +624,36 @@ Fixture 模式应继续使用生产形态文件，而不是简化过的玩具输
 3. 清晰区分证据、推断、缺失数据和需要人工的动作。
 4. 说明如何交接给单独的 Git 自动化或代码修复 skill。
 
+## 生产迁移路径
+
+1. 配置或重写 GitLab MCP。
+2. 确保 MCP 支持 `gitlab_create_merge_request_diff_note`。
+3. 确保 MR 元数据能返回 `diff_refs`，或提供 `gitlab_get_merge_request_diff_refs`。
+4. 真实模式读取 MR detail / changes / discussions。
+5. 增加生产 Bot 名称和门禁文本模式。
+6. 配置测试 job 名称模式。
+7. 配置 Sonar token / project key 查询方式。
+8. 增加 large diff、分页、artifact、去重和错误处理硬化。
+9. 在真实 GitLab MR 上做行级评论 smoke test。
+
+生产迁移重点是接入 MCP 和硬化诊断流程，不应把本 skill 改成代码修复器或 Git 自动化器。
+
 ## 待决问题
 
 1. 行级定位失败时，是否允许降级为普通 MR note。
 2. 发布评论是否必须要求用户说出类似“发布行级评论”的一次性明确指令。
-3. v1 是否支持 @ 作者，还是推迟 blame / user mapping。
+3. @ 作者 / blame：**v1 不做，v2 规划**（需接入 `gitlab_get_file_blame` + `gitlab_list_users`）。
 4. GitLab MCP 应在 `gitlab_get_merge_request` 中归一化 `diff_refs`，还是暴露单独工具。
-5. 首次生产试用前，是否必须支持 job artifact。
+5. job artifact：**已支持** JUnit XML 与 JaCoCo coverage XML 解析（`parse_junit_xml.ts` / `parse_coverage_xml.ts`）。
+6. 增量 review（`gitlab_compare_branches`）：**v1 不做，v2 规划**。
+
+## 已收敛的设计决策
+
+1. Sonar 真实模式数据**由外部提供**，本 skill 只解析，不内置 Sonar API 调用与 token 管理。
+2. 代码规范门禁（bugs / code smells / 漏洞）**本 skill 不解析**，缺失时在报告中显式标注，不得把覆盖率达标偷换成 Sonar 质量门禁通过。
+3. 门禁 Bot 为**内部一等能力**：聚合 CI 已产出数据（不本地跑构建），生成门禁报告并**默认自动发布到 MR**（唯一例外：discussions 已存在门禁报告，此时跳过发布只引用）。
+4. 覆盖率数据源优先级：Sonar `new_line_coverage`（新增代码）> JaCoCo coverage XML（全量，须标注）。
+5. 单测通过率数据源优先级：job trace 全局 `Total` 数字 > JUnit XML（单个类）。
+6. **脚本契约文件**：`scripts-contract.json` 描述每个脚本的用途/输入/输出，agent 读契约而非脚本源码。
+7. **脚本输入方式**：脚本统一支持文件路径入参；`build_gate_report.ts`、`parse_junit_xml.ts`、`parse_coverage_xml.ts`、`parse_sonar_measures.ts` 额外支持 `-` 参数读 stdin；真实模式下 MCP 内存数据用 write 落盘到固定目录 `/tmp/gitlab-cr-fix-git/`（数据可复用、可调试，用完清理）或对支持 stdin 的脚本用 stdin 直传。
+8. **关键环节强制用脚本**：行号映射（`map_diff_lines.ts`）、trace 解析（`parse_job_trace.ts`）、门禁聚合（`build_gate_report.ts`）为 MUST DO，禁止 agent 手工推理替代。
