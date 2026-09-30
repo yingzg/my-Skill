@@ -1,0 +1,85 @@
+{
+  "说明": "本文件是 scripts/ 下所有可执行脚本的契约速查表。SKILL.md 引用本文件。执行前请先读本文件理解每个脚本的用途、输入、输出，不要读脚本源码。config.ts 与 sonar_measures.ts 是共享模块（被脚本 import），不是可执行入口，未列入。",
+  "通用输入方式": "脚本统一支持文件路径入参（node xxx.ts <file>）。其中 build_gate_report.ts / parse_junit_xml.ts / parse_coverage_xml.ts / parse_sonar_measures.ts 额外支持 stdin（node xxx.ts - <<'EOF'，'-' 参数读 stdin）。parse_mr_url / parse_git_remote 直接接收命令行参数字符串（不支持文件/stdin）。真实模式下 MCP 返回的内存数据，用 write 工具落盘到 /tmp/gitlab-cr-fix-git/ 再用文件路径喂脚本（用完清理），或对支持 stdin 的脚本用 stdin 直传。禁止手拼 JSON（引号/反斜杠/换行极易错）。",
+  "scripts": [
+    {
+      "name": "parse_mr_url.ts",
+      "purpose": "解析 GitLab MR URL，提取 host / project_id / merge_request_iid",
+      "input": "MR URL 字符串（命令行参数直接传，不支持 stdin）",
+      "output": "{\"host\":\"https://gitlab.com\",\"project_id\":\"group/project\",\"merge_request_iid\":12,\"url\":\"...\"}"
+    },
+    {
+      "name": "parse_git_remote.ts",
+      "purpose": "解析 git remote URL，提取 host / project_id（只读辅助，不修改仓库）",
+      "input": "git remote URL 字符串（命令行参数直接传，不支持 stdin）",
+      "output": "{\"host\":\"https://gitlab.example.com\",\"project_id\":\"group/project\",\"protocol\":\"ssh|https|http|file|unknown\",\"original\":\"...\"}"
+    },
+    {
+      "name": "summarize_gitlab_mr.ts",
+      "purpose": "汇总 MR 元数据（标题/作者/分支/pipeline/merge 状态/diff_refs）",
+      "input": "gitlab_get_merge_request 返回的 JSON",
+      "output": "{\"iid\",\"title\",\"state\",\"author\":{\"username\",\"name\",\"email\"},\"branches\":{\"source\",\"target\"},\"merge\":{\"merge_status\",\"detailed_merge_status\",\"has_conflict\"},\"pipeline\":{\"id\",\"status\",\"passed\",\"failed\"},\"diff_refs\":{\"base_sha\",\"start_sha\",\"head_sha\",\"complete\"},\"web_url\"}"
+    },
+    {
+      "name": "summarize_gitlab_changes.ts",
+      "purpose": "汇总变更文件（数量/风险分组/高优先文件/语言/增删行数）",
+      "input": "gitlab_get_merge_request_changes 返回的 JSON",
+      "output": "{\"changed_file_count\",\"by_risk\":{\"high\",\"medium\",\"low\",\"ignore\"},\"high_priority_files\":[...],\"files\":[{\"path\",\"change_type\",\"language\",\"risk\",\"additions_hint\",\"deletions_hint\",\"diff_bytes\"}]}"
+    },
+    {
+      "name": "map_diff_lines.ts",
+      "purpose": "将 changes 的 unified diff hunk 映射为可评论行号（发布行级评论的前置，行号必须以此脚本为准，禁止手算）",
+      "input": "gitlab_get_merge_request_changes 返回的 JSON",
+      "input_example": {"changes": [{"old_path": "src/A.java", "new_path": "src/A.java", "new_file": false, "deleted_file": false, "diff": "@@ -10,5 +10,8 @@\n context\n+added line\n-removed line"}]},
+      "output": "{\"changed_file_count\",\"files\":[{\"old_path\",\"new_path\",\"change_type\":\"new|modified|renamed|deleted\",\"hunks\":[{\"old_start\",\"old_count\",\"new_start\",\"new_count\"}],\"commentable_lines\":[{\"type\":\"added|removed|context\",\"old_line\",\"new_line\",\"content\"}],\"added_lines\":[...],\"removed_lines\":[...]}]}",
+      "key_field": "发布评论用 files[].commentable_lines[] 的 new_line（新增/修改行）或 old_line（删除行）"
+    },
+    {
+      "name": "parse_gate_discussions.ts",
+      "purpose": "解析 MR discussions 中门禁 bot 的评论，提取门禁字段（有效评论数/覆盖率/通过率/Sonar/Pipeline/Approve）与阻塞项",
+      "input": "gitlab_list_merge_request_discussions 返回的 JSON",
+      "output": "{\"found_gate_notes\":0|1...,\"gate_notes\":[{\"discussion_id\",\"note_id\",\"bot_username\",\"parsed\":{...}}],\"latest\":{...},\"blockers\":[\"effective_comments\",\"coverage\",\"test_pass_rate\",\"sonar_gate\",\"pipeline\",\"approval\"],\"passed\":true|false}",
+      "key_field": "found_gate_notes===0 表示无既有门禁报告（需 bot 生成发布）；found_gate_notes>0 表示已有门禁报告（跳过发布，引用其结果）"
+    },
+    {
+      "name": "parse_pipeline_jobs.ts",
+      "purpose": "从 pipeline jobs 中识别失败 job、测试 job、构建 job，选出优先读取 trace 的 job",
+      "input": "gitlab_list_pipeline_jobs 返回的 JSON",
+      "output": "{\"total_jobs\",\"failed_jobs\":[...],\"test_jobs\":[...],\"failed_test_jobs\":[...],\"build_jobs\":[...],\"failed_build_jobs\":[...],\"preferred_trace_job\":{...}|null}",
+      "key_field": "preferred_trace_job 是应读取 trace 的 job（失败 build/compile job 优先于失败 test job）；failed_jobs 用于诊断 pipeline 失败原因"
+    },
+    {
+      "name": "parse_job_trace.ts",
+      "purpose": "从 job trace 文本解析编译错误、失败测试、测试总数与通过率（禁止肉眼读日志提取，必须用本脚本）",
+      "input": "gitlab_get_job_trace 返回的文本",
+      "output": "{\"total_passed\",\"total_failed\",\"total_cases\",\"pass_rate\",\"compilation_errors\":[{\"file\",\"line\",\"column\",\"message\",\"symbol\",\"location\"}],\"failed_tests\":[{\"class\",\"method\",\"raw\",\"message\"}]}",
+      "key_field": "compilation_errors 是编译失败证据；failed_tests 是失败测试明细；pass_rate 是全局通过率"
+    },
+    {
+      "name": "parse_sonar_measures.ts",
+      "purpose": "解析 Sonar measures，提取覆盖率与达标判断（只解析，不负责拉取 Sonar 数据）",
+      "input": "sonar measures JSON：{\"component\":{\"key\":\"...\",\"measures\":[{\"metric\":\"new_line_coverage\",\"value\":\"45.0\"},...]}}",
+      "output": "{\"component_key\",\"coverage_metric\":\"new_line_coverage|coverage|null\",\"coverage\":45|null,\"required\":60,\"passed\":true|false|null,\"new_lines_to_cover\",\"new_uncovered_lines\",\"raw_measures\":{...}}",
+      "key_field": "coverage_metric 区分「新增(new_line_coverage)」与「全量(coverage)」口径；passed===null 表示数据缺失不适用"
+    },
+    {
+      "name": "parse_junit_xml.ts",
+      "purpose": "解析 JUnit XML artifact，提取单测总数/失败数/通过率/失败测试明细",
+      "input": "JUnit XML 文本（如 surefire 产出的 junit_report.xml）",
+      "output": "{\"suites\",\"tests\",\"failures\",\"errors\",\"skipped\",\"pass_rate\",\"failed_tests\":[{\"classname\",\"name\",\"type\",\"message\"}]}"
+    },
+    {
+      "name": "parse_coverage_xml.ts",
+      "purpose": "解析 JaCoCo coverage XML artifact，提取行/分支覆盖率（全量口径，非新增代码）",
+      "input": "JaCoCo XML 文本（如 jacoco.xml）",
+      "output": "{\"counters\":{\"LINE\":{\"missed\",\"covered\",\"coverage\"},\"INSTRUCTION\":{...},\"BRANCH\":{...}},\"line_coverage\":45|null}"
+    },
+    {
+      "name": "build_gate_report.ts",
+      "purpose": "门禁 Bot：聚合 CI 产出数据（discussions/jobs/trace/artifact/sonar），计算各门禁项，生成门禁报告（格式与 parse_gate_discussions 可回读）",
+      "input": "① 目录模式：node build_gate_report.ts <data_dir>（data_dir 下放 fixture 同名文件）；② stdin 聚合 JSON：node build_gate_report.ts - <<'JSON' {\"discussions\":[...],\"pipeline_jobs\":[...],\"job_trace\":\"...\",\"junit_xml\":\"...\",\"jacoco_xml\":\"...\",\"sonar_measures\":{...}} JSON",
+      "output": "{\"markdown\":\"### Gate Report ...\",\"gate\":{\"effective_comments\",\"coverage\",\"test_pass_rate\",\"code_quality\",\"pipeline\",\"approval\"},\"blockers\":[...],\"missing_data\":{\"code_quality\",\"approval\",\"coverage\",\"test_pass_rate\"}}",
+      "key_field": "markdown 是待发布到 MR 的门禁报告（gitlab_create_merge_request_note）；blockers 是 passed===false 的阻塞项列表"
+    }
+  ]
+}

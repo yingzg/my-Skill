@@ -1,0 +1,12 @@
+[ERROR] COMPILATION ERROR :
+[ERROR] ~/projects/demo-service/backend/src/main/java/com/example/statistics/controller/StatisticsController.java:[49,14] cannot find symbol
+  symbol:   class RequestParam
+  location: class com.example.statistics.controller.StatisticsController
+[ERROR] ~/projects/demo-service/backend/src/main/java/com/example/statistics/controller/StatisticsController.java:[50,14] cannot find symbol
+  symbol:   class RequestParam
+  location: class com.example.statistics.controller.StatisticsController
+[ERROR] ~/projects/demo-service/backend/src/main/java/com/example/statistics/controller/StatisticsController.java:[51,14] cannot find symbol
+  symbol:   class RequestParam
+  location: class com.example.statistics.controller.StatisticsController
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.11.0:compile (default-compile) on project demo-service: Compilation failure
+

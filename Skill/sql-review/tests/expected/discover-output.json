@@ -1,0 +1,27 @@
+{
+  "mappings": [
+    {
+      "mapper_package": "com.example.mapper",
+      "datasource_name": "primary",
+      "type": "mysql",
+      "url": "jdbc:mysql://localhost:3306/order_db?useSSL=false"
+    },
+    {
+      "mapper_package": "com.example.user.mapper",
+      "datasource_name": "secondary",
+      "type": "postgresql",
+      "url": "jdbc:postgresql://localhost:5432/analytics"
+    },
+    {
+      "mapper_package": "com.example.product.mapper",
+      "datasource_name": "secondary",
+      "type": "postgresql",
+      "url": "jdbc:postgresql://localhost:5432/analytics"
+    }
+  ],
+  "status": "PARTIAL",
+  "unmapped_packages": [
+    "com.example.config",
+    "com.example.unmapped"
+  ]
+}

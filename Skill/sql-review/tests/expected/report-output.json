@@ -1,0 +1,3540 @@
+{
+  "report_id": "sql-review-golden",
+  "generated_at": "2026-09-09T09:02:16.646673+00:00",
+  "version": "1.0.0",
+  "context": {
+    "branch": "main",
+    "base_ref": "origin/master",
+    "mr_url": null,
+    "mode": "local",
+    "total_sql_count": 34
+  },
+  "gate": {
+    "conclusion": "BLOCK",
+    "decision": "BLOCK",
+    "block_reason": "MEDIUM_OR_ABOVE_SQL_FOUND",
+    "thresholds": {
+      "HIGH_block": true,
+      "MEDIUM_block": true,
+      "CRITICAL_block": true
+    },
+    "statistics": {
+      "total": 34,
+      "CRITICAL": 2,
+      "HIGH": 2,
+      "MEDIUM": 26,
+      "LOW": 2,
+      "PASS": 2,
+      "ANALYSIS_FAILED": 0
+    }
+  },
+  "base_branch": "origin/master",
+  "total_sql": 34,
+  "findings": [
+    {
+      "sql_id": "mappers.xml:deleteAll:7",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 47,
+      "statement_type": "DELETE",
+      "mapper_method": "deleteAll",
+      "risk_level": "CRITICAL",
+      "risk_summary": "DELETE 无 WHERE → 全表删除",
+      "rationale": {
+        "static_rules": "Matched: R102, R103, R104",
+        "explain_analysis": "type=ALL, key=None, rows=15823",
+        "degradation_note": null
+      },
+      "short_term_fix": "添加 WHERE 条件",
+      "long_term_fix": "为所有 DML 语句增加 WHERE 保护",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "DELETE FROM orders",
+      "explain_executed": true,
+      "level": "CRITICAL",
+      "summary": "DELETE 无 WHERE → 全表删除",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 15823,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": true,
+          "severity": "CRITICAL"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": true,
+          "severity": "MEDIUM"
+        }
+      ],
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:updateStatusNoWhere:5",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 39,
+      "statement_type": "UPDATE",
+      "mapper_method": "updateStatusNoWhere",
+      "risk_level": "CRITICAL",
+      "risk_summary": "UPDATE 无 WHERE → 全表更新",
+      "rationale": {
+        "static_rules": "Matched: R102, R103",
+        "explain_analysis": "type=ALL, key=None, rows=15823",
+        "degradation_note": null
+      },
+      "short_term_fix": "添加 WHERE 条件",
+      "long_term_fix": "为所有 DML 语句增加 WHERE 保护",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "UPDATE orders SET status = #{status}",
+      "explain_executed": true,
+      "level": "CRITICAL",
+      "summary": "UPDATE 无 WHERE → 全表更新",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 15823,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": true,
+          "severity": "CRITICAL"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:findAll:2",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 22,
+      "statement_type": "SELECT",
+      "mapper_method": "findAll",
+      "risk_level": "HIGH",
+      "risk_summary": "SELECT * 无WHERE → 全表扫描 15823 行",
+      "rationale": {
+        "static_rules": "Matched: R001, R002, R007",
+        "explain_analysis": "type=ALL, key=None, rows=15823",
+        "degradation_note": null
+      },
+      "short_term_fix": "添加 LIMIT 分页条件",
+      "long_term_fix": "引入分页查询",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT * FROM orders",
+      "explain_executed": true,
+      "level": "HIGH",
+      "summary": "SELECT * 无WHERE → 全表扫描 15823 行",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 15823,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": true,
+          "severity": "HIGH"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:findWithInclude:25",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 237,
+      "statement_type": "SELECT",
+      "mapper_method": "findWithInclude",
+      "risk_level": "HIGH",
+      "risk_summary": "Matched: R002, R007",
+      "rationale": {
+        "static_rules": "Matched: R002, R007",
+        "explain_analysis": "type=ref, key=idx_order_no, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "添加必要的 WHERE 过滤条件 + LIMIT，或确认该场景确实需要全量数据（如定时导出）并增加分批拉取逻辑",
+      "long_term_fix": "对于定时全量导出的场景，使用游标分页（WHERE id > :lastId ORDER BY id LIMIT 1000）替代一次性加载",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT <include refid=\"BaseColumnList\" /> FROM orders <include refid=\"WhereClause\" />",
+      "explain_executed": true,
+      "level": "HIGH",
+      "summary": "Matched: R002, R007",
+      "explain_type": "ref",
+      "explain_key": "idx_order_no",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": true,
+          "severity": "HIGH"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:countByStatus:3",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 26,
+      "statement_type": "SELECT",
+      "mapper_method": "countByStatus",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ref, key=idx_status, rows=5000",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT COUNT(*) FROM orders WHERE status = #{status}",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "ref",
+      "explain_key": "idx_status",
+      "explain_rows": 5000,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:deleteById:6",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 43,
+      "statement_type": "DELETE",
+      "mapper_method": "deleteById",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R103, R104",
+      "rationale": {
+        "static_rules": "Matched: R103, R104",
+        "explain_analysis": "type=range, key=PRIMARY, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "添加 LIMIT N 限制单次操作行数，配合循环分批执行",
+      "long_term_fix": "建立『大批量写操作必须走分批脚本』的发布规范",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "DELETE FROM orders WHERE id = #{id}",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R103, R104",
+      "explain_type": "range",
+      "explain_key": "PRIMARY",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": true,
+          "severity": "MEDIUM"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:deleteByIds:18",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 147,
+      "statement_type": "DELETE",
+      "mapper_method": "deleteByIds",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R103, R104",
+      "rationale": {
+        "static_rules": "Matched: R103, R104",
+        "explain_analysis": "type=range, key=PRIMARY, rows=10",
+        "degradation_note": null
+      },
+      "short_term_fix": "添加 LIMIT N 限制单次操作行数，配合循环分批执行",
+      "long_term_fix": "建立『大批量写操作必须走分批脚本』的发布规范",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "DELETE FROM orders WHERE id IN <foreach collection=\"ids\" item=\"id\" open=\"(\" close=\")\" separator=\",\">\n      #{id}\n    </foreach>",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R103, R104",
+      "explain_type": "range",
+      "explain_key": "PRIMARY",
+      "explain_rows": 10,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": true,
+          "severity": "MEDIUM"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findByBind:23",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 206,
+      "statement_type": "SELECT",
+      "mapper_method": "findByBind",
+      "risk_level": "MEDIUM",
+      "risk_summary": "LIKE '%x%' 左模糊 → 全表扫描 + 文件排序",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ALL, key=None, rows=15823",
+        "degradation_note": null
+      },
+      "short_term_fix": "引入 Elasticsearch 全文索引",
+      "long_term_fix": "迁移至搜索中间件",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "<bind name=\"pattern\" value=\"'%' + keyword + '%'\" />\n    SELECT id, order_no, status FROM orders\n    WHERE order_no LIKE #{pattern}",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "LIKE '%x%' 左模糊 → 全表扫描 + 文件排序",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 15823,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:findByBindWithIf:24",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 212,
+      "statement_type": "SELECT",
+      "mapper_method": "findByBindWithIf",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ALL, key=None, rows=500",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "<bind name=\"pattern\" value=\"'%' + keyword + '%'\" />\n    SELECT id, order_no, status FROM orders <where>\n      <if test=\"keyword != null and keyword != ''\">\n        order_no LIKE #{pattern}\n      </if>\n    </where>",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 500,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findByChoose:15",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 115,
+      "statement_type": "SELECT",
+      "mapper_method": "findByChoose",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ref, key=idx_status, rows=5000",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT id, order_no, status FROM orders <where>\n      <choose>\n        <when test=\"status != null\">AND status = #{status}</when>\n        <when test=\"orderNo != null\">AND order_no = #{orderNo}</when>\n        <otherwise>AND id &gt; 0</otherwise>\n      </choose>\n    </where>",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "ref",
+      "explain_key": "idx_status",
+      "explain_rows": 5000,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findByCondition:12",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 91,
+      "statement_type": "SELECT",
+      "mapper_method": "findByCondition",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=index_merge, key=idx_status,idx_order_no, rows=200",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT id, order_no, status\n    FROM orders\n    WHERE 1=1 <if test=\"status != null\">AND status = #{status}</if> <if test=\"orderNo != null and orderNo != ''\">AND order_no = #{orderNo}</if>",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "index_merge",
+      "explain_key": "idx_status,idx_order_no",
+      "explain_rows": 200,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findById:0",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 10,
+      "statement_type": "SELECT",
+      "mapper_method": "findById",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=const, key=PRIMARY, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT id, order_no, status, created_at\n    FROM orders\n    WHERE id = #{id}",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "const",
+      "explain_key": "PRIMARY",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findByIds:16",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 130,
+      "statement_type": "SELECT",
+      "mapper_method": "findByIds",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=range, key=PRIMARY, rows=10",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT id, order_no, status\n    FROM orders\n    WHERE id IN <foreach collection=\"ids\" item=\"id\" open=\"(\" close=\")\" separator=\",\">\n      #{id}\n    </foreach>",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "range",
+      "explain_key": "PRIMARY",
+      "explain_rows": 10,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findByMixed:26",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 246,
+      "statement_type": "SELECT",
+      "mapper_method": "findByMixed",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002, R009",
+      "rationale": {
+        "static_rules": "Matched: R002, R009",
+        "explain_analysis": "type=range, key=idx_status, rows=500",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT id, order_no, status, amount FROM orders <where>\n      <if test=\"statusList != null and statusList.size() &gt; 0\">\n        AND status IN\n        <foreach collection=\"statusList\" item=\"s\" open=\"(\" close=\")\" separator=\",\">\n          #{s}\n        </foreach>\n      </if>\n      <if test=\"minAmount != null\">AND amount &gt;= #{minAmount}</if>\n      <if test=\"maxAmount != null\">AND amount &lt;= #{maxAmount}</if>\n    </where> <if test=\"orderBy != null\">ORDER BY ${orderBy}</if>",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002, R009",
+      "explain_type": "range",
+      "explain_key": "idx_status",
+      "explain_rows": 500,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": true,
+          "severity": "LOW"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findByOrderNo:1",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 16,
+      "statement_type": "SELECT",
+      "mapper_method": "findByOrderNo",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ref, key=idx_order_no, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT id, order_no, amount\n    FROM orders\n    WHERE order_no = #{orderNo}",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "ref",
+      "explain_key": "idx_order_no",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findBySingleIf:13",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 99,
+      "statement_type": "SELECT",
+      "mapper_method": "findBySingleIf",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ALL, key=None, rows=5000",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT id, order_no, status FROM orders <if test=\"amount != null\">WHERE amount &gt; #{amount}</if>",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 5000,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findBySubQuery:11",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 79,
+      "statement_type": "SELECT",
+      "mapper_method": "findBySubQuery",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002, R008",
+      "rationale": {
+        "static_rules": "Matched: R002, R008",
+        "explain_analysis": "type=ref, key=idx_status, rows=100",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT id, order_no, status\n    FROM orders\n    WHERE user_id IN (\n      SELECT id FROM users WHERE status = 'ACTIVE'\n    )",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002, R008",
+      "explain_type": "ref",
+      "explain_key": "idx_status",
+      "explain_rows": 100,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findByTrim:21",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 185,
+      "statement_type": "SELECT",
+      "mapper_method": "findByTrim",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002, R004",
+      "rationale": {
+        "static_rules": "Matched: R002, R004",
+        "explain_analysis": "type=index_merge, key=idx_status,idx_order_no, rows=200",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT id, order_no, status FROM orders <trim prefix=\"WHERE\" prefixOverrides=\"AND |OR \">\n      <if test=\"status != null\">AND status = #{status}</if>\n      <if test=\"orderNo != null\">AND order_no = #{orderNo}</if>\n    </trim>",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002, R004",
+      "explain_type": "index_merge",
+      "explain_key": "idx_status,idx_order_no",
+      "explain_rows": 200,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findByWhere:19",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 158,
+      "statement_type": "SELECT",
+      "mapper_method": "findByWhere",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=index_merge, key=idx_status,idx_order_no, rows=300",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT id, order_no, status FROM orders <where>\n      <if test=\"status != null\">AND status = #{status}</if>\n      <if test=\"orderNo != null\">AND order_no = #{orderNo}</if>\n      <if test=\"amount != null\">AND amount &gt;= #{amount}</if>\n    </where>",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "index_merge",
+      "explain_key": "idx_status,idx_order_no",
+      "explain_rows": 300,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findUserById:27",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 270,
+      "statement_type": "SELECT",
+      "mapper_method": "findUserById",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=const, key=PRIMARY, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT id, name, email FROM users WHERE id = #{id}",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "const",
+      "explain_key": "PRIMARY",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findUsersByKeyword:29",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 284,
+      "statement_type": "SELECT",
+      "mapper_method": "findUsersByKeyword",
+      "risk_level": "MEDIUM",
+      "risk_summary": "LEFT LIKE 全表扫描 + filesort",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ALL, key=None, rows=2000",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 keyword 上创建前缀索引",
+      "long_term_fix": "引入全文搜索引擎",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "<bind name=\"pattern\" value=\"'%' + keyword + '%'\" />\n    SELECT id, name, email FROM users <where>\n      <choose>\n        <when test=\"keyword != null\">name LIKE #{pattern}</when>\n        <otherwise>1=1</otherwise>\n      </choose>\n    </where>",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "LEFT LIKE 全表扫描 + filesort",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 2000,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:findWithDetail:9",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 60,
+      "statement_type": "SELECT",
+      "mapper_method": "findWithDetail",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=index_merge, key=idx_order_no,PRIMARY, rows=500",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT o.id, o.order_no, d.product_name, d.quantity\n    FROM orders o\n    JOIN order_detail d ON o.id = d.order_id\n    WHERE o.id = #{id}",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "index_merge",
+      "explain_key": "idx_order_no,PRIMARY",
+      "explain_rows": 500,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findWithMultipleJoins:10",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 67,
+      "statement_type": "SELECT",
+      "mapper_method": "findWithMultipleJoins",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ALL, key=None, rows=15823",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT o.id, o.order_no, d.product_name, u.name AS user_name\n    FROM orders o\n    LEFT JOIN order_detail d ON o.id = d.order_id\n    LEFT JOIN users u ON o.user_id = u.id\n    WHERE o.status = #{status}",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 15823,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:gh001_emptyForeach:30",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 304,
+      "statement_type": "SELECT",
+      "mapper_method": "gh001_emptyForeach",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R002",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ALL, key=None, rows=15823",
+        "degradation_note": null
+      },
+      "short_term_fix": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT id, status FROM orders WHERE id IN <foreach collection=\"emptyList\" item=\"id\" open=\"(\" close=\")\" separator=\",\">\n      #{id}\n    </foreach>",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R002",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 15823,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:gh002_foreachNestedIf:31",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 312,
+      "statement_type": "UPDATE",
+      "mapper_method": "gh002_foreachNestedIf",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R103",
+      "rationale": {
+        "static_rules": "Matched: R103",
+        "explain_analysis": "type=range, key=PRIMARY, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "添加 LIMIT N 限制单次操作行数，配合循环分批执行",
+      "long_term_fix": "建立『大批量写操作必须走分批脚本』的发布规范",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "<foreach collection=\"list\" item=\"order\" separator=\";\">\n      UPDATE orders\n      <set>\n        <if test=\"order.status != null\">status = #{order.status}</if>\n        <if test=\"order.amount != null\">amount = #{order.amount}</if>\n      </set>\n      WHERE id = #{order.id}\n    </foreach>",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R103",
+      "explain_type": "range",
+      "explain_key": "PRIMARY",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:gh003_leftLike:32",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 324,
+      "statement_type": "SELECT",
+      "mapper_method": "gh003_leftLike",
+      "risk_level": "MEDIUM",
+      "risk_summary": "左模糊查询 → 全表扫描",
+      "rationale": {
+        "static_rules": "Matched: R002",
+        "explain_analysis": "type=ALL, key=None, rows=15823",
+        "degradation_note": null
+      },
+      "short_term_fix": "使用前缀索引 + 反向存储",
+      "long_term_fix": "引入全文搜索引擎",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT id, order_no FROM orders\n    WHERE order_no LIKE CONCAT('%', #{keyword})",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "左模糊查询 → 全表扫描",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 15823,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:updateByIf:14",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 104,
+      "statement_type": "UPDATE",
+      "mapper_method": "updateByIf",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R103",
+      "rationale": {
+        "static_rules": "Matched: R103",
+        "explain_analysis": "type=range, key=PRIMARY, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "添加 LIMIT N 限制单次操作行数，配合循环分批执行",
+      "long_term_fix": "建立『大批量写操作必须走分批脚本』的发布规范",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "UPDATE orders SET updated_at = NOW() <if test=\"status != null\">, status = #{status}</if> <if test=\"amount != null\">, amount = #{amount}</if>\n    WHERE id = #{id}",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R103",
+      "explain_type": "range",
+      "explain_key": "PRIMARY",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:updateBySet:20",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 171,
+      "statement_type": "UPDATE",
+      "mapper_method": "updateBySet",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R103",
+      "rationale": {
+        "static_rules": "Matched: R103",
+        "explain_analysis": "type=range, key=PRIMARY, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "添加 LIMIT N 限制单次操作行数，配合循环分批执行",
+      "long_term_fix": "建立『大批量写操作必须走分批脚本』的发布规范",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "UPDATE orders <set>\n      <if test=\"status != null\">status = #{status},</if>\n      <if test=\"amount != null\">amount = #{amount},</if>\n      updated_at = NOW(),\n    </set>\n    WHERE id = #{id}",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R103",
+      "explain_type": "range",
+      "explain_key": "PRIMARY",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:updateByTrimSet:22",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 193,
+      "statement_type": "UPDATE",
+      "mapper_method": "updateByTrimSet",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R103",
+      "rationale": {
+        "static_rules": "Matched: R103",
+        "explain_analysis": "type=range, key=PRIMARY, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "添加 LIMIT N 限制单次操作行数，配合循环分批执行",
+      "long_term_fix": "建立『大批量写操作必须走分批脚本』的发布规范",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "UPDATE orders <trim prefix=\"SET\" suffixOverrides=\",\">\n      <if test=\"status != null\">status = #{status},</if>\n      <if test=\"amount != null\">amount = #{amount},</if>\n    </trim>\n    WHERE id = #{id}",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R103",
+      "explain_type": "range",
+      "explain_key": "PRIMARY",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:updateStatus:4",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 34,
+      "statement_type": "UPDATE",
+      "mapper_method": "updateStatus",
+      "risk_level": "MEDIUM",
+      "risk_summary": "Matched: R103",
+      "rationale": {
+        "static_rules": "Matched: R103",
+        "explain_analysis": "type=range, key=PRIMARY, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "添加 LIMIT N 限制单次操作行数，配合循环分批执行",
+      "long_term_fix": "建立『大批量写操作必须走分批脚本』的发布规范",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "UPDATE orders SET status = #{status}, updated_at = NOW()\n    WHERE id = #{id}",
+      "explain_executed": true,
+      "level": "MEDIUM",
+      "summary": "Matched: R103",
+      "explain_type": "range",
+      "explain_key": "PRIMARY",
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": true,
+          "severity": "MEDIUM"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:findUserWithOrders:28",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 274,
+      "statement_type": "SELECT",
+      "mapper_method": "findUserWithOrders",
+      "risk_level": "LOW",
+      "risk_summary": "Matched: R009",
+      "rationale": {
+        "static_rules": "Matched: R009",
+        "explain_analysis": "type=ALL, key=None, rows=5000",
+        "degradation_note": null
+      },
+      "short_term_fix": "评估：① 在排序列上建索引；② 若 rows 很小（< 1000），可接受 filesort 开销",
+      "long_term_fix": "自查所有高频查询的排序字段，确保其索引覆盖",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT u.id, u.name, COUNT(o.id) AS order_count\n    FROM users u\n    LEFT JOIN orders o ON u.id = o.user_id\n    WHERE u.status = #{status}\n    GROUP BY u.id, u.name\n    ORDER BY order_count DESC\n    LIMIT #{limit}",
+      "explain_executed": true,
+      "level": "LOW",
+      "summary": "Matched: R009",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 5000,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": true,
+          "severity": "LOW"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:gh004_limitNoOrder:33",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 330,
+      "statement_type": "SELECT",
+      "mapper_method": "gh004_limitNoOrder",
+      "risk_level": "LOW",
+      "risk_summary": "LIMIT 无 ORDER BY → 结果不稳定",
+      "rationale": {
+        "static_rules": "No rules matched (UNCERTAIN)",
+        "explain_analysis": "type=ALL, key=None, rows=15823",
+        "degradation_note": null
+      },
+      "short_term_fix": "添加 ORDER BY 子句",
+      "long_term_fix": "分页规范必须包含排序",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "SELECT id, order_no FROM orders\n    WHERE status = #{status}\n    LIMIT #{offset}, #{limit}",
+      "explain_executed": true,
+      "level": "LOW",
+      "summary": "LIMIT 无 ORDER BY → 结果不稳定",
+      "explain_type": "ALL",
+      "explain_key": null,
+      "explain_rows": 15823,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": false
+    },
+    {
+      "sql_id": "mappers.xml:batchInsert:17",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 139,
+      "statement_type": "INSERT",
+      "mapper_method": "batchInsert",
+      "risk_level": "PASS",
+      "risk_summary": "No rules matched (UNCERTAIN)",
+      "rationale": {
+        "static_rules": "No rules matched (UNCERTAIN)",
+        "explain_analysis": "type=INSERT, key=None, rows=3",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "INSERT INTO orders (order_no, status, amount)\n    VALUES <foreach collection=\"list\" item=\"order\" separator=\",\">\n      (#{order.orderNo}, #{order.status}, #{order.amount})\n    </foreach>",
+      "explain_executed": true,
+      "level": "PASS",
+      "summary": "No rules matched (UNCERTAIN)",
+      "explain_type": "INSERT",
+      "explain_key": null,
+      "explain_rows": 3,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    },
+    {
+      "sql_id": "mappers.xml:insertOrder:8",
+      "file_path": "tests/fixtures/mappers.xml",
+      "line": 51,
+      "statement_type": "INSERT",
+      "mapper_method": "insertOrder",
+      "risk_level": "PASS",
+      "risk_summary": "No rules matched (UNCERTAIN)",
+      "rationale": {
+        "static_rules": "No rules matched (UNCERTAIN)",
+        "explain_analysis": "type=INSERT, key=None, rows=1",
+        "degradation_note": null
+      },
+      "short_term_fix": "",
+      "long_term_fix": "",
+      "call_chain": [],
+      "call_chain_broken": false,
+      "resolved_sql": "INSERT INTO orders (order_no, status, amount, created_at)\n    VALUES (#{orderNo}, #{status}, #{amount}, NOW())",
+      "explain_executed": true,
+      "level": "PASS",
+      "summary": "No rules matched (UNCERTAIN)",
+      "explain_type": "INSERT",
+      "explain_key": null,
+      "explain_rows": 1,
+      "rule_matches": [
+        {
+          "rule_id": "R001",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R002",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R003",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R004",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R005",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R006",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R007",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R008",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R009",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R010",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R011",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R101",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R102",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R103",
+          "matched": false,
+          "severity": "NONE"
+        },
+        {
+          "rule_id": "R104",
+          "matched": false,
+          "severity": "NONE"
+        }
+      ],
+      "uncertain": true
+    }
+  ],
+  "review_needed": [],
+  "review_checklist": [],
+  "degradation_notes": []
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "id": "discussion-gate-compile",
+    "notes": [
+      {
+        "id": 9101,
+        "body": "### Mock Gate Report\n\n- 有效评论数：0 / 1\n- 单元测试覆盖率：0.00% / 60%\n- 单测用例执行通过率：0.00% / 100%\n- Sonar质量门禁：未通过\n- Pipeline：failed\n- Approve：missing",
+        "author": {
+          "username": "MockGateBot",
+          "name": "Mock Gate Bot"
+        },
+        "system": false
+      }
+    ]
+  }
+]
+

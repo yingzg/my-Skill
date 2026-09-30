@@ -1,0 +1,290 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "name": "通用 SQL 性能审查规则",
+    "description": "适用于 Java/MyBatis + MySQL 项目的默认规则集，覆盖 SELECT / UPDATE / DELETE 常见性能与安全风险",
+    "last_updated": "2026-07-30",
+    "compatibility": {
+      "min_skill_version": "1.0.0",
+      "db_types": ["mysql"]
+    }
+  },
+
+  "rules": [
+
+    {
+      "id": "R001",
+      "name": "SELECT * 检测",
+      "category": "字段选择",
+      "applicable_to": ["SELECT"],
+      "db_types": ["mysql"],
+      "risk_level": "MEDIUM",
+      "match": {
+        "method": "regex",
+        "pattern": "(?i)\\bSELECT\\s+\\*\\s+FROM\\b"
+      },
+      "description": "使用 SELECT * 而非显式列出所需字段。会导致：① 传输不必要的数据；② 无法利用覆盖索引；③ 表结构变更时下游反序列化可能出错",
+      "short_term_fix_template": "将 SELECT * 改为显式列出业务需要的字段列表",
+      "long_term_fix_template": "将『禁止 SELECT *』写入团队 DAO 层编码规范，在 Code Review 阶段卡点"
+    },
+
+    {
+      "id": "R002",
+      "name": "缺失 LIMIT",
+      "category": "结果集控制",
+      "applicable_to": ["SELECT"],
+      "db_types": ["mysql"],
+      "risk_level": "MEDIUM",
+      "severity_by_type": {
+        "SELECT": "MEDIUM"
+      },
+      "match": {
+        "method": "regex_absence",
+        "pattern": "(?i)\\bLIMIT\\b"
+      },
+      "exempt": {
+        "method": "schema_pk_eq_query"
+      },
+      "description": "SELECT 查询未指定 LIMIT 子句，当表数据量大时，单次返回海量数据会导致：① 应用内存溢出；② 网络传输耗时；③ 数据库 I/O 飙升",
+      "short_term_fix_template": "在 SELECT 语句末尾添加 LIMIT N 子句，N 根据业务场景设定",
+      "long_term_fix_template": "在 MyBatis 拦截器层面对无 LIMIT 的 SELECT 做硬限制（如默认追加 LIMIT 1000）"
+    },
+
+    {
+      "id": "R003",
+      "name": "LIKE 左模糊",
+      "category": "索引失效",
+      "applicable_to": ["SELECT"],
+      "db_types": ["mysql"],
+      "risk_level": "MEDIUM",
+      "match": {
+        "method": "regex",
+        "pattern": "(?i)\\bLIKE\\s+['\"]%"
+      },
+      "description": "条件中使用 LIKE '%xxx' 或 LIKE '%xxx%'，前缀通配符将导致 B+ 树索引完全失效，退化为全表扫描",
+      "short_term_fix_template": "剥离前置通配符：LIKE 'xxx%'。若必须模糊中间搜索，评估使用 ElasticSearch 全文索引替代",
+      "long_term_fix_template": "对高频模糊搜索字段建立 MySQL FULLTEXT 索引或迁移至 ES"
+    },
+
+    {
+      "id": "R004",
+      "name": "WHERE 子句 OR 条件",
+      "category": "索引失效",
+      "applicable_to": ["SELECT", "UPDATE", "DELETE"],
+      "db_types": ["mysql"],
+      "risk_level": "MEDIUM",
+      "severity_by_type": {
+        "UPDATE": "HIGH",
+        "DELETE": "HIGH"
+      },
+      "match": {
+        "method": "regex",
+        "pattern": "(?i)\\bWHERE\\b.+\\bOR\\b.+(?:=|>|<|>=|<=|!=|LIKE|IN|BETWEEN)"
+      },
+      "description": "WHERE 子句中使用 OR 连接多个条件，可能导致 MySQL 优化器放弃索引而选择全表扫描。对 UPDATE/DELETE 尤为危险——全表扫描的写操作会锁大量行",
+      "short_term_fix_template": "将 OR 改写为 UNION ALL（每个分支独立走索引），或确认 OR 涉及的列均有索引",
+      "long_term_fix_template": "评估是否需要在 OR 涉及的列上建立复合索引；Code Review 对 UPDATE/DELETE 中的 OR 条件做强制拦截"
+    },
+
+    {
+      "id": "R005",
+      "name": "函数包裹索引列",
+      "category": "索引失效",
+      "applicable_to": ["SELECT", "UPDATE", "DELETE"],
+      "db_types": ["mysql"],
+      "risk_level": "MEDIUM",
+      "severity_by_type": {
+        "UPDATE": "HIGH",
+        "DELETE": "HIGH"
+      },
+      "match": {
+        "method": "regex",
+        "pattern": "(?i)(?:DATE|YEAR|MONTH|DAY|DATE_FORMAT|UNIX_TIMESTAMP|FROM_UNIXTIME|LOWER|UPPER|TRIM|SUBSTRING|CONCAT|COALESCE|IFNULL|CAST|CONVERT)\\s*\\([^)]*\\b(?:created_at|updated_at|create_time|update_time|gmt_create|gmt_modified)\\b"
+      },
+      "description": "WHERE 条件中对索引列使用了函数（如 DATE(created_at)），MySQL 无法使用该列上的索引，因为函数计算结果无法与索引树匹配",
+      "short_term_fix_template": "将条件改写为范围比较，如 created_at >= '2026-01-01' AND created_at < '2026-01-02' 替代 DATE(created_at) = '2026-01-01'",
+      "long_term_fix_template": "评估 MySQL 5.7+ 的函数索引（Generated Column + INDEX）可行性"
+    },
+
+    {
+      "id": "R006",
+      "name": "隐式类型转换",
+      "category": "索引失效",
+      "applicable_to": ["SELECT", "UPDATE", "DELETE"],
+      "db_types": ["mysql"],
+      "risk_level": "MEDIUM",
+      "severity_by_type": {
+        "UPDATE": "HIGH",
+        "DELETE": "HIGH"
+      },
+      "match": {
+        "method": "schema_column_eq_number"
+      },
+      "description": "WHERE 条件中字符串列与数字字面量比较（如 WHERE varchar_col = 123），MySQL 会将字符串列隐式转换为数字，导致索引失效。基于表 DDL 的列类型准确判断，仅字符串列与数字比较时命中",
+      "short_term_fix_template": "确保比较值类型与列类型一致：WHERE varchar_col = '123'",
+      "long_term_fix_template": "在 MyBatis 中启用 jdbcType 严格校验（#{param,jdbcType=VARCHAR}）"
+    },
+
+    {
+      "id": "R007",
+      "name": "大表无条件全量查询",
+      "category": "结果集控制",
+      "applicable_to": ["SELECT"],
+      "db_types": ["mysql"],
+      "risk_level": "HIGH",
+      "match": {
+        "method": "regex_absence",
+        "pattern": "(?i)\\bWHERE\\b"
+      },
+      "description": "SELECT 语句无 WHERE 子句，返回全表数据。若该表为大表（预计 > 10 万行），将导致严重的内存和 I/O 问题",
+      "short_term_fix_template": "添加必要的 WHERE 过滤条件 + LIMIT，或确认该场景确实需要全量数据（如定时导出）并增加分批拉取逻辑",
+      "long_term_fix_template": "对于定时全量导出的场景，使用游标分页（WHERE id > :lastId ORDER BY id LIMIT 1000）替代一次性加载"
+    },
+
+    {
+      "id": "R008",
+      "name": "复杂子查询",
+      "category": "查询结构",
+      "applicable_to": ["SELECT"],
+      "db_types": ["mysql"],
+      "risk_level": "MEDIUM",
+      "match": {
+        "method": "regex",
+        "pattern": "(?i)\\bSELECT\\b[^;]*\\(\\s*SELECT\\b"
+      },
+      "description": "使用了嵌套子查询，MySQL 可能对每行外查询执行一次内查询（DEPENDENT SUBQUERY），性能极度恶化",
+      "short_term_fix_template": "评估是否能改写为 JOIN 或拆分为两次独立查询后在应用层组装",
+      "long_term_fix_template": "将复杂的子查询逻辑迁移到应用层或使用临时表 + 分步查询替代"
+    },
+
+    {
+      "id": "R009",
+      "name": "存在 ORDER BY（可能 filesort）",
+      "category": "排序优化",
+      "applicable_to": ["SELECT"],
+      "db_types": ["mysql"],
+      "risk_level": "LOW",
+      "match": {
+        "method": "regex",
+        "pattern": "(?i)\\bORDER\\s+BY\\b"
+      },
+      "description": "SQL 使用了 ORDER BY 排序。若排序列不在索引中，MySQL 将触发额外排序（Using filesort）。需结合 EXPLAIN 确认是否 filesort 及影响行数",
+      "short_term_fix_template": "评估：① 在排序列上建索引；② 若 rows 很小（< 1000），可接受 filesort 开销",
+      "long_term_fix_template": "自查所有高频查询的排序字段，确保其索引覆盖"
+    },
+
+    {
+      "id": "R010",
+      "name": "显式笛卡尔积 CROSS JOIN",
+      "category": "查询结构",
+      "applicable_to": ["SELECT"],
+      "db_types": ["mysql"],
+      "risk_level": "HIGH",
+      "match": {
+        "method": "regex",
+        "pattern": "(?i)\\bCROSS\\s+JOIN\\b"
+      },
+      "description": "使用 CROSS JOIN 显式产生笛卡尔积，N × M 行数据量爆炸。注意：逗号连接的隐式笛卡尔积（FROM a, b 且无关联条件）无法由正则可靠检测，需结合 EXPLAIN 或人工确认",
+      "short_term_fix_template": "检查 ON 子句或 WHERE 中的表关联条件，确保每个 JOIN 都有正确的关联列",
+      "long_term_fix_template": "Code Review 强制检查：每个 JOIN 必须有 ON 条件"
+    },
+
+    {
+      "id": "R011",
+      "name": "NOT IN 子查询",
+      "category": "查询结构",
+      "applicable_to": ["SELECT"],
+      "db_types": ["mysql"],
+      "risk_level": "MEDIUM",
+      "match": {
+        "method": "regex",
+        "pattern": "(?i)\\bNOT\\s+IN\\s*\\(\\s*SELECT\\b"
+      },
+      "description": "NOT IN 子查询对 NULL 敏感（子查询结果含 NULL 时整条查询返回空集），且 MySQL 优化器可能选择低效执行计划",
+      "short_term_fix_template": "改为 NOT EXISTS 或 LEFT JOIN ... WHERE ... IS NULL",
+      "long_term_fix_template": "编码规范中禁止 NOT IN 子查询"
+    },
+
+    {
+      "id": "R101",
+      "name": "缺失软删除状态守卫",
+      "category": "数据安全",
+      "applicable_to": ["UPDATE", "DELETE"],
+      "db_types": ["mysql"],
+      "risk_level": "HIGH",
+      "match": {
+        "method": "schema_soft_delete_guard",
+        "pattern": "(?i)(status_code|is_deleted|statecode|del_flag|deleted|is_del|delete_flag)"
+      },
+      "description": "UPDATE/DELETE 语句中缺少软删除字段条件（status_code / is_deleted / statecode / del_flag 等），可能意外修改或删除已被软删除的数据。基于表 DDL 判断：仅当表确实含软删除字段、且 WHERE 子句未引用该字段时才命中（无 DDL 或表无软删除字段时不误报）",
+      "short_term_fix_template": "在 WHERE 子句中添加 AND status_code = 0（或 is_deleted = 0）",
+      "long_term_fix_template": "在 BaseMapper 层引入拦截器，自动为 UPDATE/DELETE 附加软删除条件；或迁移至 MyBatis-Plus 的逻辑删除功能"
+    },
+
+    {
+      "id": "R102",
+      "name": "UPDATE/DELETE 无条件语句",
+      "category": "数据安全",
+      "applicable_to": ["UPDATE", "DELETE"],
+      "db_types": ["mysql"],
+      "risk_level": "CRITICAL",
+      "match": {
+        "method": "regex_absence",
+        "pattern": "(?i)\\bWHERE\\b"
+      },
+      "description": "UPDATE 或 DELETE 语句没有任何 WHERE 条件，将修改/删除整张表的所有数据。这是生产事故级风险",
+      "short_term_fix_template": "必须添加 WHERE 子句限定操作范围。若确实需要操作全表，使用 TRUNCATE（更快且隐式提交）并添加注释说明意图",
+      "long_term_fix_template": "数据库层面开启 sql_safe_updates=1（禁止无 WHERE 或 WHERE 不走索引的写操作）"
+    },
+
+    {
+      "id": "R103",
+      "name": "批量写操作无批次限制",
+      "category": "数据安全",
+      "applicable_to": ["UPDATE", "DELETE"],
+      "db_types": ["mysql"],
+      "risk_level": "MEDIUM",
+      "match": {
+        "method": "regex_absence",
+        "pattern": "(?i)\\bLIMIT\\b"
+      },
+      "description": "UPDATE/DELETE 未指定 LIMIT，当 WHERE 条件匹配大量行时，将导致：① 长事务锁大量行；② 从库延迟；③ undo log 膨胀",
+      "short_term_fix_template": "添加 LIMIT N 限制单次操作行数，配合循环分批执行",
+      "long_term_fix_template": "建立『大批量写操作必须走分批脚本』的发布规范"
+    },
+
+    {
+      "id": "R104",
+      "name": "DELETE 语句替代方案评估",
+      "category": "数据安全",
+      "applicable_to": ["DELETE"],
+      "db_types": ["mysql"],
+      "risk_level": "MEDIUM",
+      "match": {
+        "method": "regex",
+        "pattern": "(?i)\\bDELETE\\s+FROM\\b"
+      },
+      "description": "代码直接执行了 DELETE 物理删除。在没有明确业务原因的情况下，更推荐使用软删除（is_deleted=1）以保留数据可追溯性",
+      "short_term_fix_template": "确认磁盘压力：若磁盘充裕，改为软删除（UPDATE SET is_deleted = 1）；若磁盘紧张，改用归档后删除的流程",
+      "long_term_fix_template": "制定数据生命周期规范：热数据 → 温数据（软删除 N 天后归档）→ 冷数据（归档表/离线存储）→ 销毁"
+    }
+
+  ],
+
+  "rule_groups": {
+    "category": {
+      "字段选择": "使用 SELECT * 等不精确的字段选择",
+      "结果集控制": "未限制返回行数，可能返回海量数据",
+      "索引失效": "SQL 写法导致 MySQL 无法使用索引",
+      "查询结构": "子查询、JOIN 等结构导致性能问题",
+      "排序优化": "排序未走索引",
+      "数据安全": "写操作缺少必要的安全守卫条件"
+    },
+    "risk_level": {
+      "CRITICAL": "生产事故级风险，必须阻断",
+      "HIGH": "高风险，强烈建议修复",
+      "MEDIUM": "中等风险，建议修复",
+      "LOW": "低风险，可在后续迭代中优化"
+    }
+  }
+}

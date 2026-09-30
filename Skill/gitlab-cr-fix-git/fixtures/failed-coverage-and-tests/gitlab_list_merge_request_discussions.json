@@ -1,0 +1,31 @@
+[
+  {
+    "id": "discussion-gate-1",
+    "notes": [
+      {
+        "id": 9001,
+        "body": "### Mock Gate Report\n\n- 有效评论数：2 / 5\n- 变更代码单元测试覆盖率：45.00% / 60%\n- 单测用例执行通过率：97.67% / 100%\n- Sonar质量门禁：未通过\n- Pipeline：failed\n- Approve：missing",
+        "author": {
+          "username": "MockGateBot",
+          "name": "Mock Gate Bot"
+        },
+        "system": false
+      }
+    ]
+  },
+  {
+    "id": "discussion-review-1",
+    "notes": [
+      {
+        "id": 9002,
+        "body": "Can we add validation for invalid quantity?",
+        "author": {
+          "username": "bob",
+          "name": "Bob"
+        },
+        "system": false
+      }
+    ]
+  }
+]
+

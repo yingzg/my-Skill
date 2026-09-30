@@ -1,0 +1,620 @@
+[
+  {
+    "sql_id": "mappers.xml:findById:0",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "findById",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT id, order_no, status, created_at\n    FROM orders\n    WHERE id = #{id}",
+    "dynamic_tags": [],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 10,
+    "line_end": 14
+  },
+  {
+    "sql_id": "mappers.xml:findByOrderNo:1",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "findByOrderNo",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT id, order_no, amount\n    FROM orders\n    WHERE order_no = #{orderNo}",
+    "dynamic_tags": [],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 16,
+    "line_end": 20
+  },
+  {
+    "sql_id": "mappers.xml:findAll:2",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "findAll",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT * FROM orders",
+    "dynamic_tags": [],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 22,
+    "line_end": 24
+  },
+  {
+    "sql_id": "mappers.xml:countByStatus:3",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "countByStatus",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT COUNT(*) FROM orders WHERE status = #{status}",
+    "dynamic_tags": [],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 26,
+    "line_end": 28
+  },
+  {
+    "sql_id": "mappers.xml:updateStatus:4",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "updateStatus",
+    "statement_type": "UPDATE",
+    "raw_sql": "UPDATE orders SET status = #{status}, updated_at = NOW()\n    WHERE id = #{id}",
+    "dynamic_tags": [],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 34,
+    "line_end": 37
+  },
+  {
+    "sql_id": "mappers.xml:updateStatusNoWhere:5",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "updateStatusNoWhere",
+    "statement_type": "UPDATE",
+    "raw_sql": "UPDATE orders SET status = #{status}",
+    "dynamic_tags": [],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 39,
+    "line_end": 41
+  },
+  {
+    "sql_id": "mappers.xml:deleteById:6",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "deleteById",
+    "statement_type": "DELETE",
+    "raw_sql": "DELETE FROM orders WHERE id = #{id}",
+    "dynamic_tags": [],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 43,
+    "line_end": 45
+  },
+  {
+    "sql_id": "mappers.xml:deleteAll:7",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "deleteAll",
+    "statement_type": "DELETE",
+    "raw_sql": "DELETE FROM orders",
+    "dynamic_tags": [],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 47,
+    "line_end": 49
+  },
+  {
+    "sql_id": "mappers.xml:insertOrder:8",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "insertOrder",
+    "statement_type": "INSERT",
+    "raw_sql": "INSERT INTO orders (order_no, status, amount, created_at)\n    VALUES (#{orderNo}, #{status}, #{amount}, NOW())",
+    "dynamic_tags": [],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 51,
+    "line_end": 54
+  },
+  {
+    "sql_id": "mappers.xml:findWithDetail:9",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "findWithDetail",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT o.id, o.order_no, d.product_name, d.quantity\n    FROM orders o\n    JOIN order_detail d ON o.id = d.order_id\n    WHERE o.id = #{id}",
+    "dynamic_tags": [],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 60,
+    "line_end": 65
+  },
+  {
+    "sql_id": "mappers.xml:findWithMultipleJoins:10",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "findWithMultipleJoins",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT o.id, o.order_no, d.product_name, u.name AS user_name\n    FROM orders o\n    LEFT JOIN order_detail d ON o.id = d.order_id\n    LEFT JOIN users u ON o.user_id = u.id\n    WHERE o.status = #{status}",
+    "dynamic_tags": [],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 67,
+    "line_end": 73
+  },
+  {
+    "sql_id": "mappers.xml:findBySubQuery:11",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "findBySubQuery",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT id, order_no, status\n    FROM orders\n    WHERE user_id IN (\n      SELECT id FROM users WHERE status = 'ACTIVE'\n    )",
+    "dynamic_tags": [],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 79,
+    "line_end": 85
+  },
+  {
+    "sql_id": "mappers.xml:findByCondition:12",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "findByCondition",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT id, order_no, status\n    FROM orders\n    WHERE 1=1 <if test=\"status != null\">AND status = #{status}</if> <if test=\"orderNo != null and orderNo != ''\">AND order_no = #{orderNo}</if>",
+    "dynamic_tags": [
+      {
+        "tag": "if",
+        "raw": "<if test=\"status != null\">AND status = #{status}</if>"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"orderNo != null and orderNo != ''\">AND order_no = #{orderNo}</if>"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 91,
+    "line_end": 97
+  },
+  {
+    "sql_id": "mappers.xml:findBySingleIf:13",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "findBySingleIf",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT id, order_no, status FROM orders <if test=\"amount != null\">WHERE amount &gt; #{amount}</if>",
+    "dynamic_tags": [
+      {
+        "tag": "if",
+        "raw": "<if test=\"amount != null\">WHERE amount &gt; #{amount}</if>"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 99,
+    "line_end": 102
+  },
+  {
+    "sql_id": "mappers.xml:updateByIf:14",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "updateByIf",
+    "statement_type": "UPDATE",
+    "raw_sql": "UPDATE orders SET updated_at = NOW() <if test=\"status != null\">, status = #{status}</if> <if test=\"amount != null\">, amount = #{amount}</if>\n    WHERE id = #{id}",
+    "dynamic_tags": [
+      {
+        "tag": "if",
+        "raw": "<if test=\"status != null\">, status = #{status}</if>"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"amount != null\">, amount = #{amount}</if>\n    WHERE id = #{id}"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 104,
+    "line_end": 109
+  },
+  {
+    "sql_id": "mappers.xml:findByChoose:15",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "findByChoose",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT id, order_no, status FROM orders <where>\n      <choose>\n        <when test=\"status != null\">AND status = #{status}</when>\n        <when test=\"orderNo != null\">AND order_no = #{orderNo}</when>\n        <otherwise>AND id &gt; 0</otherwise>\n      </choose>\n    </where>",
+    "dynamic_tags": [
+      {
+        "tag": "where",
+        "raw": "<where>\n      <choose>\n        <when test=\"status != null\">AND status = #{status}</when>\n        <when test=\"orderNo != null\">AND order_no = #{orderNo}</when>\n        <otherwise>AND id &gt; 0</otherwise>\n      </choose>\n    </where>"
+      },
+      {
+        "tag": "choose",
+        "raw": "<choose>\n        <when test=\"status != null\">AND status = #{status}</when>\n        <when test=\"orderNo != null\">AND order_no = #{orderNo}</when>\n        <otherwise>AND id &gt; 0</otherwise>\n      </choose>"
+      },
+      {
+        "tag": "when",
+        "raw": "<when test=\"status != null\">AND status = #{status}</when>"
+      },
+      {
+        "tag": "when",
+        "raw": "<when test=\"orderNo != null\">AND order_no = #{orderNo}</when>"
+      },
+      {
+        "tag": "otherwise",
+        "raw": "<otherwise>AND id &gt; 0</otherwise>"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 115,
+    "line_end": 124
+  },
+  {
+    "sql_id": "mappers.xml:findByIds:16",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "findByIds",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT id, order_no, status\n    FROM orders\n    WHERE id IN <foreach collection=\"ids\" item=\"id\" open=\"(\" close=\")\" separator=\",\">\n      #{id}\n    </foreach>",
+    "dynamic_tags": [
+      {
+        "tag": "foreach",
+        "raw": "<foreach collection=\"ids\" item=\"id\" open=\"(\" close=\")\" separator=\",\">\n      #{id}\n    </foreach>"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 130,
+    "line_end": 137
+  },
+  {
+    "sql_id": "mappers.xml:batchInsert:17",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "batchInsert",
+    "statement_type": "INSERT",
+    "raw_sql": "INSERT INTO orders (order_no, status, amount)\n    VALUES <foreach collection=\"list\" item=\"order\" separator=\",\">\n      (#{order.orderNo}, #{order.status}, #{order.amount})\n    </foreach>",
+    "dynamic_tags": [
+      {
+        "tag": "foreach",
+        "raw": "<foreach collection=\"list\" item=\"order\" separator=\",\">\n      (#{order.orderNo}, #{order.status}, #{order.amount})\n    </foreach>"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 139,
+    "line_end": 145
+  },
+  {
+    "sql_id": "mappers.xml:deleteByIds:18",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "deleteByIds",
+    "statement_type": "DELETE",
+    "raw_sql": "DELETE FROM orders WHERE id IN <foreach collection=\"ids\" item=\"id\" open=\"(\" close=\")\" separator=\",\">\n      #{id}\n    </foreach>",
+    "dynamic_tags": [
+      {
+        "tag": "foreach",
+        "raw": "<foreach collection=\"ids\" item=\"id\" open=\"(\" close=\")\" separator=\",\">\n      #{id}\n    </foreach>"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 147,
+    "line_end": 152
+  },
+  {
+    "sql_id": "mappers.xml:findByWhere:19",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "findByWhere",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT id, order_no, status FROM orders <where>\n      <if test=\"status != null\">AND status = #{status}</if>\n      <if test=\"orderNo != null\">AND order_no = #{orderNo}</if>\n      <if test=\"amount != null\">AND amount &gt;= #{amount}</if>\n    </where>",
+    "dynamic_tags": [
+      {
+        "tag": "where",
+        "raw": "<where>\n      <if test=\"status != null\">AND status = #{status}</if>\n      <if test=\"orderNo != null\">AND order_no = #{orderNo}</if>\n      <if test=\"amount != null\">AND amount &gt;= #{amount}</if>\n    </where>"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"status != null\">AND status = #{status}</if>"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"orderNo != null\">AND order_no = #{orderNo}</if>"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"amount != null\">AND amount &gt;= #{amount}</if>"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 158,
+    "line_end": 165
+  },
+  {
+    "sql_id": "mappers.xml:updateBySet:20",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "updateBySet",
+    "statement_type": "UPDATE",
+    "raw_sql": "UPDATE orders <set>\n      <if test=\"status != null\">status = #{status},</if>\n      <if test=\"amount != null\">amount = #{amount},</if>\n      updated_at = NOW(),\n    </set>\n    WHERE id = #{id}",
+    "dynamic_tags": [
+      {
+        "tag": "set",
+        "raw": "<set>\n      <if test=\"status != null\">status = #{status},</if>\n      <if test=\"amount != null\">amount = #{amount},</if>\n      updated_at = NOW(),\n    </set>\n    WHERE id = #{id}"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"status != null\">status = #{status},</if>"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"amount != null\">amount = #{amount},</if>\n      updated_at = NOW(),"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 171,
+    "line_end": 179
+  },
+  {
+    "sql_id": "mappers.xml:findByTrim:21",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "findByTrim",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT id, order_no, status FROM orders <trim prefix=\"WHERE\" prefixOverrides=\"AND |OR \">\n      <if test=\"status != null\">AND status = #{status}</if>\n      <if test=\"orderNo != null\">AND order_no = #{orderNo}</if>\n    </trim>",
+    "dynamic_tags": [
+      {
+        "tag": "trim",
+        "raw": "<trim prefix=\"WHERE\" prefixOverrides=\"AND |OR \">\n      <if test=\"status != null\">AND status = #{status}</if>\n      <if test=\"orderNo != null\">AND order_no = #{orderNo}</if>\n    </trim>"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"status != null\">AND status = #{status}</if>"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"orderNo != null\">AND order_no = #{orderNo}</if>"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 185,
+    "line_end": 191
+  },
+  {
+    "sql_id": "mappers.xml:updateByTrimSet:22",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "updateByTrimSet",
+    "statement_type": "UPDATE",
+    "raw_sql": "UPDATE orders <trim prefix=\"SET\" suffixOverrides=\",\">\n      <if test=\"status != null\">status = #{status},</if>\n      <if test=\"amount != null\">amount = #{amount},</if>\n    </trim>\n    WHERE id = #{id}",
+    "dynamic_tags": [
+      {
+        "tag": "trim",
+        "raw": "<trim prefix=\"SET\" suffixOverrides=\",\">\n      <if test=\"status != null\">status = #{status},</if>\n      <if test=\"amount != null\">amount = #{amount},</if>\n    </trim>\n    WHERE id = #{id}"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"status != null\">status = #{status},</if>"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"amount != null\">amount = #{amount},</if>"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 193,
+    "line_end": 200
+  },
+  {
+    "sql_id": "mappers.xml:findByBind:23",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "findByBind",
+    "statement_type": "SELECT",
+    "raw_sql": "<bind name=\"pattern\" value=\"'%' + keyword + '%'\" />\n    SELECT id, order_no, status FROM orders\n    WHERE order_no LIKE #{pattern}",
+    "dynamic_tags": [
+      {
+        "tag": "bind",
+        "raw": "<bind name=\"pattern\" value=\"'%' + keyword + '%'\" />\n    SELECT id, order_no, status FROM orders\n    WHERE order_no LIKE #{pattern}"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 206,
+    "line_end": 210
+  },
+  {
+    "sql_id": "mappers.xml:findByBindWithIf:24",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "findByBindWithIf",
+    "statement_type": "SELECT",
+    "raw_sql": "<bind name=\"pattern\" value=\"'%' + keyword + '%'\" />\n    SELECT id, order_no, status FROM orders <where>\n      <if test=\"keyword != null and keyword != ''\">\n        order_no LIKE #{pattern}\n      </if>\n    </where>",
+    "dynamic_tags": [
+      {
+        "tag": "bind",
+        "raw": "<bind name=\"pattern\" value=\"'%' + keyword + '%'\" />\n    SELECT id, order_no, status FROM orders"
+      },
+      {
+        "tag": "where",
+        "raw": "<where>\n      <if test=\"keyword != null and keyword != ''\">\n        order_no LIKE #{pattern}\n      </if>\n    </where>"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"keyword != null and keyword != ''\">\n        order_no LIKE #{pattern}\n      </if>"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 212,
+    "line_end": 220
+  },
+  {
+    "sql_id": "mappers.xml:findWithInclude:25",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "findWithInclude",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT <include refid=\"BaseColumnList\" /> FROM orders <include refid=\"WhereClause\" />",
+    "dynamic_tags": [
+      {
+        "tag": "include",
+        "raw": "<include refid=\"BaseColumnList\" /> FROM orders"
+      },
+      {
+        "tag": "include",
+        "raw": "<include refid=\"WhereClause\" />"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 237,
+    "line_end": 240
+  },
+  {
+    "sql_id": "mappers.xml:findByMixed:26",
+    "mapper_namespace": "com.example.mapper.OrderMapper",
+    "method_name": "findByMixed",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT id, order_no, status, amount FROM orders <where>\n      <if test=\"statusList != null and statusList.size() &gt; 0\">\n        AND status IN\n        <foreach collection=\"statusList\" item=\"s\" open=\"(\" close=\")\" separator=\",\">\n          #{s}\n        </foreach>\n      </if>\n      <if test=\"minAmount != null\">AND amount &gt;= #{minAmount}</if>\n      <if test=\"maxAmount != null\">AND amount &lt;= #{maxAmount}</if>\n    </where> <if test=\"orderBy != null\">ORDER BY ${orderBy}</if>",
+    "dynamic_tags": [
+      {
+        "tag": "where",
+        "raw": "<where>\n      <if test=\"statusList != null and statusList.size() &gt; 0\">\n        AND status IN\n        <foreach collection=\"statusList\" item=\"s\" open=\"(\" close=\")\" separator=\",\">\n          #{s}\n        </foreach>\n      </if>\n      <if test=\"minAmount != null\">AND amount &gt;= #{minAmount}</if>\n      <if test=\"maxAmount != null\">AND amount &lt;= #{maxAmount}</if>\n    </where>"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"statusList != null and statusList.size() &gt; 0\">\n        AND status IN\n        <foreach collection=\"statusList\" item=\"s\" open=\"(\" close=\")\" separator=\",\">\n          #{s}\n        </foreach>\n      </if>"
+      },
+      {
+        "tag": "foreach",
+        "raw": "<foreach collection=\"statusList\" item=\"s\" open=\"(\" close=\")\" separator=\",\">\n          #{s}\n        </foreach>"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"minAmount != null\">AND amount &gt;= #{minAmount}</if>"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"maxAmount != null\">AND amount &lt;= #{maxAmount}</if>"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"orderBy != null\">ORDER BY ${orderBy}</if>"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 246,
+    "line_end": 259
+  },
+  {
+    "sql_id": "mappers.xml:findUserById:27",
+    "mapper_namespace": "com.example.mapper.UserMapper",
+    "method_name": "findUserById",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT id, name, email FROM users WHERE id = #{id}",
+    "dynamic_tags": [],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 270,
+    "line_end": 272
+  },
+  {
+    "sql_id": "mappers.xml:findUserWithOrders:28",
+    "mapper_namespace": "com.example.mapper.UserMapper",
+    "method_name": "findUserWithOrders",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT u.id, u.name, COUNT(o.id) AS order_count\n    FROM users u\n    LEFT JOIN orders o ON u.id = o.user_id\n    WHERE u.status = #{status}\n    GROUP BY u.id, u.name\n    ORDER BY order_count DESC\n    LIMIT #{limit}",
+    "dynamic_tags": [],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 274,
+    "line_end": 282
+  },
+  {
+    "sql_id": "mappers.xml:findUsersByKeyword:29",
+    "mapper_namespace": "com.example.mapper.UserMapper",
+    "method_name": "findUsersByKeyword",
+    "statement_type": "SELECT",
+    "raw_sql": "<bind name=\"pattern\" value=\"'%' + keyword + '%'\" />\n    SELECT id, name, email FROM users <where>\n      <choose>\n        <when test=\"keyword != null\">name LIKE #{pattern}</when>\n        <otherwise>1=1</otherwise>\n      </choose>\n    </where>",
+    "dynamic_tags": [
+      {
+        "tag": "bind",
+        "raw": "<bind name=\"pattern\" value=\"'%' + keyword + '%'\" />\n    SELECT id, name, email FROM users"
+      },
+      {
+        "tag": "where",
+        "raw": "<where>\n      <choose>\n        <when test=\"keyword != null\">name LIKE #{pattern}</when>\n        <otherwise>1=1</otherwise>\n      </choose>\n    </where>"
+      },
+      {
+        "tag": "choose",
+        "raw": "<choose>\n        <when test=\"keyword != null\">name LIKE #{pattern}</when>\n        <otherwise>1=1</otherwise>\n      </choose>"
+      },
+      {
+        "tag": "when",
+        "raw": "<when test=\"keyword != null\">name LIKE #{pattern}</when>"
+      },
+      {
+        "tag": "otherwise",
+        "raw": "<otherwise>1=1</otherwise>"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 284,
+    "line_end": 293
+  },
+  {
+    "sql_id": "mappers.xml:gh001_emptyForeach:30",
+    "mapper_namespace": "com.example.mapper.RegressionMapper",
+    "method_name": "gh001_emptyForeach",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT id, status FROM orders WHERE id IN <foreach collection=\"emptyList\" item=\"id\" open=\"(\" close=\")\" separator=\",\">\n      #{id}\n    </foreach>",
+    "dynamic_tags": [
+      {
+        "tag": "foreach",
+        "raw": "<foreach collection=\"emptyList\" item=\"id\" open=\"(\" close=\")\" separator=\",\">\n      #{id}\n    </foreach>"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 304,
+    "line_end": 309
+  },
+  {
+    "sql_id": "mappers.xml:gh002_foreachNestedIf:31",
+    "mapper_namespace": "com.example.mapper.RegressionMapper",
+    "method_name": "gh002_foreachNestedIf",
+    "statement_type": "UPDATE",
+    "raw_sql": "<foreach collection=\"list\" item=\"order\" separator=\";\">\n      UPDATE orders\n      <set>\n        <if test=\"order.status != null\">status = #{order.status}</if>\n        <if test=\"order.amount != null\">amount = #{order.amount}</if>\n      </set>\n      WHERE id = #{order.id}\n    </foreach>",
+    "dynamic_tags": [
+      {
+        "tag": "foreach",
+        "raw": "<foreach collection=\"list\" item=\"order\" separator=\";\">\n      UPDATE orders\n      <set>\n        <if test=\"order.status != null\">status = #{order.status}</if>\n        <if test=\"order.amount != null\">amount = #{order.amount}</if>\n      </set>\n      WHERE id = #{order.id}\n    </foreach>"
+      },
+      {
+        "tag": "set",
+        "raw": "<set>\n        <if test=\"order.status != null\">status = #{order.status}</if>\n        <if test=\"order.amount != null\">amount = #{order.amount}</if>\n      </set>\n      WHERE id = #{order.id}"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"order.status != null\">status = #{order.status}</if>"
+      },
+      {
+        "tag": "if",
+        "raw": "<if test=\"order.amount != null\">amount = #{order.amount}</if>"
+      }
+    ],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 312,
+    "line_end": 321
+  },
+  {
+    "sql_id": "mappers.xml:gh003_leftLike:32",
+    "mapper_namespace": "com.example.mapper.RegressionMapper",
+    "method_name": "gh003_leftLike",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT id, order_no FROM orders\n    WHERE order_no LIKE CONCAT('%', #{keyword})",
+    "dynamic_tags": [],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 324,
+    "line_end": 327
+  },
+  {
+    "sql_id": "mappers.xml:gh004_limitNoOrder:33",
+    "mapper_namespace": "com.example.mapper.RegressionMapper",
+    "method_name": "gh004_limitNoOrder",
+    "statement_type": "SELECT",
+    "raw_sql": "SELECT id, order_no FROM orders\n    WHERE status = #{status}\n    LIMIT #{offset}, #{limit}",
+    "dynamic_tags": [],
+    "datasource": "UNKNOWN",
+    "file": "tests/fixtures/mappers.xml",
+    "line_start": 330,
+    "line_end": 334
+  }
+]

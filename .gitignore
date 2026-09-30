@@ -1,0 +1,14 @@
+Code-intelligence/
+**/node_modules/
+Mcp/build/
+**/build/
+*.log
+.DS_Store
+**/__pycache__/
+*.pyc
+
+# 本地备份（清理前的原始文档与敏感内容），不随仓库提交
+.backup/
+
+# 面试自测题文档（不提交）
+docs/mcp-guide/MCP开发面试自测题.md

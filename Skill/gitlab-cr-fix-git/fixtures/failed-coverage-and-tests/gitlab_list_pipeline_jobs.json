@@ -1,0 +1,24 @@
+[
+  {
+    "id": 77101,
+    "name": "unit-test",
+    "status": "failed",
+    "stage": "test",
+    "web_url": "https://gitlab.example.com/demo/order-service/-/jobs/77101"
+  },
+  {
+    "id": 77102,
+    "name": "sonar-scan",
+    "status": "failed",
+    "stage": "quality",
+    "web_url": "https://gitlab.example.com/demo/order-service/-/jobs/77102"
+  },
+  {
+    "id": 77103,
+    "name": "package",
+    "status": "skipped",
+    "stage": "build",
+    "web_url": "https://gitlab.example.com/demo/order-service/-/jobs/77103"
+  }
+]
+

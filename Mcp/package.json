@@ -1,0 +1,29 @@
+{
+  "name": "mcp-gitlab-stdio",
+  "version": "0.1.0",
+  "description": "A stdio GitLab MCP server focused on repository and CI/CD operations with local safety guardrails.",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "mcp-gitlab-stdio": "./build/index.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsc && node -e \"import('fs').then(fs => fs.chmodSync('build/index.js', '755'))\"",
+    "test:unit": "npm run build && node --test build/__tests__/*.test.js",
+    "start": "node build/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.7.0",
+    "axios": "^1.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

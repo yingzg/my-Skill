@@ -1,0 +1,21 @@
+{
+  "component": {
+    "key": "demo:order-service",
+    "name": "order-service",
+    "measures": [
+      {
+        "metric": "new_line_coverage",
+        "value": "45.0"
+      },
+      {
+        "metric": "new_lines_to_cover",
+        "value": "100"
+      },
+      {
+        "metric": "new_uncovered_lines",
+        "value": "55"
+      }
+    ]
+  }
+}
+

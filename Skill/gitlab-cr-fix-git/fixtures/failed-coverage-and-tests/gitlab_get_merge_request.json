@@ -1,0 +1,27 @@
+{
+  "id": 12001,
+  "iid": 12,
+  "project_id": 100,
+  "title": "Add order creation flow",
+  "state": "opened",
+  "author": {
+    "username": "alice",
+    "name": "Alice",
+    "email": "alice@example.com"
+  },
+  "source_branch": "feature/order-create",
+  "target_branch": "main",
+  "merge_status": "can_be_merged",
+  "detailed_merge_status": "ci_must_pass",
+  "web_url": "https://gitlab.example.com/demo/order-service/-/merge_requests/12",
+  "head_pipeline": {
+    "id": 88991,
+    "status": "failed",
+    "web_url": "https://gitlab.example.com/demo/order-service/-/pipelines/88991"
+  },
+  "diff_refs": {
+    "base_sha": "1111111111111111111111111111111111111111",
+    "start_sha": "2222222222222222222222222222222222222222",
+    "head_sha": "3333333333333333333333333333333333333333"
+  }
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="com.demo.order.OrderServiceTest" time="2.4" tests="5" errors="0" skipped="0" failures="1">
+  <testcase name="createOrder_shouldRejectWhenStockInsufficient" classname="com.demo.order.OrderServiceTest" time="0.1">
+    <failure message="expected IllegalArgumentException to be thrown, but nothing was thrown" type="java.lang.AssertionError">java.lang.AssertionError: expected IllegalArgumentException to be thrown, but nothing was thrown
+	at com.demo.order.OrderServiceTest.createOrder_shouldRejectWhenStockInsufficient(OrderServiceTest.java:42)
+</failure>
+  </testcase>
+  <testcase name="createOrder_ok" classname="com.demo.order.OrderServiceTest" time="0.01"/>
+  <testcase name="createOrder_nullQuantity_shouldReject" classname="com.demo.order.OrderServiceTest" time="0.02"/>
+  <testcase name="cancelOrder_ok" classname="com.demo.order.OrderServiceTest" time="0.01"/>
+  <testcase name="queryOrder_ok" classname="com.demo.order.OrderServiceTest" time="0.01"/>
+</testsuite>

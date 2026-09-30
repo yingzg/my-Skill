@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<report name="order-service">
+  <sessioninfo id="demo-session" start="1756886400000" dump="1756886460000"/>
+  <package name="com/demo/order">
+    <class name="com/demo/order/OrderService" sourcefilename="OrderService.java">
+      <method name="createOrder" desc="(I)V" line="42">
+        <counter type="INSTRUCTION" missed="10" covered="8"/>
+        <counter type="LINE" missed="30" covered="20"/>
+      </method>
+      <counter type="INSTRUCTION" missed="60" covered="40"/>
+      <counter type="LINE" missed="55" covered="45"/>
+    </class>
+    <counter type="INSTRUCTION" missed="60" covered="40"/>
+    <counter type="LINE" missed="55" covered="45"/>
+  </package>
+  <counter type="INSTRUCTION" missed="60" covered="40"/>
+  <counter type="BRANCH" missed="5" covered="3"/>
+  <counter type="LINE" missed="55" covered="45"/>
+  <counter type="COMPLEXITY" missed="10" covered="6"/>
+  <counter type="METHOD" missed="3" covered="5"/>
+  <counter type="CLASS" missed="0" covered="1"/>
+</report>
